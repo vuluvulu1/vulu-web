@@ -5,6 +5,9 @@ export const API_URL = (import.meta.env.VITE_API_URL || 'https://vulu-api.onrend
 export const REPO = 'vuluvulu1/vulu-launcher';
 export const DOWNLOAD_URL = `https://github.com/${REPO}/releases/latest/download/vulu-launcher-setup.exe`;
 
+/** public/ klasöründeki bir dosyanın adresi; site alt klasörde yayınlansa da doğru çalışır. */
+export const asset = path => import.meta.env.BASE_URL + path;
+
 const TOKEN_KEY = 'vulu.token';
 
 export function getToken() {

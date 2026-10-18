@@ -15,6 +15,8 @@ Yerel bir vulu-api ile denemek için `.env.example` dosyasını `.env` olarak ko
 
 ## Yayın
 
-`npm run build` komutu `dist/` klasörünü üretir. Bu klasör statik olarak herhangi bir yerde yayınlanabilir (`vercel.json` dosyası Vercel için yönlendirmeleri içerir).
+`main`'e her push'ta site GitHub Pages'e yayınlanır (`.github/workflows/pages.yml`): https://vuluvulu1.github.io/vulu-web/
 
-Site yayına girince adresi vulu-api'nin `CORS_ORIGINS` ortam değişkenine eklenmeli. Örnek: `https://vulu.vercel.app,http://localhost:5173`. Eklenmezse sitedeki giriş ve kayıt çalışmaz. Launcher bundan etkilenmez.
+Pages'te site `/vulu-web/` alt klasöründe açılır. Workflow derlemede bunu `BASE_PATH` ile verir. Kendi domain'ine geçince workflow'daki `BASE_PATH` değerini `/` yap.
+
+Sitenin adresi vulu-api'nin `CORS_ORIGINS` ortam değişkeninde olmalı. Örnek: `https://vuluvulu1.github.io,http://localhost:5173`. Adres yalnızca origin'dir, `/vulu-web` kısmı yazılmaz. Eklenmezse sitedeki giriş ve kayıt çalışmaz. Launcher bundan etkilenmez.

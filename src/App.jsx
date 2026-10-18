@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { api } from './api.js';
+import { api, asset } from './api.js';
 import { useAuth } from './auth.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
@@ -42,7 +42,7 @@ function Header() {
         <header className="header">
             <div className="wrap header-inner">
                 <Link to="/" className="brand">
-                    <img src="/img/logo.svg" alt="" width="28" height="28" />
+                    <img src={asset('img/logo.svg')} alt="" width="28" height="28" />
                     <span>vulu</span>
                 </Link>
                 <nav className="nav">

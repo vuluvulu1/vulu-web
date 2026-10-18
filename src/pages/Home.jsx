@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DOWNLOAD_URL, latestRelease } from '../api.js';
+import { DOWNLOAD_URL, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 
 const FEATURES = [
@@ -20,7 +20,7 @@ export default function Home() {
     return (
         <>
             <section className="hero wrap">
-                <img className="hero-logo" src="/img/logo.svg" alt="" width="96" height="96" />
+                <img className="hero-logo" src={asset('img/logo.svg')} alt="" width="96" height="96" />
                 <h1>vulu Launcher</h1>
                 <p className="lead">Arkadaş grubumuz için yazdığımız Minecraft launcher'ı.</p>
                 <div className="hero-actions">
@@ -31,7 +31,7 @@ export default function Home() {
                     Windows 10 / 11
                     {release && <> · <span className="mono">{release.tag}</span></>}
                 </p>
-                <img className="hero-shot" src="/img/home.png" alt="Launcher ana ekranı" width="1280" height="800" />
+                <img className="hero-shot" src={asset('img/home.png')} alt="Launcher ana ekranı" width="1280" height="800" />
             </section>
 
             <section className="wrap section">
