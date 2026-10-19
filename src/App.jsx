@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { api, asset } from './api.js';
+import { DOWNLOAD_URL, api, asset } from './api.js';
 import { useAuth } from './auth.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
@@ -10,7 +10,7 @@ import Account from './pages/Account.jsx';
 export default function App() {
     const { pathname } = useLocation();
 
-    // Render'daki API uykudaysa kullanıcı formu doldururken uyansın
+    // API'yi önceden ısıt: kullanıcı formu doldururken bağlantı hazır olsun
     useEffect(() => { api.ping().catch(() => {}); }, []);
     useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
 
@@ -28,7 +28,16 @@ export default function App() {
             </main>
             <footer className="footer">
                 <div className="wrap footer-inner">
-                    <span>© {new Date().getFullYear()} vulu</span>
+                    <div className="footer-brand">
+                        <img src={asset('img/logo.svg')} alt="" width="22" height="22" />
+                        <b>vulu</b>
+                        <span>© {new Date().getFullYear()}</span>
+                    </div>
+                    <nav className="footer-links">
+                        <a href={DOWNLOAD_URL}>İndir</a>
+                        <Link to="/kayit">Hesap iste</Link>
+                        <Link to="/giris">Giriş yap</Link>
+                    </nav>
                 </div>
             </footer>
         </>
@@ -50,7 +59,8 @@ function Header() {
                     ) : (
                         <>
                             <NavLink to="/giris" className="btn btn-ghost btn-sm">Giriş yap</NavLink>
-                            <NavLink to="/kayit" className="btn btn-primary btn-sm">Kayıt ol</NavLink>
+                            <NavLink to="/kayit" className="btn btn-ghost btn-sm hide-sm">Kayıt ol</NavLink>
+                            <a href={DOWNLOAD_URL} className="btn btn-primary btn-sm">İndir</a>
                         </>
                     )}
                 </nav>
