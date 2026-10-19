@@ -3,16 +3,17 @@ import { Link } from 'react-router-dom';
 import { DOWNLOAD_URL, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
+import Wordmark from '../Wordmark.jsx';
 
 const EXTRAS = [
-    ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları okur ve soruna hangi modun yol açtığını söyler.'],
-    ['Dünya yedekleri', 'Dünyalarını tek tıkla yedekleyebilir, gerektiğinde geri yükleyebilirsin.'],
-    ['Oynama süresi', 'Her instance\'ta ne kadar oynadığın kaydedilir.'],
-    ['Skinler', 'Skinini launcher\'dan değiştirebilirsin.'],
-    ['Discord durumu', 'Ne oynadığın Discord profilinde görünür.'],
-    ['Temalar', 'Launcher\'ı Classic, Neon veya Atlas temasıyla kullanabilirsin.'],
-    ['Müzik', 'Launcher açıkken arka planda müzik çalar; sesini ayarlardan değiştirebilirsin.'],
-    ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan bir sürümü kurmaz.'],
+    ['Çökme yardımcısı', 'Oyun çökünce kayıtları okur ve sorunun olası sebebini gösterir.'],
+    ['Dünya yedekleri', 'Dünyalar tek tıkla yedeklenir ve geri yüklenir.'],
+    ['Oynama süresi', 'Her instance\'ta geçirilen süre kaydedilir.'],
+    ['Skinler', 'Skin launcher içinden değiştirilir.'],
+    ['Discord durumu', 'Oynanan instance Discord profilinde görünür.'],
+    ['Temalar', 'Classic, Neon ve Atlas temaları arasından seçim yapılır.'],
+    ['Müzik', 'Launcher açıkken arka planda müzik çalar. Ses seviyesi ayarlardan değiştirilir.'],
+    ['Güvenli güncellemeler', 'Launcher kendini günceller. İmzası doğrulanmayan sürümler kurulmaz.'],
 ];
 
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
     return (
         <>
             <section className="wrap hero">
-                <h1 className="hero-title">vulu<span>Launcher</span></h1>
+                <h1 className="hero-title"><Wordmark full animate /></h1>
                 <p className="lead">
                     vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
                     Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.
@@ -45,39 +46,38 @@ export default function Home() {
             <section className="wrap features">
                 <Feature
                     label="Instance'lar"
-                    title="Her instance kendi ayarlarıyla çalışır"
+                    title="Her instance'ın kendi ayarları var"
                     visual={<InstancesMock />}
                 >
-                    Vanilla, Fabric, Quilt, Forge veya NeoForge ile istediğin kadar instance oluşturabilirsin.
-                    Her birinin sürümü, modları, RAM ayarı ve dünyaları ayrı tutulur. Gereken Java sürümünü
-                    launcher kendisi indirir.
+                    Vanilla, Fabric, Quilt, Forge ve NeoForge desteklenir. Her instance'ın sürümü, modları,
+                    RAM ayarı ve dünyaları ayrı tutulur. Gereken Java sürümü otomatik olarak indirilir.
                 </Feature>
                 <Feature
                     label="Modlar ve paketler"
-                    title="Modları launcher'dan çıkmadan kurabilirsin"
+                    title="Modlar ve paketler launcher içinden kurulur"
                     visual={<PackMock />}
                     flip
                 >
-                    Modrinth'teki modları, kaynak paketlerini, shader'ları ve modpack'leri launcher içinde arayıp
-                    kurabilirsin. vulu Packs'teki hazır paketleri ise tek tıkla kurarsın. Bir paket güncellendiğinde,
-                    kurduğun sürümden bu yana nelerin değiştiğini görürsün.
+                    Modrinth'teki modlar, kaynak paketleri, shader'lar ve modpack'ler launcher içinde aranıp kurulur.
+                    vulu Packs'teki paketler tek tıkla kurulur. Bir paket güncellendiğinde, kurulu sürümden bu yana
+                    yapılan değişiklikler listelenir.
                 </Feature>
                 <Feature
                     label="Sosyal"
-                    title="Ekran görüntülerini ve mesajlarını launcher'da paylaşırsın"
+                    title="Ekran görüntüleri, arkadaşlar ve mesajlar"
                     visual={<ChatMock />}
                 >
-                    Ekran görüntülerini akışa atabilir, başkalarınınkine yorum yazabilirsin. Arkadaş listende kimin
-                    çevrimiçi olduğunu görürsün. Mesajlar uçtan uca şifrelendiği için sunucu bile içeriklerini okuyamaz.
+                    Ekran görüntüleri ortak bir akışta paylaşılır ve yorumlanabilir. Arkadaş listesinde kimin çevrimiçi
+                    olduğu görünür. Mesajlar uçtan uca şifrelenir, bu yüzden sunucu içeriklerini okuyamaz.
                 </Feature>
                 <Feature
                     label="Sunucular"
-                    title="Sunuculara tek tıkla bağlanırsın"
+                    title="Sunucuların durumu tek listede"
                     visual={<ServerMock />}
                     flip
                 >
-                    Sunucular sekmesinde her sunucunun açık olup olmadığını, kaç kişinin oynadığını ve gecikmeyi
-                    görürsün. Bağlan'a bastığında oyun açılır ve doğrudan sunucuya girersin.
+                    Sunucular sekmesi her sunucunun açık olup olmadığını, oyuncu sayısını ve gecikmeyi gösterir.
+                    Bağlan'a basıldığında oyun açılır ve doğrudan sunucuya girilir.
                 </Feature>
             </section>
 
@@ -95,7 +95,7 @@ export default function Home() {
 
             <section className="wrap section start">
                 <h2 className="section-title">Nasıl başlanır</h2>
-                <p className="muted">Hesaplar davetle açılıyor, bu yüzden önce bir hesap istemen gerekiyor.</p>
+                <p className="muted">Hesaplar davetle açılır, bu yüzden önce bir hesap isteği gönderilmesi gerekir.</p>
                 <ol className="steps">
                     <li><span><Link to="/kayit">Kayıt formunu</Link> doldurarak hesap iste.</span></li>
                     <li><span>Bir admin isteğini onayladığında hesabın açılır.</span></li>
@@ -103,7 +103,7 @@ export default function Home() {
                 </ol>
                 <p className="note">
                     Windows ilk açılışta SmartScreen uyarısı gösterebilir. Bu durumda <i>Ek bilgi</i> ve ardından
-                    {' '}<i>Yine de çalıştır</i> seçeneğine tıkla.
+                    {' '}<i>Yine de çalıştır</i> seçilerek devam edilir.
                 </p>
                 <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
                     <Icon name="download" size={18} /> Kurulum dosyasını indir

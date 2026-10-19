@@ -90,27 +90,41 @@ p { margin: 0 0 1em; }
     position: sticky; top: 0; z-index: 10;
 }
 .header-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
-.brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-family: var(--font-pixel); font-size: 18px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); }
+.brand .wordmark { height: 38px; width: auto; margin-top: 6px; }
 .brand:hover { text-decoration: none; }
 .nav { display: flex; gap: 8px; align-items: center; }
 
 .footer { border-top: 1px solid var(--line); color: var(--dim); font-size: 13px; margin-top: 96px; background: var(--panel); }
 .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 28px; padding-bottom: 28px; }
 .footer-brand { display: flex; align-items: center; gap: 10px; color: var(--muted); }
-.footer-brand b { font-family: var(--font-pixel); font-weight: 700; color: var(--text); font-size: 15px; }
+.footer-brand .wordmark { height: 30px; width: auto; margin-top: 4px; }
 .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
 .footer a { color: var(--muted); }
 .footer a:hover { color: var(--text); text-decoration: none; }
 
 /* ── Ana sayfa: giriş ───────────────────────────────── */
 .hero { padding-top: 72px; }
-.hero-title {
-    font-family: var(--font-pixel); font-weight: 700;
-    font-size: clamp(56px, 11vw, 120px); line-height: .95; letter-spacing: 0;
-    margin: 0 0 28px; color: var(--accent);
-    display: flex; flex-direction: column;
+.hero-title { margin: 0 0 28px; line-height: 0; }
+.hero-title .wordmark { width: min(620px, 100%); filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .6)); }
+
+/* "vulu Launcher" yazısı: launcher'ın açılış ekranındakiyle aynı (Great Vibes, altın-bakır geçiş) */
+.wordmark { display: block; height: auto; overflow: visible; }
+/* Açılıştaki gibi: her harf önce ince kalemle çizilir, sonra altınla dolar */
+.wordmark.draw path {
+    fill-opacity: 0;
+    stroke: #e3b37a; stroke-width: 1.1px; vector-effect: non-scaling-stroke;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    animation:
+        pen-draw .5s cubic-bezier(.45, 0, .35, 1) calc(.15s + var(--i) * .07s) forwards,
+        ink-fill .4s ease-out calc(.45s + var(--i) * .07s) forwards;
 }
-.hero-title span { font-size: .38em; color: var(--text); margin-top: .35em; }
+@keyframes pen-draw { to { stroke-dashoffset: 0; } }
+@keyframes ink-fill { to { fill-opacity: 1; stroke-opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .wordmark.draw path { animation: none; fill-opacity: 1; stroke: none; }
+}
 .lead { font-size: 19px; color: var(--muted); max-width: 36em; margin-bottom: 0; }
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
 .hero-meta { color: var(--dim); font-size: 13px; margin-top: 14px; }

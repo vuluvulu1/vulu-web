@@ -6,6 +6,7 @@ import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Account from './pages/Account.jsx';
+import Wordmark from './Wordmark.jsx';
 
 export default function App() {
     const { pathname } = useLocation();
@@ -30,7 +31,7 @@ export default function App() {
                 <div className="wrap footer-inner">
                     <div className="footer-brand">
                         <img src={asset('img/logo.svg')} alt="" width="22" height="22" />
-                        <b>vulu</b>
+                        <Wordmark />
                         <span>© {new Date().getFullYear()}</span>
                     </div>
                     <nav className="footer-links">
@@ -51,7 +52,7 @@ function Header() {
             <div className="wrap header-inner">
                 <Link to="/" className="brand">
                     <img src={asset('img/logo.svg')} alt="" width="28" height="28" />
-                    <span>vulu</span>
+                    <Wordmark />
                 </Link>
                 <nav className="nav">
                     {status === 'in' ? (
