@@ -37,6 +37,7 @@ export default function App() {
                         <a href={DOWNLOAD_URL}>İndir</a>
                         <Link to="/kayit">Hesap iste</Link>
                         <Link to="/giris">Giriş yap</Link>
+                        <a href="https://github.com/vuluvulu1/vulu-launcher" target="_blank" rel="noreferrer">GitHub</a>
                     </nav>
                 </div>
             </footer>
