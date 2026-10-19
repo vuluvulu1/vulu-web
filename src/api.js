@@ -2,11 +2,12 @@
 // böylece hesaplar, kayıt istekleri ve kurallar tek yerde kalır.
 
 export const API_URL = (import.meta.env.VITE_API_URL || 'https://vulu-api.onrender.com').replace(/\/$/, '');
-export const REPO = 'vuluvulu1/vulu-launcher';
-export const DOWNLOAD_URL = `https://github.com/${REPO}/releases/latest/download/vulu-launcher-setup.exe`;
 
 /** public/ klasöründeki bir dosyanın adresi; site alt klasörde yayınlansa da doğru çalışır. */
 export const asset = path => import.meta.env.BASE_URL + path;
+
+// Launcher sürümleri sitenin yanında, sunucudaki /releases/ altında durur (launcher da güncellemeyi oradan alır)
+export const DOWNLOAD_URL = asset('releases/vulu-launcher-setup.exe');
 
 const TOKEN_KEY = 'vulu.token';
 
@@ -67,13 +68,13 @@ export const api = {
     avatarUrl: (username, version) => `${API_URL}/users/${encodeURIComponent(username)}/avatar?v=${version}`,
 };
 
-/** GitHub'daki son sürümün etiketi (ör. "v0.13.0"); alınamazsa null. */
+/** Sunucudaki son sürümün etiketi (ör. "v0.13.0"); alınamazsa null. */
 export async function latestRelease() {
     try {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
+        const res = await fetch(asset('releases/release.json'));
         if (!res.ok) return null;
         const data = await res.json();
-        return { tag: data.tag_name, publishedAt: data.published_at };
+        return { tag: `v${data.version}`, publishedAt: data.publishedAt };
     } catch {
         return null;
     }

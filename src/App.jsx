@@ -29,7 +29,6 @@ export default function App() {
             <footer className="footer">
                 <div className="wrap footer-inner">
                     <span>© {new Date().getFullYear()} vulu</span>
-                    <a href="https://github.com/vuluvulu1/vulu-launcher" target="_blank" rel="noreferrer">GitHub</a>
                 </div>
             </footer>
         </>

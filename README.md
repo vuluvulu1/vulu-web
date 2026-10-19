@@ -1,9 +1,9 @@
 # vulu web
 
-vulu Launcher'ın web sitesi: **https://vuluvulu1.github.io/vulu-web/**
+vulu Launcher'ın web sitesi: **http://185.157.46.169** (yakında vuluvulu.com.tr)
 
 Sitede launcher'ı indirebilir, hesap isteği gönderebilir ve launcher hesabınla giriş yapabilirsin.
 
 ## Lisans
 
-Kaynak kod herkese açık ama açık kaynak değil: tüm hakları saklı. Ayrıntılar [LICENSE](LICENSE) dosyasında.
+Tüm hakları saklı. Ayrıntılar [LICENSE](LICENSE) dosyasında.

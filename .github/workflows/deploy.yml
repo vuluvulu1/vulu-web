@@ -1,0 +1,37 @@
+# main'e her push'ta siteyi derleyip VDS'e yükler. Deploy anahtarı sunucuda yalnızca
+# /usr/local/bin/vulu-web-deploy'u çalıştırabilir: tar.gz'yi alır, yeni sürüm klasörüne açar ve yayına alır.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Upload to VDS
+        env:
+          SSH_KEY: ${{ secrets.VDS_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VDS_KNOWN_HOSTS }}
+          HOST: ${{ secrets.VDS_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          tar czf - -C dist . | ssh -i ~/.ssh/deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "deploy@$HOST"
