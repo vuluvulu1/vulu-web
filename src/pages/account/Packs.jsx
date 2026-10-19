@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../../api.js';
 import { formatDate, loaderName, timeAgo, useLoad } from '../../components.jsx';
 
@@ -45,13 +46,13 @@ function PackCard({ pack }) {
                     ? <img className="pack-cover" src={api.packCoverUrl(pack)} alt="" onError={() => setCoverFailed(true)} />
                     : <span className="pack-cover pack-cover-empty">{pack.name[0]}</span>}
                 <div className="pack-info">
-                    <h3>{pack.name}</h3>
+                    <h3><Link to={`/hesap/paketler/${pack.id}`}>{pack.name}</Link></h3>
                     <p className="pack-meta">
                         Minecraft {pack.mcVersion} · {loaderName(pack.loader)} · {pack.mods.length} mod · önerilen {pack.recommendedRamGb} GB RAM
                     </p>
                     {pack.description && <p className="pack-desc">{pack.description}</p>}
                     <p className="pack-meta">
-                        <span className="mono">r{pack.revision}</span> · {timeAgo(pack.updatedAt)} güncellendi · paylaşan {pack.author}
+                        <span className="mono">r{pack.revision}</span> · {timeAgo(pack.updatedAt)} güncellendi · paylaşan <Link to={`/u/${pack.author}`}>{pack.author}</Link>
                     </p>
                 </div>
             </div>
@@ -64,27 +65,36 @@ function PackCard({ pack }) {
                 </div>
             )}
 
-            {history.length > 0 && (
-                <details className="pack-history">
-                    <summary>Değişiklik geçmişi ({history.length})</summary>
-                    <ol>
-                        {history.map(change => (
-                            <li key={change.revision}>
-                                <div className="change-head">
-                                    <b className="mono">r{change.revision}</b>
-                                    <span className="muted">{formatDate(change.at)}{change.by && ` · ${change.by}`}</span>
-                                </div>
-                                {change.note && <p className="pack-note">{change.note}</p>}
-                                <ChangeList title="Eklenen" kind="add" items={change.added} />
-                                <ChangeList title="Güncellenen" kind="up" items={change.updated.map(u => `${u.title} (${u.from} → ${u.to})`)} />
-                                <ChangeList title="Kaldırılan" kind="del" items={change.removed} />
-                                {change.filesChanged && <p className="muted small">Ayar dosyaları da değişti.</p>}
-                            </li>
-                        ))}
-                    </ol>
-                </details>
-            )}
+            <div className="row">
+                {history.length > 0 && <PackHistory changelog={pack.changelog} />}
+                <Link className="btn btn-sm push-right" to={`/hesap/paketler/${pack.id}`}>İçerik ve geri bildirim</Link>
+            </div>
         </article>
+    );
+}
+
+/** Bir paketin revizyon geçmişi; open verilirse açık başlar. */
+export function PackHistory({ changelog, open = false }) {
+    const history = [...changelog].sort((a, b) => b.revision - a.revision);
+    return (
+        <details className="pack-history" open={open}>
+            <summary>Değişiklik geçmişi ({history.length})</summary>
+            <ol>
+                {history.map(change => (
+                    <li key={change.revision}>
+                        <div className="change-head">
+                            <b className="mono">r{change.revision}</b>
+                            <span className="muted">{formatDate(change.at)}{change.by && ` · ${change.by}`}</span>
+                        </div>
+                        {change.note && <p className="pack-note">{change.note}</p>}
+                        <ChangeList title="Eklenen" kind="add" items={change.added} />
+                        <ChangeList title="Güncellenen" kind="up" items={change.updated.map(u => `${u.title} (${u.from} → ${u.to})`)} />
+                        <ChangeList title="Kaldırılan" kind="del" items={change.removed} />
+                        {change.filesChanged && <p className="muted small">Ayar dosyaları da değişti.</p>}
+                    </li>
+                ))}
+            </ol>
+        </details>
     );
 }
 

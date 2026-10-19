@@ -33,6 +33,40 @@ export function AuthImage({ path, alt = '', className, width, height }) {
     return <img className={className} src={src} alt={alt} width={width || undefined} height={height || undefined} />;
 }
 
+/** **kalın**, *italik* ve `kod` parçalarını React öğelerine çevirir (HTML olarak yorumlanmaz). */
+function inline(text) {
+    return text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g).map((part, i) => {
+        if (part.startsWith('**') && part.endsWith('**')) return <b key={i}>{part.slice(2, -2)}</b>;
+        if (part.length > 2 && part.startsWith('*') && part.endsWith('*')) return <i key={i}>{part.slice(1, -1)}</i>;
+        if (part.startsWith('`') && part.endsWith('`')) return <code key={i}>{part.slice(1, -1)}</code>;
+        return part;
+    });
+}
+
+/** Sürüm notları: düz metin ya da basit Markdown (başlık, madde, kalın). Bağlantı ve HTML gösterilmez. */
+export function ReleaseNotes({ text }) {
+    const blocks = [];
+    let list = null;
+    for (const raw of text.replace(/\r/g, '').split('\n')) {
+        const line = raw.trim();
+        if (/^-{3,}$/.test(line)) break;   // çizgiden sonrası (ör. İngilizce özet) gösterilmez
+        const item = line.match(/^[-*•]\s+(.*)$/);
+        if (item) { (list ||= []).push(item[1]); continue; }
+        if (list) { blocks.push({ list }); list = null; }
+        if (!line) continue;
+        const heading = line.match(/^#{1,6}\s+(.*)$/);
+        blocks.push(heading ? { heading: heading[1] } : { text: line });
+    }
+    if (list) blocks.push({ list });
+    return (
+        <div className="release-notes">
+            {blocks.map((b, i) => (b.list
+                ? <ul key={i}>{b.list.map((li, j) => <li key={j}>{inline(li)}</li>)}</ul>
+                : b.heading ? <h4 key={i}>{inline(b.heading)}</h4> : <p key={i}>{inline(b.text)}</p>))}
+        </div>
+    );
+}
+
 export const formatDate = value => value
     ? new Date(value).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
     : '';

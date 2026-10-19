@@ -4,6 +4,7 @@ import { DOWNLOAD_URL, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 import Wordmark from '../Wordmark.jsx';
+import { ReleaseNotes, formatDate } from '../components.jsx';
 
 const EXTRAS = [
     ['Çökme yardımcısı', 'Oyun çökünce kayıtları okur ve sorunun olası sebebini gösterir.'],
@@ -94,6 +95,14 @@ export default function Launcher() {
                     ))}
                 </dl>
             </section>
+
+            {release?.notes && (
+                <section className="wrap section">
+                    <h2 className="section-title">Son sürümde neler var</h2>
+                    <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
+                    <ReleaseNotes text={release.notes} />
+                </section>
+            )}
 
             <section className="wrap section start">
                 <h2 className="section-title">Nasıl başlanır</h2>

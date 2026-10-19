@@ -39,9 +39,10 @@ export class ApiError extends Error {
  * JSON isteği. Render'daki ücretsiz sunucu uykudaysa ilk istek uzun sürebilir;
  * `onSlow` o durumda kullanıcıya açıklama göstermek için birkaç saniye sonra çağrılır.
  */
-export async function request(path, { method = 'GET', body, auth = false, onSlow, base = API_URL } = {}) {
+export async function request(path, { method = 'GET', body, raw, auth = false, onSlow, base = API_URL } = {}) {
     const headers = {};
-    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    if (raw) headers['Content-Type'] = raw.type || 'application/octet-stream';
+    else if (body !== undefined) headers['Content-Type'] = 'application/json';
     if (auth) {
         const token = getToken();
         if (token) headers.Authorization = `Bearer ${token}`;
@@ -53,7 +54,7 @@ export async function request(path, { method = 'GET', body, auth = false, onSlow
         res = await fetch(base + path, {
             method,
             headers,
-            body: body === undefined ? undefined : JSON.stringify(body),
+            body: raw || (body === undefined ? undefined : JSON.stringify(body)),
         });
     } catch {
         throw new ApiError('Sunucuya ulaşılamadı. İnternet bağlantını kontrol edip tekrar dene.', 0);
@@ -81,12 +82,48 @@ export const api = {
     packs: () => request('/packs', { auth: true }),
     packCoverUrl: pack => `${API_URL}/packs/${pack.id}/cover?v=${pack.revision}`,
 
-    shots: before => request('/shots' + (before ? `?before=${encodeURIComponent(before)}` : ''), { auth: true }),
+    shots: (before, author) => {
+        const q = new URLSearchParams();
+        if (before) q.set('before', before);
+        if (author) q.set('author', author);
+        return request('/shots' + (q.size ? `?${q}` : ''), { auth: true });
+    },
     shotComments: id => request(`/shots/${id}/comments`, { auth: true }),
     addComment: (id, text) => request(`/shots/${id}/comments`, { method: 'POST', body: { text }, auth: true }),
     deleteComment: (id, commentId) => request(`/shots/${id}/comments/${commentId}`, { method: 'DELETE', auth: true }),
     likeShot: (id, like) => request(`/shots/${id}/like`, { method: 'POST', body: { like }, auth: true }),
     shotImagePath: (id, size) => `/shots/${id}/${size}`,
+
+    // Profiller
+    profile: username => request(`/users/${encodeURIComponent(username)}`, { auth: true }),
+    bannerUrl: (username, version) => `${API_URL}/users/${encodeURIComponent(username)}/banner?v=${version}`,
+    skinUrl: hash => `${API_URL}/yggdrasil/textures/${hash}`,
+    setBio: bio => request('/users/me', { method: 'PUT', body: { bio }, auth: true }),
+    setAvatar: file => request('/users/me/avatar', { method: 'PUT', raw: file, auth: true }),
+    removeAvatar: () => request('/users/me/avatar', { method: 'DELETE', auth: true }),
+    setBanner: file => request('/users/me/banner', { method: 'PUT', raw: file, auth: true }),
+    removeBanner: () => request('/users/me/banner', { method: 'DELETE', auth: true }),
+    setSkin: (file, model) => request(`/users/me/skin?model=${model}`, { method: 'PUT', raw: file, auth: true }),
+    setSkinModel: model => request('/users/me/skin/model', { method: 'PUT', body: { model }, auth: true }),
+    removeSkin: () => request('/users/me/skin', { method: 'DELETE', auth: true }),
+
+    // Geri bildirim: pack = paket kimliği ya da 'general'
+    feedback: pack => request(`/feedback?pack=${encodeURIComponent(pack)}`, { auth: true }),
+    feedbackCounts: () => request('/feedback/counts', { auth: true }),
+    sendFeedback: (pack, kind, text) => request('/feedback', { method: 'POST', body: { pack, kind, text }, auth: true }),
+    updateFeedback: (id, changes) => request(`/feedback/${id}`, { method: 'PATCH', body: changes, auth: true }),
+    deleteFeedback: id => request(`/feedback/${id}`, { method: 'DELETE', auth: true }),
+
+    // Admin
+    registrations: () => request('/admin/registrations', { auth: true }),
+    approveRegistration: id => request(`/admin/registrations/${id}/approve`, { method: 'POST', auth: true }),
+    rejectRegistration: id => request(`/admin/registrations/${id}/reject`, { method: 'POST', auth: true }),
+    adminUsers: () => request('/admin/users', { auth: true }),
+    updateUser: (id, changes) => request(`/admin/users/${id}`, { method: 'PATCH', body: changes, auth: true }),
+    deleteUser: id => request(`/admin/users/${id}`, { method: 'DELETE', auth: true }),
+    storage: () => request('/admin/storage', { auth: true }),
+    postAnnouncement: (text, hours) => request('/announcements', { method: 'POST', body: { text, hours }, auth: true }),
+    deleteAnnouncement: id => request(`/announcements/${id}`, { method: 'DELETE', auth: true }),
 };
 
 /**
@@ -115,6 +152,7 @@ export function githubRelease(repo, assetPattern) {
             tag: data.tag_name,
             publishedAt: data.published_at,
             pageUrl: data.html_url,
+            notes: data.body || '',
             download: file ? { url: file.browser_download_url, name: file.name, size: file.size } : null,
         };
     });
@@ -126,7 +164,7 @@ export async function latestRelease() {
         const res = await fetch(asset('releases/release.json'));
         if (!res.ok) return null;
         const data = await res.json();
-        return { tag: `v${data.version}`, publishedAt: data.publishedAt };
+        return { tag: `v${data.version}`, publishedAt: data.publishedAt, notes: data.notes || '' };
     } catch {
         return null;
     }

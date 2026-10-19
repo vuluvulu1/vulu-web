@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { asset, githubRelease } from '../api.js';
-import { formatDate } from '../components.jsx';
+import { ReleaseNotes, formatDate } from '../components.jsx';
 import Icon from '../icons.jsx';
 
 const formatMb = bytes => `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MB`;
@@ -50,10 +50,16 @@ export default function Product({ product: p }) {
                     {p.steps.map(step => <li key={step}><span>{step}</span></li>)}
                 </ol>
                 <p className="note">{p.note}</p>
-                {release?.pageUrl && (
-                    <a className="btn" href={release.pageUrl} target="_blank" rel="noreferrer">Sürüm notları</a>
-                )}
             </section>
+
+            {release?.notes && (
+                <section className="wrap section">
+                    <h2 className="section-title">Son sürümde neler var</h2>
+                    <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
+                    <ReleaseNotes text={release.notes} />
+                    <a className="btn btn-sm" href={release.pageUrl} target="_blank" rel="noreferrer">Tüm sürümler</a>
+                </section>
+            )}
         </>
     );
 }

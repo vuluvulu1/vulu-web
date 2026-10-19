@@ -1,4 +1,4 @@
-import { NavLink, Navigate, Outlet } from 'react-router-dom';
+import { Link, NavLink, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../auth.jsx';
 import { Avatar } from '../../components.jsx';
 
@@ -6,6 +6,7 @@ const TABS = [
     ['/hesap', 'Genel', true],
     ['/hesap/ekran-goruntuleri', 'Ekran görüntüleri'],
     ['/hesap/paketler', 'Paketler'],
+    ['/hesap/geri-bildirim', 'Geri bildirim'],
     ['/hesap/profil', 'Profil'],
 ];
 
@@ -21,13 +22,14 @@ export default function AccountLayout() {
             <div className="account-head">
                 <Avatar username={user.username} version={user.avatarVersion} size={44} />
                 <div className="account-who">
-                    <b>{user.username}</b>
+                    <Link to={`/u/${user.username}`}><b>{user.username}</b></Link>
                     {user.isAdmin && <span className="badge">admin</span>}
                 </div>
                 <button className="btn btn-ghost btn-sm" onClick={logout}>Çıkış yap</button>
             </div>
             <nav className="tabs">
                 {TABS.map(([to, label, end]) => <NavLink key={to} to={to} end={end} className="tab">{label}</NavLink>)}
+                {user.isAdmin && <NavLink to="/hesap/admin" className="tab">Admin</NavLink>}
             </nav>
             <Outlet />
         </section>

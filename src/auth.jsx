@@ -35,7 +35,10 @@ export function AuthProvider({ children }) {
         setStatus('out');
     }, []);
 
-    return <AuthContext.Provider value={{ status, user, login, logout }}>{children}</AuthContext.Provider>;
+    // Profil düzenlenince API'nin döndürdüğü güncel profil buraya işlenir (paket sayısı ayrı hesaplandığı için korunur)
+    const updateProfile = useCallback(profile => setUser(prev => ({ ...prev, ...profile, packCount: prev?.packCount ?? 0 })), []);
+
+    return <AuthContext.Provider value={{ status, user, login, logout, updateProfile }}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => useContext(AuthContext);

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { AuthImage, Avatar, timeAgo, useUsers } from '../../components.jsx';
@@ -122,7 +123,7 @@ export function ShotDialog({ shot, users, onChange, onClose }) {
                 <div className="shot-author">
                     <Avatar username={shot.author} version={users[shot.author]?.avatarVersion} size={36} />
                     <div>
-                        <b>{shot.author}</b>
+                        <Link to={`/u/${shot.author}`}><b>{shot.author}</b></Link>
                         <small className="muted">
                             {timeAgo(shot.createdAt)}
                             {shot.packName && ` · ${shot.packName}`}
@@ -143,7 +144,7 @@ export function ShotDialog({ shot, users, onChange, onClose }) {
                         <div className="comment" key={c.id}>
                             <Avatar username={c.author} version={users[c.author]?.avatarVersion} size={26} />
                             <div>
-                                <b>{c.author}</b> <small className="muted">{timeAgo(c.createdAt)}</small>
+                                <Link to={`/u/${c.author}`}><b>{c.author}</b></Link> <small className="muted">{timeAgo(c.createdAt)}</small>
                                 <p>{c.text}</p>
                             </div>
                             {(c.canDelete || c.author === user.username) && (

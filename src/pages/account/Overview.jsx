@@ -70,7 +70,7 @@ function Online() {
                     <li key={p.username}>
                         <Avatar username={p.username} version={users[p.username]?.avatarVersion} size={32} />
                         <div>
-                            <b>{p.username}</b>
+                            <Link to={`/u/${p.username}`}><b>{p.username}</b></Link>
                             <small className={p.state === 'playing' ? 'playing' : 'muted'}>{describe(p)}</small>
                         </div>
                         <span className={'presence-dot ' + p.state} />

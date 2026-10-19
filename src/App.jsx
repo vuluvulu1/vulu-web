@@ -13,6 +13,10 @@ import Overview from './pages/account/Overview.jsx';
 import Shots from './pages/account/Shots.jsx';
 import Packs from './pages/account/Packs.jsx';
 import Profile from './pages/account/Profile.jsx';
+import PackDetail from './pages/account/PackDetail.jsx';
+import Feedback from './pages/account/Feedback.jsx';
+import Admin from './pages/account/Admin.jsx';
+import UserProfile from './pages/UserProfile.jsx';
 
 export default function App() {
     const { pathname } = useLocation();
@@ -36,8 +40,12 @@ export default function App() {
                         <Route index element={<Overview />} />
                         <Route path="ekran-goruntuleri" element={<Shots />} />
                         <Route path="paketler" element={<Packs />} />
+                        <Route path="paketler/:id" element={<PackDetail />} />
+                        <Route path="geri-bildirim" element={<Feedback />} />
                         <Route path="profil" element={<Profile />} />
+                        <Route path="admin" element={<Admin />} />
                     </Route>
+                    <Route path="/u/:username" element={<UserProfile />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </main>
