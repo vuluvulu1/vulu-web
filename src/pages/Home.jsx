@@ -4,17 +4,15 @@ import { DOWNLOAD_URL, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 
-const LOADERS = ['Vanilla', 'Fabric', 'Quilt', 'Forge', 'NeoForge'];
-
 const EXTRAS = [
-    ['wrench', 'Çökme yardımcısı', 'Oyun çökünce sebebini bulur, hangi modun suçlu olduğunu söyler.'],
-    ['archive', 'Dünya yedekleri', 'Dünyalarını tek tıkla yedekle, istediğin zaman geri dön.'],
-    ['clock', 'Oynama süresi', 'Her instance ve profil için ne kadar oynadığın tutulur.'],
-    ['shirt', 'Skinler', 'Skinini launcher içinden değiştir.'],
-    ['discord', 'Discord durumu', 'Ne oynadığın Discord profilinde görünür.'],
-    ['palette', 'Temalar', 'Classic, Neon ve Atlas: launcher sana nasıl görünsün, sen seç.'],
-    ['music', 'Müzik çalar', 'Launcher açıkken arka planda müzik; sesini sen ayarla.'],
-    ['shield', 'İmzalı güncellemeler', 'Launcher kendini günceller; imzası doğrulanmayan sürüm kurulmaz.'],
+    ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları okur ve soruna hangi modun yol açtığını söyler.'],
+    ['Dünya yedekleri', 'Dünyalarını tek tıkla yedekleyebilir, gerektiğinde geri yükleyebilirsin.'],
+    ['Oynama süresi', 'Her instance\'ta ne kadar oynadığın kaydedilir.'],
+    ['Skinler', 'Skinini launcher\'dan değiştirebilirsin.'],
+    ['Discord durumu', 'Ne oynadığın Discord profilinde görünür.'],
+    ['Temalar', 'Launcher\'ı Classic, Neon veya Atlas temasıyla kullanabilirsin.'],
+    ['Müzik', 'Launcher açıkken arka planda müzik çalar; sesini ayarlardan değiştirebilirsin.'],
+    ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan bir sürümü kurmaz.'],
 ];
 
 export default function Home() {
@@ -24,157 +22,111 @@ export default function Home() {
 
     return (
         <>
-            <section className="hero">
-                <div className="wrap hero-grid">
-                    <div className="hero-text">
-                        <span className="eyebrow">
-                            <span className="dot" /> Beta{release && <> · <span className="mono">{release.tag}</span></>}
-                        </span>
-                        <h1>Minecraft'ı <span className="accent">tek yerden</span> oyna.</h1>
-                        <p className="lead">
-                            Instance'lar, Modrinth, mod paketleri, sunucular ve sohbet. Hepsi tek bir hızlı launcher'da,
-                            Java dahil her şey kendiliğinden kurulur.
-                        </p>
-                        <div className="hero-actions">
-                            <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
-                                <Icon name="windows" size={18} /> Windows için indir
-                            </a>
-                            {status !== 'in'
-                                ? <Link className="btn btn-ghost btn-lg" to="/kayit">Hesap iste</Link>
-                                : <Link className="btn btn-ghost btn-lg" to="/hesap">Hesabım</Link>}
-                        </div>
-                        <p className="hero-meta">Ücretsiz · Windows 10 / 11 · Kendini günceller</p>
-                    </div>
-
-                    <div className="hero-visual">
-                        <div className="window">
-                            <img src={asset('img/home.png')} alt="vulu Launcher ana ekranı" width="1860" height="1140" />
-                        </div>
-                    </div>
+            <section className="wrap hero">
+                <h1 className="hero-title">vulu<span>Launcher</span></h1>
+                <p className="lead">
+                    vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
+                    Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.
+                </p>
+                <div className="hero-actions">
+                    <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
+                        <Icon name="windows" size={18} /> Windows için indir
+                    </a>
+                    {status !== 'in'
+                        ? <Link className="btn btn-lg" to="/kayit">Hesap iste</Link>
+                        : <Link className="btn btn-lg" to="/hesap">Hesabım</Link>}
                 </div>
-
-                <div className="wrap loaders">
-                    <span className="loaders-label">Desteklenenler</span>
-                    {LOADERS.map(l => <span className="chip" key={l}>{l}</span>)}
-                    <span className="chip chip-accent">Modrinth</span>
-                </div>
+                <p className="hero-meta">
+                    {release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz
+                </p>
+                <img className="hero-shot" src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
             </section>
 
-            <section className="wrap showcase">
+            <section className="wrap features">
                 <Feature
-                    icon="layers"
-                    kicker="Instance'lar"
-                    title="Her sürüm, her mod yükleyici. Ayrı ayrı."
-                    text="İstediğin kadar instance aç: her birinin kendi sürümü, modları, RAM ayarı ve dünyaları olur. Doğru Java'yı launcher kendisi indirir."
-                    points={['Vanilla, Fabric, Quilt, Forge, NeoForge', 'Java otomatik indirilir', 'Masaüstü kısayolu ile tek tıkla oyna']}
+                    label="Instance'lar"
+                    title="Her instance kendi ayarlarıyla çalışır"
                     visual={<InstancesMock />}
-                />
+                >
+                    Vanilla, Fabric, Quilt, Forge veya NeoForge ile istediğin kadar instance oluşturabilirsin.
+                    Her birinin sürümü, modları, RAM ayarı ve dünyaları ayrı tutulur. Gereken Java sürümünü
+                    launcher kendisi indirir.
+                </Feature>
                 <Feature
-                    icon="package"
-                    kicker="Modrinth ve vulu Packs"
-                    title="Modları ara, kur, güncelle."
-                    text="Mod, kaynak paketi, shader ve modpack'ler launcher içinden kurulur. vulu Packs ile hazır bir paketi tek tıkla kurarsın; güncellenince neyin değiştiğini görürsün."
-                    points={['Modrinth araması launcher içinde', 'Paket güncellemelerinde değişiklik listesi', 'Eksik bağımlılıklar oyundan önce yakalanır']}
+                    label="Modlar ve paketler"
+                    title="Modları launcher'dan çıkmadan kurabilirsin"
                     visual={<PackMock />}
                     flip
-                />
+                >
+                    Modrinth'teki modları, kaynak paketlerini, shader'ları ve modpack'leri launcher içinde arayıp
+                    kurabilirsin. vulu Packs'teki hazır paketleri ise tek tıkla kurarsın. Bir paket güncellendiğinde,
+                    kurduğun sürümden bu yana nelerin değiştiğini görürsün.
+                </Feature>
                 <Feature
-                    icon="users"
-                    kicker="Sosyal"
-                    title="Oyunun dışında da bir arada."
-                    text="Ekran görüntülerini paylaş, yorum yap, arkadaş listende kimin çevrimiçi olduğunu gör. Mesajlar uçtan uca şifreli: sunucu bile okuyamaz."
-                    points={['Ekran görüntüsü akışı ve yorumlar', 'Uçtan uca şifreli mesajlar', 'Duyurular ana ekranda']}
+                    label="Sosyal"
+                    title="Ekran görüntülerini ve mesajlarını launcher'da paylaşırsın"
                     visual={<ChatMock />}
-                />
+                >
+                    Ekran görüntülerini akışa atabilir, başkalarınınkine yorum yazabilirsin. Arkadaş listende kimin
+                    çevrimiçi olduğunu görürsün. Mesajlar uçtan uca şifrelendiği için sunucu bile içeriklerini okuyamaz.
+                </Feature>
                 <Feature
-                    icon="server"
-                    kicker="Sunucular"
-                    title="Sunucuya bir tıkla bağlan."
-                    text="Sunucuların durumu, kaç kişinin oyunda olduğu ve gecikme tek listede. Bağlan'a bas; oyun açılır açılmaz sunucuya girersin."
-                    points={['Canlı durum ve oyuncu sayısı', 'Oyun açılınca doğrudan sunucuya bağlanır']}
+                    label="Sunucular"
+                    title="Sunuculara tek tıkla bağlanırsın"
                     visual={<ServerMock />}
                     flip
-                />
+                >
+                    Sunucular sekmesinde her sunucunun açık olup olmadığını, kaç kişinin oynadığını ve gecikmeyi
+                    görürsün. Bağlan'a bastığında oyun açılır ve doğrudan sunucuya girersin.
+                </Feature>
             </section>
 
             <section className="wrap section">
-                <div className="section-head">
-                    <h2>Ve daha fazlası</h2>
-                    <p className="muted">Her gün oynarken işine yarayan küçük şeyler.</p>
-                </div>
-                <div className="extras">
-                    {EXTRAS.map(([icon, title, text]) => (
-                        <div className="extra" key={title}>
-                            <span className="extra-icon"><Icon name={icon} /></span>
-                            <div>
-                                <h3>{title}</h3>
-                                <p>{text}</p>
-                            </div>
+                <h2 className="section-title">Diğer özellikler</h2>
+                <dl className="extras">
+                    {EXTRAS.map(([title, text]) => (
+                        <div key={title}>
+                            <dt>{title}</dt>
+                            <dd>{text}</dd>
                         </div>
                     ))}
-                </div>
+                </dl>
             </section>
 
-            <section className="wrap section">
-                <div className="section-head">
-                    <h2>Üç adımda başla</h2>
-                    <p className="muted">Hesaplar davetle açılıyor.</p>
-                </div>
+            <section className="wrap section start">
+                <h2 className="section-title">Nasıl başlanır</h2>
+                <p className="muted">Hesaplar davetle açılıyor, bu yüzden önce bir hesap istemen gerekiyor.</p>
                 <ol className="steps">
-                    <li className="step">
-                        <span className="step-num">1</span>
-                        <h3>Hesap iste</h3>
-                        <p><Link to="/kayit">Kayıt formunu</Link> doldur; kullanıcı adın oyunda görünecek ad olur.</p>
-                    </li>
-                    <li className="step">
-                        <span className="step-num">2</span>
-                        <h3>Onay bekle</h3>
-                        <p>Bir admin isteğini onaylayınca hesabın açılır.</p>
-                    </li>
-                    <li className="step">
-                        <span className="step-num">3</span>
-                        <h3>İndir ve oyna</h3>
-                        <p><span className="mono">vulu-launcher-setup.exe</span>'yi çalıştır, aynı kullanıcı adı ve şifreyle gir.</p>
-                    </li>
+                    <li><span><Link to="/kayit">Kayıt formunu</Link> doldurarak hesap iste.</span></li>
+                    <li><span>Bir admin isteğini onayladığında hesabın açılır.</span></li>
+                    <li><span>Kurulum dosyasını indirip çalıştır ve aynı kullanıcı adı ile şifreyle giriş yap.</span></li>
                 </ol>
                 <p className="note">
-                    Windows ilk seferde SmartScreen uyarısı verebilir: <i>Ek bilgi → Yine de çalıştır</i>.
+                    Windows ilk açılışta SmartScreen uyarısı gösterebilir. Bu durumda <i>Ek bilgi</i> ve ardından
+                    {' '}<i>Yine de çalıştır</i> seçeneğine tıkla.
                 </p>
-            </section>
-
-            <section className="wrap section">
-                <div className="cta">
-                    <img src={asset('img/logo.svg')} alt="" width="56" height="56" />
-                    <div className="cta-text">
-                        <h2>Hazırsan oyun başlasın.</h2>
-                        <p className="muted">Kurulum bir dakika sürer, gerisini launcher halleder.</p>
-                    </div>
-                    <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
-                        <Icon name="download" size={18} /> İndir
-                    </a>
-                </div>
+                <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
+                    <Icon name="download" size={18} /> Kurulum dosyasını indir
+                </a>
             </section>
         </>
     );
 }
 
-function Feature({ icon, kicker, title, text, points, visual, flip }) {
+function Feature({ label, title, visual, flip, children }) {
     return (
-        <div className={'feature' + (flip ? ' flip' : '')}>
+        <article className={'feature' + (flip ? ' flip' : '')}>
             <div className="feature-text">
-                <span className="kicker"><Icon name={icon} size={16} /> {kicker}</span>
+                <p className="feature-label">{label}</p>
                 <h2>{title}</h2>
-                <p className="muted">{text}</p>
-                <ul className="points">
-                    {points.map(p => <li key={p}><Icon name="check" size={16} /> {p}</li>)}
-                </ul>
+                <p className="muted">{children}</p>
             </div>
             <div className="feature-visual" aria-hidden="true">{visual}</div>
-        </div>
+        </article>
     );
 }
 
-/* ── Arayüz canlandırmaları: launcher'ın görünümünü HTML ile taklit eder (gerçek veri değildir) ── */
+/* ── Arayüz örnekleri: launcher'ın görünümünü HTML ile taklit eder, içerikleri temsilidir ── */
 
 function InstancesMock() {
     const rows = [
@@ -198,22 +150,26 @@ function InstancesMock() {
 }
 
 function PackMock() {
-    const changes = [
-        ['add', '+', 'Sodium', '0.6.0'],
-        ['add', '+', 'Distant Horizons', '2.3.0'],
-        ['up', '↑', 'Iris Shaders', '1.8.1'],
-        ['up', '↑', 'Fabric API', '0.114.0'],
-        ['del', '−', 'OptiFine', ''],
+    const versions = [
+        ['1.4', '12 Ekim', [['add', 3, 'eklendi'], ['up', 5, 'güncellendi'], ['del', 1, 'kaldırıldı']], true],
+        ['1.3', '28 Eylül', [['up', 2, 'güncellendi']]],
+        ['1.2', '9 Eylül', [['add', 1, 'eklendi'], ['up', 4, 'güncellendi']]],
     ];
     return (
         <div className="mock">
-            <div className="mock-head"><span>Survival paketi · v1.4</span><span className="mock-pill">Güncelle</span></div>
-            <p className="mock-note">Son kurduğun sürümden bu yana:</p>
-            {changes.map(([kind, sign, name, ver]) => (
-                <div className="mock-change" key={name}>
-                    <span className={'sign ' + kind}>{sign}</span>
-                    <span>{name}</span>
-                    <small className="mono">{ver}</small>
+            <div className="mock-head"><span>Survival paketi · değişiklikler</span><span className="mock-pill">Güncelle</span></div>
+            {versions.map(([ver, date, changes, isNew]) => (
+                <div className={'mock-version' + (isNew ? ' new' : '')} key={ver}>
+                    <div className="mock-version-top">
+                        <b className="mono">v{ver}</b>
+                        <small>{date}</small>
+                        {isNew && <span className="mock-new">Yeni</span>}
+                    </div>
+                    <div className="mock-counts">
+                        {changes.map(([kind, n, text]) => (
+                            <span key={kind}><i className={'sign ' + kind} />{n} mod {text}</span>
+                        ))}
+                    </div>
                 </div>
             ))}
         </div>
@@ -227,7 +183,7 @@ function ChatMock() {
             <div className="bubbles">
                 <p className="bubble">akşam sunucuya giriyor musun?</p>
                 <p className="bubble me">20:00'de oradayım, yeni paketi kurdum</p>
-                <p className="bubble">süper, base'in fotosunu akışa attım</p>
+                <p className="bubble">süper, base'in fotoğrafını akışa attım</p>
                 <div className="shot"><Icon name="image" size={18} /><span>yeni_base.png · 3 yorum</span></div>
             </div>
         </div>

@@ -68,13 +68,17 @@ p { margin: 0 0 1em; }
     border: 1px solid var(--line-strong); border-radius: var(--r);
     background: var(--raised); color: var(--text);
     font: inherit; font-weight: 500; cursor: pointer; white-space: nowrap;
-    transition: background .12s, border-color .12s;
+    /* Alt kenardaki koyu şerit, Minecraft düğmelerindeki gibi basılabilir bir blok hissi verir */
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .3);
+    transition: background .12s, border-color .12s, transform .06s;
 }
 .btn:hover { text-decoration: none; border-color: rgba(255, 255, 255, .2); }
+.btn:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .3); }
 .btn:disabled { opacity: .55; cursor: default; }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn-primary:hover { background: var(--accent-hi); border-color: var(--accent-hi); }
-.btn-ghost { background: transparent; }
+.btn-ghost { background: transparent; box-shadow: none; }
+.btn-ghost:active:not(:disabled) { box-shadow: none; }
 .btn-ghost:hover, .btn-ghost.active { background: rgba(255, 255, 255, .045); }
 .btn-sm { height: 32px; padding: 0 12px; font-size: 14px; }
 .btn-lg { height: 46px; padding: 0 24px; font-size: 16px; }
@@ -82,8 +86,7 @@ p { margin: 0 0 1em; }
 /* ── Üst ve alt bant ────────────────────────────────── */
 .header {
     border-bottom: 1px solid var(--line);
-    background: color-mix(in srgb, var(--panel) 82%, transparent);
-    backdrop-filter: blur(12px);
+    background: var(--panel);
     position: sticky; top: 0; z-index: 10;
 }
 .header-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
@@ -100,91 +103,43 @@ p { margin: 0 0 1em; }
 .footer a:hover { color: var(--text); text-decoration: none; }
 
 /* ── Ana sayfa: giriş ───────────────────────────────── */
-.hero {
-    position: relative; overflow: hidden;
-    padding: 72px 0 0;
-    background:
-        radial-gradient(60% 55% at 78% 30%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
-        radial-gradient(40% 40% at 10% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%);
-    border-bottom: 1px solid var(--line);
+.hero { padding-top: 72px; }
+.hero-title {
+    font-family: var(--font-pixel); font-weight: 700;
+    font-size: clamp(56px, 11vw, 120px); line-height: .95; letter-spacing: 0;
+    margin: 0 0 28px; color: var(--accent);
+    display: flex; flex-direction: column;
 }
-/* Hafif piksel ızgarası: Minecraft'a selam, dikkat çekmeden */
-.hero::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background-image:
-        linear-gradient(var(--line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 32px 32px;
-    mask-image: radial-gradient(70% 80% at 50% 20%, black, transparent 75%);
-    opacity: .6;
-}
-.hero-grid {
-    position: relative;
-    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: center;
-}
-.eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 4px 12px; border: 1px solid var(--line-strong); border-radius: 99px;
-    background: var(--surface); color: var(--muted); font-size: 13px;
-}
-.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.hero h1 { font-size: clamp(36px, 5.4vw, 60px); line-height: 1.05; letter-spacing: -.02em; margin: 20px 0 18px; font-weight: 700; }
-.accent { color: var(--accent-hi); }
-.lead { font-size: 18px; color: var(--muted); max-width: 34em; }
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+.hero-title span { font-size: .38em; color: var(--text); margin-top: .35em; }
+.lead { font-size: 19px; color: var(--muted); max-width: 36em; margin-bottom: 0; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
 .hero-meta { color: var(--dim); font-size: 13px; margin-top: 14px; }
-
-.hero-visual { position: relative; }
-.hero-visual::after {
-    content: ""; position: absolute; inset: 12% 8% -6%; z-index: -1;
-    background: var(--accent); filter: blur(90px); opacity: .18;
+/* Keskin, bloklu gölge: launcher'daki Minecraft havasını yumuşak parlamalar yerine bununla verir */
+.hero-shot {
+    display: block; width: 100%; height: auto; margin-top: 56px;
+    border: 1px solid var(--line-strong); border-radius: var(--r-lg);
+    box-shadow: 10px 10px 0 color-mix(in srgb, var(--accent) 28%, var(--bg));
 }
-.window {
-    border: 1px solid var(--line-strong); border-radius: var(--r-lg); overflow: hidden;
-    background: var(--panel);
-    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .75), 0 0 0 1px rgba(0, 0, 0, .4);
-    transform: perspective(1600px) rotateY(-6deg) rotateX(2deg);
-    transition: transform .4s ease;
-}
-.window:hover { transform: none; }
-.window img { display: block; width: 100%; height: auto; }
-
-.loaders {
-    position: relative;
-    display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
-    padding-top: 56px; padding-bottom: 28px;
-}
-.loaders-label { color: var(--dim); font-size: 13px; margin-right: 8px; }
-.chip {
-    padding: 4px 12px; border-radius: var(--r); border: 1px solid var(--line-strong);
-    background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 500;
-}
-.chip-accent { color: var(--accent-hi); border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: var(--accent-soft); }
 
 /* ── Ana sayfa: özellikler ──────────────────────────── */
-.showcase { display: flex; flex-direction: column; gap: 96px; margin-top: 96px; }
-.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
-.feature.flip .feature-text { order: 2; }
-.kicker { display: inline-flex; align-items: center; gap: 8px; color: var(--accent-hi); font-size: 14px; font-weight: 600; margin-bottom: 12px; }
-.feature h2 { font-size: clamp(24px, 3vw, 32px); letter-spacing: -.01em; }
-.feature-text > p { font-size: 16px; }
-.points { list-style: none; padding: 0; margin: 20px 0 0; display: flex; flex-direction: column; gap: 8px; }
-.points li { display: flex; align-items: center; gap: 10px; color: var(--text); font-size: 15px; }
-.points svg { color: var(--accent-hi); flex-shrink: 0; }
-
-.feature-visual { position: relative; isolation: isolate; }
-.feature-visual::before {
-    content: ""; position: absolute; inset: -24px; z-index: -1; border-radius: 24px;
-    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 14%, transparent), transparent);
+.features { margin-top: 112px; }
+.feature {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    padding: 56px 0; border-top: 1px solid var(--line);
 }
+.feature:last-child { border-bottom: 1px solid var(--line); }
+.feature.flip .feature-text { order: 2; }
+.feature-label { font-family: var(--font-pixel); font-size: 13px; color: var(--accent-hi); margin: 0 0 14px; }
+.feature h2 { font-size: clamp(22px, 2.6vw, 28px); font-weight: 600; margin-bottom: 14px; }
+.feature-text > p.muted { font-size: 16px; margin: 0; max-width: 32em; }
 
-/* Launcher arayüzü canlandırmaları */
+/* Launcher arayüzü örnekleri */
 .mock {
     background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--r-lg);
     padding: 14px; display: flex; flex-direction: column; gap: 6px;
-    box-shadow: 0 20px 50px -24px rgba(0, 0, 0, .8);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, .45);
 }
-.mock-head { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px 8px; font-size: 13px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+.mock-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 2px 4px 10px; font-size: 13px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--line); margin-bottom: 4px; }
 .mock-pill { font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent-hi); white-space: nowrap; }
 .mock-lock { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #8fcf8a; font-weight: 500; }
 .mock-row { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: var(--r); border: 1px solid transparent; }
@@ -197,78 +152,59 @@ p { margin: 0 0 1em; }
 .mock-main b { font-size: 14px; font-weight: 600; }
 .mock-main small, .mock-stat { color: var(--dim); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mock-play { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--r); background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
-.mock-note { margin: 2px 4px 4px; font-size: 12px; color: var(--dim); }
-.mock-change { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 8px; padding: 6px 8px; border-radius: var(--r); background: var(--surface); font-size: 14px; }
-.mock-change small { color: var(--dim); }
-.sign { width: 20px; height: 20px; border-radius: var(--r-sm); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
-.sign.add { background: rgba(127, 191, 122, .14); color: #8fcf8a; }
-.sign.up { background: var(--accent-soft); color: var(--accent-hi); }
-.sign.del { background: rgba(226, 96, 74, .14); color: #ef8a78; }
+.mock-version { padding: 10px; border-radius: var(--r); border: 1px solid transparent; }
+.mock-version.new { background: var(--surface); border-color: var(--line-strong); }
+.mock-version-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.mock-version-top b { font-size: 14px; }
+.mock-version-top small { color: var(--dim); font-size: 12px; }
+.mock-new { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--accent-hi); }
+.mock-counts { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.mock-counts span { display: inline-flex; align-items: center; gap: 7px; }
+.sign { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.sign.add { background: #8fcf8a; }
+.sign.up { background: var(--accent-hi); }
+.sign.del { background: #ef8a78; }
 .bubbles { display: flex; flex-direction: column; gap: 8px; padding: 6px 2px 2px; }
 .bubble { margin: 0; max-width: 80%; padding: 8px 12px; border-radius: 12px 12px 12px 4px; background: var(--raised); font-size: 14px; align-self: flex-start; }
 .bubble.me { align-self: flex-end; border-radius: 12px 12px 4px 12px; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
 .shot { align-self: flex-start; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--r); border: 1px dashed var(--line-strong); color: var(--muted); font-size: 13px; }
 .status-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dim); flex-shrink: 0; margin: 0 4px; }
-.status-dot.on { background: #7fbf7a; box-shadow: 0 0 0 3px rgba(127, 191, 122, .15); }
+.status-dot.on { background: #7fbf7a; }
 
 /* ── Ana sayfa: diğer bölümler ──────────────────────── */
-.section { margin-top: 112px; }
-.section-head { margin-bottom: 28px; }
-.section-head h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 6px; letter-spacing: -.01em; }
-.section-head p { margin: 0; }
+.section { margin-top: 96px; }
+.section-title { font-family: var(--font-pixel); font-weight: 700; font-size: 22px; color: var(--text); margin-bottom: 20px; }
 
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 20px; }
 
-.extras {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1px;
-    background: var(--line); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden;
-}
-.extra { display: flex; gap: 14px; padding: 20px; background: var(--bg); transition: background .15s; }
-.extra:hover { background: var(--panel); }
-.extra-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: var(--r); display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-hi); }
-.extra h3 { font-size: 15px; margin-bottom: 4px; }
-.extra p { margin: 0; color: var(--muted); font-size: 14px; }
+.extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; margin: 0; }
+.extras > div { padding: 16px 0; border-top: 1px solid var(--line); }
+.extras dt { font-weight: 600; margin-bottom: 4px; }
+.extras dd { margin: 0; color: var(--muted); font-size: 15px; }
 
-.steps { list-style: none; padding: 0; margin: 0 0 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-.step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 22px; }
-.step-num {
-    display: grid; place-items: center; width: 32px; height: 32px; margin-bottom: 14px;
-    border-radius: var(--r); background: var(--accent); color: var(--accent-ink);
-    font-family: var(--font-pixel); font-size: 15px;
+.start > p.muted { margin-top: -8px; }
+.steps { list-style: none; counter-reset: step; padding: 0; margin: 24px 0 20px; display: flex; flex-direction: column; gap: 12px; }
+.steps li { counter-increment: step; display: flex; align-items: baseline; gap: 16px; font-size: 16px; }
+.steps li::before {
+    content: counter(step); flex-shrink: 0;
+    font-family: var(--font-pixel); font-size: 18px; color: var(--accent-hi);
+    width: 20px;
 }
-.step h3 { font-size: 16px; margin-bottom: 6px; }
-.step p { margin: 0; color: var(--muted); font-size: 14px; }
-.note { color: var(--dim); font-size: 14px; }
-
-.cta {
-    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-    padding: 32px; border-radius: 14px;
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    background:
-        radial-gradient(80% 140% at 100% 50%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%),
-        var(--surface);
-}
-.cta-text { flex: 1; min-width: 220px; }
-.cta h2 { font-size: clamp(22px, 2.6vw, 28px); margin-bottom: 4px; }
-.cta p { margin: 0; }
+.note { color: var(--dim); font-size: 14px; margin-bottom: 24px; }
 
 @media (max-width: 860px) {
     .hero { padding-top: 48px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-    .window { transform: none; }
-    .feature { grid-template-columns: 1fr; gap: 28px; }
+    .hero-shot { margin-top: 40px; box-shadow: 6px 6px 0 color-mix(in srgb, var(--accent) 28%, var(--bg)); }
+    .features { margin-top: 72px; }
+    .feature { grid-template-columns: 1fr; gap: 28px; padding: 40px 0; }
     .feature.flip .feature-text { order: 0; }
-    .showcase { gap: 72px; margin-top: 72px; }
-    .section { margin-top: 88px; }
+    .extras { grid-template-columns: 1fr; }
+    .section { margin-top: 72px; }
 }
 @media (max-width: 480px) {
     .hero-actions .btn { flex: 1; }
-    .cta { padding: 24px; }
-    .cta .btn { width: 100%; }
+    .start .btn { width: 100%; }
     .hide-sm { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-    .window, .window:hover { transform: none; transition: none; }
 }
 
 /* ── Giriş / kayıt ──────────────────────────────────── */
