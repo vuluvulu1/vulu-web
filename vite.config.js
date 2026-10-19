@@ -5,6 +5,13 @@ export default defineConfig({
     plugins: [react()],
     // GitHub Pages'te site /vulu-web/ altında yayınlanır; kendi domain'inde "/" olur
     base: process.env.BASE_PATH || '/',
-    // vulu-api'nin CORS listesindeki varsayılan adres bu porttur
-    server: { port: 5173, strictPort: true },
+    server: {
+        port: 5173,
+        strictPort: true,
+        // npm run dev'de /api ve /releases canlı sunucudan gelir
+        proxy: {
+            '/api': { target: 'http://185.157.46.169', changeOrigin: true },
+            '/releases': { target: 'http://185.157.46.169', changeOrigin: true },
+        },
+    },
 });

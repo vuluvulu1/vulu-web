@@ -1,7 +1,8 @@
 // vulu-api istemcisi. Site veritabanına doğrudan bağlanmaz; launcher'la aynı API'yi kullanır,
 // böylece hesaplar, kayıt istekleri ve kurallar tek yerde kalır.
 
-export const API_URL = (import.meta.env.VITE_API_URL || 'https://vulu-api.onrender.com').replace(/\/$/, '');
+// API sitenin yanında, aynı sunucuda /api altında durur (CORS gerekmez). Geliştirirken Vite /api'yi sunucuya yönlendirir.
+export const API_URL = (import.meta.env.VITE_API_URL || import.meta.env.BASE_URL + 'api').replace(/\/$/, '');
 
 /** public/ klasöründeki bir dosyanın adresi; site alt klasörde yayınlansa da doğru çalışır. */
 export const asset = path => import.meta.env.BASE_URL + path;
