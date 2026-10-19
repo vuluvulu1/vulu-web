@@ -21,7 +21,7 @@ export default function Hub() {
         <section className="wrap hub">
             <h1 className="hub-title"><Wordmark animate /></h1>
             <h2 className="hub-question">Ne için buradasın?</h2>
-            <p className="lead">vulu, Minecraft için yapılmış üç araçtan oluşur. İlgilendiğin aracı seçerek devam edebilirsin.</p>
+            <p className="lead">Devam etmek için aşağıdan birini seç.</p>
 
             <div className="products">
                 {PRODUCTS.map(p => (
