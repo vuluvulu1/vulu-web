@@ -12,6 +12,8 @@ export default defineConfig({
         proxy: {
             '/api': { target: 'http://185.157.46.169', changeOrigin: true },
             '/releases': { target: 'http://185.157.46.169', changeOrigin: true },
+            // Çevrimiçi durumu geçici olarak Render'dan okunur (bkz. api.js PRESENCE_URL)
+            '/render-api': { target: 'https://vulu-api.onrender.com', changeOrigin: true, rewrite: p => p.replace(/^\/render-api/, '') },
         },
     },
 });

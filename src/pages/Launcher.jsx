@@ -16,7 +16,7 @@ const EXTRAS = [
     ['Güvenli güncellemeler', 'Launcher kendini günceller. İmzası doğrulanmayan sürümler kurulmaz.'],
 ];
 
-export default function Home() {
+export default function Launcher() {
     const { status } = useAuth();
     const [release, setRelease] = useState(null);
     useEffect(() => { latestRelease().then(setRelease); }, []);
