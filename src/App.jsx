@@ -76,7 +76,7 @@ function Header() {
                     ) : (
                         <>
                             <NavLink to="/giris" className="btn btn-ghost btn-sm">Giriş yap</NavLink>
-                            <NavLink to="/kayit" className="btn btn-primary btn-sm">Hesap iste</NavLink>
+                            <NavLink to="/kayit" className="btn btn-primary btn-sm">Katıl</NavLink>
                         </>
                     )}
                 </nav>

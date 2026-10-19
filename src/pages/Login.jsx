@@ -44,7 +44,7 @@ export default function Login() {
                 </label>
                 <Status msg={msg} />
                 <button className="btn btn-primary" disabled={busy}>Giriş yap</button>
-                <p className="auth-alt">Hesabın yok mu? <Link to="/kayit">Hesap iste</Link></p>
+                <p className="auth-alt">Hesabın yok mu? <Link to="/kayit">Katıl</Link></p>
             </form>
         </section>
     );

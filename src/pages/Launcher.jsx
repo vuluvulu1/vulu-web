@@ -35,7 +35,7 @@ export default function Launcher() {
                             <Icon name="windows" size={18} /> Windows için indir
                         </a>
                         {status !== 'in'
-                            ? <Link className="btn btn-lg" to="/kayit">Hesap iste</Link>
+                            ? <Link className="btn btn-lg" to="/kayit">Katıl</Link>
                             : <Link className="btn btn-lg" to="/hesap">Hesabım</Link>}
                     </div>
                     <p className="hero-meta">
@@ -97,9 +97,9 @@ export default function Launcher() {
 
             <section className="wrap section start">
                 <h2 className="section-title">Nasıl başlanır</h2>
-                <p className="muted">Hesaplar davetle açılır, bu yüzden önce bir hesap isteği gönderilmesi gerekir.</p>
+                <p className="muted">Hesaplar davetle açılır, bu yüzden önce bir katılma isteği gönderilmesi gerekir.</p>
                 <ol className="steps">
-                    <li><span><Link to="/kayit">Kayıt formunu</Link> doldurarak hesap iste.</span></li>
+                    <li><span><Link to="/kayit">Katılma formunu</Link> doldurarak istek gönder.</span></li>
                     <li><span>Bir admin isteğini onayladığında hesabın açılır.</span></li>
                     <li><span>Kurulum dosyasını indirip çalıştır ve aynı kullanıcı adı ile şifreyle giriş yap.</span></li>
                 </ol>

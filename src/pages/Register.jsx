@@ -60,7 +60,7 @@ export default function Register() {
                 <div className="card auth-card">
                     <h1>İsteğin gönderildi</h1>
                     <p>
-                        <b>{done}</b> için hesap isteğin alındı. Bir admin onayladığında hem launcher'dan hem de
+                        <b>{done}</b> için katılma isteğin alındı. Bir admin onayladığında hem launcher'dan hem de
                         buradan aynı kullanıcı adı ve şifreyle giriş yapabilirsin.
                     </p>
                     <Link className="btn btn-primary" to="/giris">Girişe dön</Link>
@@ -72,8 +72,8 @@ export default function Register() {
     return (
         <section className="wrap auth">
             <form className="card auth-card" onSubmit={submit} noValidate>
-                <h1>Hesap iste</h1>
-                <p className="muted">Hesaplar davetle açılıyor: isteğini bir admin onaylayınca launcher'a giriş yapabilirsin.</p>
+                <h1>Katılma isteği</h1>
+                <p className="muted">Hesaplar davetle açılır. İsteğini bir admin onayladığında hesabın açılır.</p>
                 <label>
                     Kullanıcı adı
                     <input value={form.username} onChange={set('username')} autoComplete="username" maxLength={16} autoFocus />
