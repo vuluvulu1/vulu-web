@@ -24,22 +24,24 @@ export default function Home() {
     return (
         <>
             <section className="wrap hero">
-                <h1 className="hero-title"><Wordmark full animate /></h1>
-                <p className="lead">
-                    vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
-                    Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.
-                </p>
-                <div className="hero-actions">
-                    <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
-                        <Icon name="windows" size={18} /> Windows için indir
-                    </a>
-                    {status !== 'in'
-                        ? <Link className="btn btn-lg" to="/kayit">Hesap iste</Link>
-                        : <Link className="btn btn-lg" to="/hesap">Hesabım</Link>}
+                <div className="hero-text">
+                    <h1 className="hero-title"><Wordmark full animate /></h1>
+                    <p className="lead">
+                        vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
+                        Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.
+                    </p>
+                    <div className="hero-actions">
+                        <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
+                            <Icon name="windows" size={18} /> Windows için indir
+                        </a>
+                        {status !== 'in'
+                            ? <Link className="btn btn-lg" to="/kayit">Hesap iste</Link>
+                            : <Link className="btn btn-lg" to="/hesap">Hesabım</Link>}
+                    </div>
+                    <p className="hero-meta">
+                        {release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz
+                    </p>
                 </div>
-                <p className="hero-meta">
-                    {release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz
-                </p>
                 <img className="hero-shot" src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
             </section>
 
