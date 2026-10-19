@@ -15,21 +15,24 @@ export default function Product({ product: p }) {
 
     return (
         <>
-            <section className="wrap product-hero">
-                <img className="product-logo" src={asset(p.logo)} alt="" width="88" height="88" />
-                <h1>{p.name}</h1>
-                <p className="lead">{p.lead}</p>
-                <div className="hero-actions">
-                    <a className="btn btn-primary btn-lg" href={download?.url || release?.pageUrl || repoUrl + '/releases/latest'}>
-                        <Icon name="download" size={18} /> İndir
-                    </a>
-                    <a className="btn btn-lg" href={repoUrl} target="_blank" rel="noreferrer">GitHub</a>
+            <section className="wrap hero product-hero">
+                <div className="hero-text">
+                    <img className="product-logo" src={asset(p.logo)} alt="" width="88" height="88" />
+                    <h1>{p.name}</h1>
+                    <p className="lead">{p.lead}</p>
+                    <div className="hero-actions">
+                        <a className="btn btn-primary btn-lg" href={download?.url || release?.pageUrl || repoUrl + '/releases/latest'}>
+                            <Icon name="download" size={18} /> İndir
+                        </a>
+                        <a className="btn btn-lg" href={repoUrl} target="_blank" rel="noreferrer">GitHub</a>
+                    </div>
+                    <p className="hero-meta">
+                        {release
+                            ? <><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}{download && <> · {formatMb(download.size)}</>} · {p.platforms}</>
+                            : p.platforms}
+                    </p>
                 </div>
-                <p className="hero-meta">
-                    {release
-                        ? <><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}{download && <> · {formatMb(download.size)}</>} · {p.platforms}</>
-                        : p.platforms}
-                </p>
+                {p.shot && <img className="hero-shot" src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" />}
             </section>
 
             <section className="wrap section">
