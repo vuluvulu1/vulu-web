@@ -6,7 +6,6 @@ import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Account from './pages/Account.jsx';
-import Wordmark from './Wordmark.jsx';
 
 export default function App() {
     const { pathname } = useLocation();
@@ -30,8 +29,8 @@ export default function App() {
             <footer className="footer">
                 <div className="wrap footer-inner">
                     <div className="footer-brand">
-                        <img src={asset('img/logo.svg')} alt="" width="22" height="22" />
-                        <Wordmark />
+                        <img src={asset('img/logo.svg')} alt="" width="20" height="20" />
+                        <b>vulu Launcher</b>
                         <span>© {new Date().getFullYear()}</span>
                     </div>
                     <nav className="footer-links">
@@ -51,8 +50,9 @@ function Header() {
         <header className="header">
             <div className="wrap header-inner">
                 <Link to="/" className="brand">
-                    <img src={asset('img/logo.svg')} alt="" width="28" height="28" />
-                    <Wordmark />
+                    <img src={asset('img/logo.svg')} alt="" width="24" height="24" />
+                    <span>vulu Launcher</span>
+                    <span className="tag">Beta</span>
                 </Link>
                 <nav className="nav">
                     {status === 'in' ? (
