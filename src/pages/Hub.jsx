@@ -21,7 +21,7 @@ export default function Hub() {
 
     return (
         <section className="wrap hub">
-            <h1 className="hub-title"><Wordmark animate /></h1>
+            <h1 className="hub-title"><Wordmark animate /><span className="sr-only">vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü</span></h1>
             <h2 className="hub-question">Ne için buradasın?</h2>
             <p className="lead">Devam etmek için aşağıdan birini seç.</p>
 

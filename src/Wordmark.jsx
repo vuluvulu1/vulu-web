@@ -21,13 +21,14 @@ const GLYPHS = [
  * full: "vulu Launcher"; değilse yalnızca "vulu".
  * animate: açılış ekranındaki gibi harfler sırayla kalemle çizilip altınla dolar.
  */
+// Süs olarak çizilir (aria-hidden); başlıklarda yanına .sr-only bir metin eşi konur.
 export default function Wordmark({ full = false, animate = false, className = '' }) {
     const id = useId().replace(/:/g, '');
     const glyphs = full ? GLYPHS : GLYPHS.slice(0, 4);
     const viewBox = full ? '-3 -831 4401 1182' : '-3 -650 1320 670';
     return (
         <svg className={'wordmark' + (animate ? ' draw' : '') + (className ? ' ' + className : '')} viewBox={viewBox}
-            role="img" aria-label={full ? 'vulu Launcher' : 'vulu'}>
+            aria-hidden="true">
             <defs>
                 <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="-3" y1="-831" x2="4398" y2="351">
                     <stop offset="0" stopColor="#8a5a2b" />

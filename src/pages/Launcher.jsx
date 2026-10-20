@@ -27,7 +27,7 @@ export default function Launcher() {
         <>
             <section className="wrap hero">
                 <div className="hero-text">
-                    <h1 className="hero-title"><Wordmark full animate /></h1>
+                    <h1 className="hero-title"><Wordmark full animate /><span className="sr-only">vulu Launcher: ücretsiz Türkçe Minecraft launcher'ı</span></h1>
                     <p className="lead">
                         vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
                         Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.

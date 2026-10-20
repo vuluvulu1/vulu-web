@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { api, asset } from './api.js';
 import { useAuth } from './auth.jsx';
 import { PRODUCTS, productBySlug } from './products.js';
@@ -18,6 +18,8 @@ import Feedback from './pages/account/Feedback.jsx';
 import Admin from './pages/account/Admin.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import PixelField from './PixelField.jsx';
+import NotFound from './pages/NotFound.jsx';
+import { pageMeta } from './seo.js';
 
 export default function App() {
     const { pathname } = useLocation();
@@ -25,6 +27,7 @@ export default function App() {
     // API'yi önceden ısıt: kullanıcı formu doldururken bağlantı hazır olsun
     useEffect(() => { api.ping().catch(() => {}); }, []);
     useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+    useEffect(() => { applyMeta(pageMeta(pathname)); }, [pathname]);
 
     return (
         <>
@@ -48,7 +51,7 @@ export default function App() {
                         <Route path="admin" element={<Admin />} />
                     </Route>
                     <Route path="/u/:username" element={<UserProfile />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
             <footer className="footer">
@@ -93,4 +96,25 @@ function Header() {
             </div>
         </header>
     );
+}
+
+/**
+ * Site içinde gezinirken sayfa başlığını, açıklamayı, kanonik adresi ve dizinleme kuralını günceller.
+ * İlk yüklemede bunlar zaten ön çizilmiş HTML'de vardır (scripts/prerender.mjs).
+ */
+function applyMeta(meta) {
+    document.title = meta.title;
+    const set = (selector, create, attr, value) => {
+        let el = document.head.querySelector(selector);
+        if (value == null) { el?.remove(); return; }
+        if (!el) { el = create(); document.head.appendChild(el); }
+        el.setAttribute(attr, value);
+    };
+    const metaTag = (name, prop) => () => { const m = document.createElement('meta'); m.setAttribute(prop ? 'property' : 'name', name); return m; };
+    set('meta[name="description"]', metaTag('description'), 'content', meta.description ?? null);
+    set('meta[property="og:title"]', metaTag('og:title', true), 'content', meta.index ? meta.title : null);
+    set('meta[property="og:description"]', metaTag('og:description', true), 'content', meta.description ?? null);
+    set('meta[property="og:url"]', metaTag('og:url', true), 'content', meta.canonical ?? null);
+    set('meta[name="robots"]', metaTag('robots'), 'content', meta.index ? null : 'noindex');
+    set('link[rel="canonical"]', () => { const l = document.createElement('link'); l.rel = 'canonical'; return l; }, 'href', meta.canonical ?? null);
 }
