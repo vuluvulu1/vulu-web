@@ -68,6 +68,8 @@ export const api = {
     login: (username, password, opts) => request('/auth/login', { method: 'POST', body: { username, password }, ...opts }),
     register: (username, email, password, opts) => request('/auth/register', { method: 'POST', body: { username, email, password }, ...opts }),
     me: () => request('/users/me', { auth: true }),
+    /** Herkese açık sayılar: üye, paket, ekran görüntüsü, çevrimiçi ve oyunda olanlar. */
+    stats: () => request('/stats'),
     avatarUrl: (username, version) => `${API_URL}/users/${encodeURIComponent(username)}/avatar?v=${version}`,
 
     users: () => request('/users', { auth: true }),

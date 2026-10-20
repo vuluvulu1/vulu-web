@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { asset, githubRelease } from '../api.js';
 import { ReleaseNotes, formatDate } from '../components.jsx';
 import Icon from '../icons.jsx';
+import { Reveal } from '../motion.jsx';
 
 const formatMb = bytes => `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MB`;
 
@@ -35,7 +36,7 @@ export default function Product({ product: p }) {
                 {p.shot && <img className="hero-shot" src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" />}
             </section>
 
-            <section className="wrap section">
+            <Reveal as="section" className="wrap section">
                 <h2 className="section-title">Özellikler</h2>
                 <dl className="extras">
                     {p.features.map(([title, text]) => (
@@ -45,23 +46,23 @@ export default function Product({ product: p }) {
                         </div>
                     ))}
                 </dl>
-            </section>
+            </Reveal>
 
-            <section className="wrap section start">
+            <Reveal as="section" className="wrap section start">
                 <h2 className="section-title">Kurulum</h2>
                 <ol className="steps">
                     {p.steps.map(step => <li key={step}><span>{step}</span></li>)}
                 </ol>
                 <p className="note">{p.note}</p>
-            </section>
+            </Reveal>
 
             {release?.notes && (
-                <section className="wrap section">
+                <Reveal as="section" className="wrap section">
                     <h2 className="section-title">Son sürümde neler var</h2>
                     <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
                     <ReleaseNotes text={release.notes} />
                     <a className="btn btn-sm" href={release.pageUrl} target="_blank" rel="noreferrer">Tüm sürümler</a>
-                </section>
+                </Reveal>
             )}
         </>
     );

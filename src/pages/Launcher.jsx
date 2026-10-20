@@ -5,6 +5,7 @@ import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 import Wordmark from '../Wordmark.jsx';
 import { ReleaseNotes, formatDate } from '../components.jsx';
+import { Reveal, reducedMotion, useTicker } from '../motion.jsx';
 
 const EXTRAS = [
     ['Çökme yardımcısı', 'Oyun çökünce kayıtları okur ve sorunun olası sebebini gösterir.'],
@@ -84,7 +85,7 @@ export default function Launcher() {
                 </Feature>
             </section>
 
-            <section className="wrap section">
+            <Reveal as="section" className="wrap section">
                 <h2 className="section-title">Diğer özellikler</h2>
                 <dl className="extras">
                     {EXTRAS.map(([title, text]) => (
@@ -94,17 +95,17 @@ export default function Launcher() {
                         </div>
                     ))}
                 </dl>
-            </section>
+            </Reveal>
 
             {release?.notes && (
-                <section className="wrap section">
+                <Reveal as="section" className="wrap section">
                     <h2 className="section-title">Son sürümde neler var</h2>
                     <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
                     <ReleaseNotes text={release.notes} />
-                </section>
+                </Reveal>
             )}
 
-            <section className="wrap section start">
+            <Reveal as="section" className="wrap section start">
                 <h2 className="section-title">Nasıl başlanır</h2>
                 <p className="muted">Hesaplar davetle açılır, bu yüzden önce bir katılma isteği gönderilmesi gerekir.</p>
                 <ol className="steps">
@@ -119,27 +120,32 @@ export default function Launcher() {
                 <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
                     <Icon name="download" size={18} /> Kurulum dosyasını indir
                 </a>
-            </section>
+            </Reveal>
         </>
     );
 }
 
 function Feature({ label, title, visual, flip, children }) {
     return (
-        <article className={'feature' + (flip ? ' flip' : '')}>
+        <Reveal as="article" className={'feature' + (flip ? ' flip' : '')}>
             <div className="feature-text">
                 <p className="feature-label">{label}</p>
                 <h2>{title}</h2>
                 <p className="muted">{children}</p>
             </div>
             <div className="feature-visual" aria-hidden="true">{visual}</div>
-        </article>
+        </Reveal>
     );
 }
 
-/* ── Arayüz örnekleri: launcher'ın görünümünü HTML ile taklit eder, içerikleri temsilidir ── */
+/* ── Arayüz örnekleri: launcher'ın görünümünü HTML ile taklit eder, içerikleri temsilidir ──
+   Ekranda görünürken kendi kendine çalışırlar; "hareketi azalt" açıksa son hâllerinde dururlar. */
 
 function InstancesMock() {
+    // Döngü: Oyna → hazırlanıyor (dolan çubuk) → oynanıyor → başa
+    const [ref, tick] = useTicker(1400);
+    const phase = reducedMotion() ? 0 : tick % 6;
+    const state = phase < 2 ? 'idle' : phase < 4 ? 'preparing' : 'playing';
     const rows = [
         ['V', 'Vanilla', '1.21.1', 'Vanilla', true],
         ['F', 'Fabric 1.21', '1.21.1', 'Fabric · 42 mod'],
@@ -147,13 +153,19 @@ function InstancesMock() {
         ['Q', 'Hafif', '1.20.4', 'Quilt · 18 mod'],
     ];
     return (
-        <div className="mock">
+        <div className="mock" ref={ref}>
             <div className="mock-head"><span>Instance'larım</span><span className="mock-pill">+ Yeni</span></div>
             {rows.map(([letter, name, ver, info, active]) => (
                 <div className={'mock-row' + (active ? ' active' : '')} key={name}>
                     <span className="mock-tile">{letter}</span>
-                    <div className="mock-main"><b>{name}</b><small>{ver} · {info}</small></div>
-                    {active && <span className="mock-play"><Icon name="play" size={12} /> Oyna</span>}
+                    <div className="mock-main">
+                        <b>{name}</b>
+                        <small>{active && state === 'playing' ? <span className="mock-live">Oynanıyor · 3 dk</span> : `${ver} · ${info}`}</small>
+                        {active && state === 'preparing' && <span className="mock-progress"><i key={tick} /></span>}
+                    </div>
+                    {active && (state === 'idle'
+                        ? <span className="mock-play"><Icon name="play" size={12} /> Oyna</span>
+                        : <span className="mock-play busy">{state === 'preparing' ? 'Hazırlanıyor' : 'Açık'}</span>)}
                 </div>
             ))}
         </div>
@@ -161,14 +173,18 @@ function InstancesMock() {
 }
 
 function PackMock() {
+    // Döngü: Güncelle → Güncelleniyor… → Güncel
+    const [ref, tick] = useTicker(1300);
+    const phase = reducedMotion() ? 0 : tick % 5;
+    const pill = phase < 2 ? ['Güncelle', ''] : phase < 3 ? ['Güncelleniyor…', ' busy'] : ['Güncel ✓', ' done'];
     const versions = [
         ['1.4', '12 Ekim', [['add', 3, 'eklendi'], ['up', 5, 'güncellendi'], ['del', 1, 'kaldırıldı']], true],
         ['1.3', '28 Eylül', [['up', 2, 'güncellendi']]],
         ['1.2', '9 Eylül', [['add', 1, 'eklendi'], ['up', 4, 'güncellendi']]],
     ];
     return (
-        <div className="mock">
-            <div className="mock-head"><span>Survival paketi · değişiklikler</span><span className="mock-pill">Güncelle</span></div>
+        <div className="mock" ref={ref}>
+            <div className="mock-head"><span>Survival paketi · değişiklikler</span><span className={'mock-pill' + pill[1]}>{pill[0]}</span></div>
             {versions.map(([ver, date, changes, isNew]) => (
                 <div className={'mock-version' + (isNew ? ' new' : '')} key={ver}>
                     <div className="mock-version-top">
@@ -187,28 +203,44 @@ function PackMock() {
     );
 }
 
+const CHAT = [
+    ['them', 'akşam sunucuya giriyor musun?'],
+    ['me', '20:00\'de oradayım, yeni paketi kurdum'],
+    ['them', 'süper, base\'in fotoğrafını akışa attım'],
+    ['shot', 'yeni_base.png · 3 yorum'],
+];
+
 function ChatMock() {
+    // Mesajlar sırayla gelir; gelmeden önce "yazıyor" görünür. Sonda kısa bir bekleme, sonra baştan.
+    const [ref, tick] = useTicker(1100);
+    const step = reducedMotion() ? CHAT.length * 2 : tick % (CHAT.length * 2 + 3);
+    const shown = Math.min(CHAT.length, Math.floor(step / 2));
+    const typing = !reducedMotion() && shown < CHAT.length && step % 2 === 1;
     return (
-        <div className="mock">
+        <div className="mock" ref={ref}>
             <div className="mock-head"><span>Mesajlar · deniz</span><span className="mock-lock"><Icon name="lock" size={13} /> Şifreli</span></div>
             <div className="bubbles">
-                <p className="bubble">akşam sunucuya giriyor musun?</p>
-                <p className="bubble me">20:00'de oradayım, yeni paketi kurdum</p>
-                <p className="bubble">süper, base'in fotoğrafını akışa attım</p>
-                <div className="shot"><Icon name="image" size={18} /><span>yeni_base.png · 3 yorum</span></div>
+                {CHAT.slice(0, shown).map(([who, text]) => (who === 'shot'
+                    ? <div className="shot pop" key={text}><Icon name="image" size={18} /><span>{text}</span></div>
+                    : <p className={'bubble pop' + (who === 'me' ? ' me' : '')} key={text}>{text}</p>))}
+                {typing && <p className={'bubble typing' + (CHAT[shown][0] === 'me' ? ' me' : '')}><i /><i /><i /></p>}
             </div>
         </div>
     );
 }
 
 function ServerMock() {
+    // Oyuncu sayısı ve gecikme küçük adımlarla değişir; "Etkinlik" arada bir açılır
+    const [ref, tick] = useTicker(1800);
+    const wave = n => Math.round(Math.sin(tick * 0.9 + n) * 1.5);
+    const eventOpen = !reducedMotion() && tick % 8 >= 4;
     const servers = [
-        ['Survival', '1.21.1 · Fabric', '6/20', '18 ms', true],
-        ['Yaratıcı', '1.20.1 · Vanilla', '0/10', '22 ms', true],
-        ['Etkinlik', '1.20.1 · NeoForge', '', '', false],
+        ['Survival', '1.21.1 · Fabric', `${6 + wave(0)}/20`, `${18 + wave(2)} ms`, true],
+        ['Yaratıcı', '1.20.1 · Vanilla', `${Math.max(0, 1 + wave(4))}/10`, `${22 + wave(1)} ms`, true],
+        ['Etkinlik', '1.20.1 · NeoForge', '0/30', '31 ms', eventOpen],
     ];
     return (
-        <div className="mock">
+        <div className="mock" ref={ref}>
             <div className="mock-head"><span>Sunucular</span></div>
             {servers.map(([name, ver, players, ping, online]) => (
                 <div className="mock-row" key={name}>
