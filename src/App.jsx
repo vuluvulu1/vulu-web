@@ -17,6 +17,7 @@ import PackDetail from './pages/account/PackDetail.jsx';
 import Feedback from './pages/account/Feedback.jsx';
 import Admin from './pages/account/Admin.jsx';
 import UserProfile from './pages/UserProfile.jsx';
+import PixelField from './PixelField.jsx';
 
 export default function App() {
     const { pathname } = useLocation();
@@ -27,6 +28,7 @@ export default function App() {
 
     return (
         <>
+            <PixelField />
             <Header />
             <main>
                 <Routes>
