@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { api, asset, githubRelease, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
-import { CountUp, Reveal } from '../motion.jsx';
+import { Reveal } from '../motion.jsx';
 import { PRODUCTS } from '../products.js';
 import Wordmark from '../Wordmark.jsx';
 
@@ -57,31 +57,22 @@ export default function Hub() {
     );
 }
 
-/** "Şu an 3 kişi launcher'da, 1 kişi oyunda" satırı ve toplam sayılar; 30 sn'de bir yenilenir. */
+/** "Şu an 3 oyuncu aktif." satırı (launcher'ı açık olanlar, oyunda olanlar dahil); 30 sn'de bir yenilenir. */
 function LiveStats() {
-    const [stats, setStats] = useState(null);
+    const [online, setOnline] = useState(null);
     useEffect(() => {
         let cancelled = false;
-        const load = () => api.stats().then(s => { if (!cancelled) setStats(s); }).catch(() => {});
+        const load = () => api.stats().then(s => { if (!cancelled) setOnline(s.online); }).catch(() => {});
         load();
         const id = setInterval(load, STATS_REFRESH);
         return () => { cancelled = true; clearInterval(id); };
     }, []);
-    if (!stats) return <div className="live-stats placeholder" aria-hidden="true" />;
+    if (online === null) return <p className="live-now placeholder" aria-hidden="true" />;
 
     return (
-        <Reveal className="live-stats">
-            <p className="live-now">
-                <span className={'live-dot' + (stats.online > 0 ? ' on' : '')} />
-                {stats.online > 0
-                    ? <>Şu an <b><CountUp value={stats.online} /></b> kişi launcher'da{stats.playing > 0 && <>, <b><CountUp value={stats.playing} /></b> kişi oyunda</>}.</>
-                    : 'Şu an launcher\'ı açık kimse yok.'}
-            </p>
-            <dl className="live-totals">
-                <div><dt>üye</dt><dd><CountUp value={stats.members} /></dd></div>
-                <div><dt>paket</dt><dd><CountUp value={stats.packs} /></dd></div>
-                <div><dt>ekran görüntüsü</dt><dd><CountUp value={stats.shots} /></dd></div>
-            </dl>
+        <Reveal as="p" className="live-now">
+            <span className={'live-dot' + (online > 0 ? ' on' : '')} />
+            <span>{online > 0 ? <>Şu an <b>{online}</b> oyuncu aktif.</> : 'Şu an aktif oyuncu yok.'}</span>
         </Reveal>
     );
 }
