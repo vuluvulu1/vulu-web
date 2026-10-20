@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DOWNLOAD_URL, asset, latestRelease } from '../api.js';
+import { DOWNLOAD_URL, api, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 import Wordmark from '../Wordmark.jsx';
@@ -43,6 +43,7 @@ export default function Launcher() {
                     <p className="hero-meta">
                         {release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz
                     </p>
+                    <LiveStats />
                 </div>
                 <img className="hero-shot" src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
             </section>
@@ -122,6 +123,28 @@ export default function Launcher() {
                 </a>
             </Reveal>
         </>
+    );
+}
+
+const STATS_REFRESH = 30 * 1000;
+
+/** "Şu an 3 oyuncu aktif." satırı (launcher'ı açık olanlar, oyunda olanlar dahil); 30 sn'de bir yenilenir. */
+function LiveStats() {
+    const [online, setOnline] = useState(null);
+    useEffect(() => {
+        let cancelled = false;
+        const load = () => api.stats().then(s => { if (!cancelled) setOnline(s.online); }).catch(() => {});
+        load();
+        const id = setInterval(load, STATS_REFRESH);
+        return () => { cancelled = true; clearInterval(id); };
+    }, []);
+    if (online === null) return <p className="live-now placeholder" aria-hidden="true" />;
+
+    return (
+        <Reveal as="p" className="live-now">
+            <span className={'live-dot' + (online > 0 ? ' on' : '')} />
+            <span>{online > 0 ? <>Şu an <b>{online}</b> oyuncu aktif.</> : 'Şu an aktif oyuncu yok.'}</span>
+        </Reveal>
     );
 }
 

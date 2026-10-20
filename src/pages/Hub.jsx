@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api, asset, githubRelease, latestRelease } from '../api.js';
+import { asset, githubRelease, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
 import { Reveal } from '../motion.jsx';
 import { PRODUCTS } from '../products.js';
 import Wordmark from '../Wordmark.jsx';
 
-const STATS_REFRESH = 30 * 1000;
-
-/** Ana sayfa: vulu'nun üç ürünü arasından seçim, canlı sayılar ve son sürümler. */
+/** Ana sayfa: vulu'nun üç ürünü arasından seçim ve son sürümler. */
 export default function Hub() {
     const { status, user } = useAuth();
     const [releases, setReleases] = useState({});
@@ -27,7 +25,6 @@ export default function Hub() {
             <h2 className="hub-question">Ne için buradasın?</h2>
             <p className="lead">Devam etmek için aşağıdan birini seç.</p>
 
-            <LiveStats />
 
             <div className="products">
                 {PRODUCTS.map((p, i) => (
@@ -54,26 +51,6 @@ export default function Hub() {
 
             <RecentReleases releases={releases} />
         </section>
-    );
-}
-
-/** "Şu an 3 oyuncu aktif." satırı (launcher'ı açık olanlar, oyunda olanlar dahil); 30 sn'de bir yenilenir. */
-function LiveStats() {
-    const [online, setOnline] = useState(null);
-    useEffect(() => {
-        let cancelled = false;
-        const load = () => api.stats().then(s => { if (!cancelled) setOnline(s.online); }).catch(() => {});
-        load();
-        const id = setInterval(load, STATS_REFRESH);
-        return () => { cancelled = true; clearInterval(id); };
-    }, []);
-    if (online === null) return <p className="live-now placeholder" aria-hidden="true" />;
-
-    return (
-        <Reveal as="p" className="live-now">
-            <span className={'live-dot' + (online > 0 ? ' on' : '')} />
-            <span>{online > 0 ? <>Şu an <b>{online}</b> oyuncu aktif.</> : 'Şu an aktif oyuncu yok.'}</span>
-        </Reveal>
     );
 }
 
