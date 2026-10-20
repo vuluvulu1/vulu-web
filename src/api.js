@@ -10,10 +10,6 @@ export const asset = path => import.meta.env.BASE_URL + path;
 // Launcher sürümleri sitenin yanında, sunucudaki /releases/ altında durur (launcher da güncellemeyi oradan alır)
 export const DOWNLOAD_URL = asset('releases/vulu-launcher-setup.exe');
 
-// Çevrimiçi durumu API'nin belleğinde tutulur. Kurulu launcher'lar 0.14.0'a kadar Render'daki API'ye bildirdiği
-// için arkadaş listesi geçici olarak oradan okunur; launcher'lar VDS'e geçince bu satır API_URL'e döner.
-// npm run dev'de Vite /render-api'yi Render'a yönlendirir (Render localhost'a CORS izni vermez).
-const PRESENCE_URL = (import.meta.env.VITE_PRESENCE_URL || (import.meta.env.DEV ? '/render-api' : 'https://vulu-api.onrender.com')).replace(/\/$/, '');
 
 const TOKEN_KEY = 'vulu.token';
 
@@ -76,7 +72,7 @@ export const api = {
 
     users: () => request('/users', { auth: true }),
     /** Şu an çevrimiçi olanlar; durum sunucusuna ulaşılamazsa null. */
-    presence: () => request('/users/presence', { auth: true, base: PRESENCE_URL }).catch(() => null),
+    presence: () => request('/users/presence', { auth: true }).catch(() => null),
     announcement: () => request('/announcements', { auth: true }).then(d => d.announcement),
 
     packs: () => request('/packs', { auth: true }),

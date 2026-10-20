@@ -1,8 +1,8 @@
 # vulu web
 
-vulu Launcher'ın web sitesi: **http://185.157.46.169** (yakında vuluvulu.com.tr)
+vulu'nun web sitesi: **https://vuluvulu.com.tr**
 
-Sitede launcher'ı indirebilir, hesap isteği gönderebilir ve launcher hesabınla giriş yapabilirsin.
+vulu Launcher, vulu Server Panel ve FTB Quests Editor buradan indirilir. Launcher hesabıyla giriş yapınca duyurular, ekran görüntüleri ve paketler de görülebilir.
 
 ## Lisans
 
