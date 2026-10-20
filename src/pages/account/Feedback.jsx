@@ -11,8 +11,9 @@ export default function Feedback() {
     return (
         <div className="stack-lg">
             <p className="muted">
-                Hatalar, öneriler ve "şu modpack de eklensin" gibi istekler buraya yazılır. Belirli bir paketle ilgiliyse
-                {' '}<Link to="/hesap/paketler">paketin sayfasından</Link> yazmak daha iyi olur.
+                Bir hata mı buldun, bir önerin ya da "şu modpack de eklensin" gibi bir isteğin mi var? Buraya yaz.
+                Belirli bir paketle ilgiliyse <Link to="/hesap/paketler">paketin sayfasından</Link> yazarsan takip etmek
+                daha kolay olur.
             </p>
             <FeedbackSection pack="general" />
         </div>

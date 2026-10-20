@@ -36,7 +36,7 @@ export default function Hub() {
                             <span className="product-meta">
                                 {p.platforms}{releases[p.slug] && <> · <span className="mono">{releases[p.slug].tag}</span></>}
                             </span>
-                            <span className="product-go">Sayfasına git →</span>
+                            <span className="product-go">Göz at →</span>
                         </Link>
                     </Reveal>
                 ))}
@@ -44,8 +44,8 @@ export default function Hub() {
 
             {status === 'in' && (
                 <p className="hub-account">
-                    <b>{user.username}</b> olarak giriş yaptın. Duyurular, ekran görüntüleri ve paketler için{' '}
-                    <Link to="/hesap">hesabına</Link> bakabilirsin.
+                    Tekrar hoş geldin, <b>{user.username}</b>. Duyurular, ekran görüntüleri ve paketler için{' '}
+                    <Link to="/hesap">hesabına</Link> göz at.
                 </p>
             )}
 

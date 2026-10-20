@@ -52,7 +52,7 @@ export default function PackDetail() {
                         <span className="mono">r{pack.revision}</span> · {timeAgo(pack.updatedAt)} güncellendi ·
                         paylaşan <Link to={`/u/${pack.author}`}>{pack.author}</Link> · indirme boyutu yaklaşık {mb(total)}
                     </p>
-                    <p className="muted small">Paket launcher'daki vulu Packs bölümünden tek tıkla kurulur.</p>
+                    <p className="muted small">Paketi kurmak için launcher'da vulu Packs bölümünü aç.</p>
                 </div>
             </div>
 

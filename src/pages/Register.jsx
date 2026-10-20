@@ -42,7 +42,7 @@ export default function Register() {
         setMsg({ text: 'Gönderiliyor…' });
         try {
             await api.register(username, email, form.password, {
-                onSlow: () => setMsg({ text: 'Sunucu uyanıyor, bu yarım dakika kadar sürebilir…' }),
+                onSlow: () => setMsg({ text: 'Sunucu biraz geç cevap veriyor, birkaç saniye bekle…' }),
             });
             setDone(username);
             setForm({ username: '', email: '', password: '', password2: '' });
@@ -60,10 +60,10 @@ export default function Register() {
                 <div className="card auth-card">
                     <h1>İsteğin gönderildi</h1>
                     <p>
-                        <b>{done}</b> için katılma isteğin alındı. Bir admin onayladığında hem launcher'dan hem de
-                        buradan aynı kullanıcı adı ve şifreyle giriş yapabilirsin.
+                        <b>{done}</b> için katılma isteğin bize ulaştı. Bir admin onayladığında launcher'a da siteye de
+                        aynı kullanıcı adı ve şifreyle girersin.
                     </p>
-                    <Link className="btn btn-primary" to="/giris">Girişe dön</Link>
+                    <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
                 </div>
             </section>
         );
@@ -73,11 +73,11 @@ export default function Register() {
         <section className="wrap auth">
             <form className="card auth-card" onSubmit={submit} noValidate>
                 <h1>Katılma isteği</h1>
-                <p className="muted">Hesaplar davetle açılır. İsteğini bir admin onayladığında hesabın açılır.</p>
+                <p className="muted">Hesaplar davetle açılıyor. Formu doldur; bir admin isteğini onaylayınca hesabın hazır olur.</p>
                 <label>
                     Kullanıcı adı
                     <input value={form.username} onChange={set('username')} autoComplete="username" maxLength={16} autoFocus />
-                    <small>Oyunda görünecek ad. 3-16 karakter; İngilizce harf, rakam ve _.</small>
+                    <small>Oyunda bu adla görüneceksin. 3-16 karakter olmalı; İngilizce harf, rakam ve alt çizgi kullanılabilir.</small>
                 </label>
                 <label>
                     E-posta

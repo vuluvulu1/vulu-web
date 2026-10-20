@@ -29,14 +29,14 @@ export default function Profile() {
                             </ul>
                         </>
                     ) : <p className="muted">Henüz kayıtlı oynama süresi yok ya da gizlenmiş.</p>}
-                    <p className="muted small">Oynama süresi launcher'dan gönderilir.</p>
+                    <p className="muted small">Oynama süren launcher'dan gelir.</p>
                 </div>
                 <div className="card">
                     <h2>Hesap</h2>
                     {user.createdAt && <p className="small">Üyelik: {formatDate(user.createdAt)}</p>}
                     <p className="muted small">
-                        Şifre şimdilik launcher'dan değiştirilir. Şifre değişince şifreli mesajların anahtarı da yeni
-                        şifreyle yeniden kilitlenmeli; site bunu HTTPS'e geçince yapabilecek.
+                        Şifreni şimdilik launcher'dan değiştir. Şifreli mesajlarının anahtarı şifrene bağlı olduğu için
+                        bu ayarı siteye mesajlarla birlikte ekleyeceğiz.
                     </p>
                 </div>
             </div>
@@ -93,7 +93,7 @@ function Images() {
                         <button className="btn btn-sm" disabled={avatar.busy} onClick={avatar.pick}>{avatar.busy ? 'Yükleniyor…' : 'Avatar değiştir'}</button>
                         {user.avatarVersion > 0 && <button className="btn btn-ghost btn-sm" disabled={avatar.busy} onClick={() => remove('avatar')}>Kaldır</button>}
                     </div>
-                    <small className="muted">PNG, JPG, WEBP ya da GIF. Büyük resimler otomatik küçültülür.</small>
+                    <small className="muted">PNG, JPG, WEBP ya da GIF olabilir; büyük resimleri site kendisi küçültür.</small>
                 </div>
             </div>
             <input ref={avatar.input} type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={avatar.onChange} />
@@ -167,7 +167,7 @@ function Skin() {
                     </div>
                     <button className="btn btn-sm" disabled={skin.busy} onClick={skin.pick}>{skin.busy ? 'Yükleniyor…' : 'Skin yükle'}</button>
                     {user.skinHash && <button className="btn btn-ghost btn-sm" onClick={reset}>Varsayılana dön</button>}
-                    <small className="muted">64×64 PNG. Oyunda ve sunucularda görünür.</small>
+                    <small className="muted">64×64 piksel bir PNG olmalı. Skinin oyunda ve sunucularda görünür.</small>
                 </div>
             </div>
             <input ref={skin.input} type="file" accept="image/png" hidden onChange={skin.onChange} />

@@ -8,14 +8,14 @@ import { ReleaseNotes, formatDate } from '../components.jsx';
 import { Reveal, reducedMotion, useTicker } from '../motion.jsx';
 
 const EXTRAS = [
-    ['Çökme yardımcısı', 'Oyun çökünce kayıtları okur ve sorunun olası sebebini gösterir.'],
-    ['Dünya yedekleri', 'Dünyalar tek tıkla yedeklenir ve geri yüklenir.'],
-    ['Oynama süresi', 'Her instance\'ta geçirilen süre kaydedilir.'],
-    ['Skinler', 'Skin launcher içinden değiştirilir.'],
-    ['Discord durumu', 'Oynanan instance Discord profilinde görünür.'],
-    ['Temalar', 'Classic, Neon ve Atlas temaları arasından seçim yapılır.'],
-    ['Müzik', 'Launcher açıkken arka planda müzik çalar. Ses seviyesi ayarlardan değiştirilir.'],
-    ['Güvenli güncellemeler', 'Launcher kendini günceller. İmzası doğrulanmayan sürümler kurulmaz.'],
+    ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları okur ve sorunun nereden çıktığını sade bir dille anlatır.'],
+    ['Dünya yedekleri', 'Dünyanın yedeğini tek tıkla al; bir şey ters giderse aynı kolaylıkla geri yükle.'],
+    ['Oynama süresi', 'Hangi instance\'ta ne kadar oynadığını görürsün; istersen profilinde de gösterirsin.'],
+    ['Skinler', 'Skinini launcher\'dan değiştir, oyunda arkadaşların da onu görsün.'],
+    ['Discord durumu', 'Ne oynadığın Discord profilinde görünür; arkadaşların launcher\'ı oradan indirebilir.'],
+    ['Temalar', 'Classic, Neon ve Atlas temalarından sana uyanı seç.'],
+    ['Müzik', 'Launcher açıkken arkada müzik çalar; sesini ayarlardan kısabilir ya da tamamen kapatabilirsin.'],
+    ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan hiçbir sürümü kurmaz.'],
 ];
 
 export default function Launcher() {
@@ -51,38 +51,40 @@ export default function Launcher() {
             <section className="wrap features">
                 <Feature
                     label="Instance'lar"
-                    title="Her instance'ın kendi ayarları var"
+                    title="Her oyun için ayrı bir instance"
                     visual={<InstancesMock />}
                 >
-                    Vanilla, Fabric, Quilt, Forge ve NeoForge desteklenir. Her instance'ın sürümü, modları,
-                    RAM ayarı ve dünyaları ayrı tutulur. Gereken Java sürümü otomatik olarak indirilir.
+                    Vanilla, Fabric, Quilt, Forge ya da NeoForge ile istediğin kadar instance aç. Her birinin sürümü,
+                    modları, RAM ayarı ve dünyaları birbirinden ayrı durur. Hangi Java sürümü gerekiyorsa launcher
+                    onu kendisi indirir.
                 </Feature>
                 <Feature
                     label="Modlar ve paketler"
-                    title="Modlar ve paketler launcher içinden kurulur"
+                    title="Modları launcher'dan çıkmadan kur"
                     visual={<PackMock />}
                     flip
                 >
-                    Modrinth'teki modlar, kaynak paketleri, shader'lar ve modpack'ler launcher içinde aranıp kurulur.
-                    vulu Packs'teki paketler tek tıkla kurulur. Bir paket güncellendiğinde, kurulu sürümden bu yana
-                    yapılan değişiklikler listelenir.
+                    Modrinth'teki modları, kaynak paketlerini, shader'ları ve modpack'leri launcher'ın içinden ara ve kur.
+                    vulu Packs'teki hazır paketleri tek tıkla kurarsın; bir paket güncellendiğinde neyin eklenip neyin
+                    çıkarıldığını da görürsün.
                 </Feature>
                 <Feature
                     label="Sosyal"
-                    title="Ekran görüntüleri, arkadaşlar ve mesajlar"
+                    title="Arkadaşların da burada"
                     visual={<ChatMock />}
                 >
-                    Ekran görüntüleri ortak bir akışta paylaşılır ve yorumlanabilir. Arkadaş listesinde kimin çevrimiçi
-                    olduğu görünür. Mesajlar uçtan uca şifrelenir, bu yüzden sunucu içeriklerini okuyamaz.
+                    Oyunda aldığın ekran görüntülerini akışa at, arkadaşlarının paylaştıklarına yorum yaz. Arkadaş
+                    listende kimin çevrimiçi olduğunu ve kimin ne oynadığını görürsün. Mesajların uçtan uca şifrelenir;
+                    sunucu bile içlerini okuyamaz.
                 </Feature>
                 <Feature
                     label="Sunucular"
-                    title="Sunucuların durumu tek listede"
+                    title="Sunucuya tek tıkla bağlan"
                     visual={<ServerMock />}
                     flip
                 >
-                    Sunucular sekmesi her sunucunun açık olup olmadığını, oyuncu sayısını ve gecikmeyi gösterir.
-                    Bağlan'a basıldığında oyun açılır ve doğrudan sunucuya girilir.
+                    Sunucular sekmesi her sunucunun açık olup olmadığını, içeride kaç kişi olduğunu ve gecikmeyi
+                    gösterir. Bağlan'a bastığında oyun açılır ve doğrudan sunucuya girersin.
                 </Feature>
             </section>
 
@@ -108,15 +110,15 @@ export default function Launcher() {
 
             <Reveal as="section" className="wrap section start">
                 <h2 className="section-title">Nasıl başlanır</h2>
-                <p className="muted">Hesaplar davetle açılır, bu yüzden önce bir katılma isteği gönderilmesi gerekir.</p>
+                <p className="muted">Hesaplar davetle açılıyor, o yüzden önce bir katılma isteği göndermen gerekiyor.</p>
                 <ol className="steps">
-                    <li><span><Link to="/kayit">Katılma formunu</Link> doldurarak istek gönder.</span></li>
-                    <li><span>Bir admin isteğini onayladığında hesabın açılır.</span></li>
-                    <li><span>Kurulum dosyasını indirip çalıştır ve aynı kullanıcı adı ile şifreyle giriş yap.</span></li>
+                    <li><span><Link to="/kayit">Katılma formunu</Link> doldur ve isteğini gönder.</span></li>
+                    <li><span>Bir admin isteğini onaylayınca hesabın açılır.</span></li>
+                    <li><span>Kurulum dosyasını indirip çalıştır, ardından aynı kullanıcı adı ve şifreyle giriş yap.</span></li>
                 </ol>
                 <p className="note">
-                    Windows ilk açılışta SmartScreen uyarısı gösterebilir. Bu durumda <i>Ek bilgi</i> ve ardından
-                    {' '}<i>Yine de çalıştır</i> seçilerek devam edilir.
+                    Windows ilk açılışta bir SmartScreen uyarısı gösterebilir. <i>Ek bilgi</i>'ye, ardından
+                    {' '}<i>Yine de çalıştır</i>'a tıklaman yeterli.
                 </p>
                 <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
                     <Icon name="download" size={18} /> Kurulum dosyasını indir

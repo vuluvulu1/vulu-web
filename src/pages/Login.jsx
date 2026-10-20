@@ -20,7 +20,7 @@ export default function Login() {
         setMsg({ text: 'Giriş yapılıyor…' });
         try {
             await login(username.trim(), password, {
-                onSlow: () => setMsg({ text: 'Sunucu uyanıyor, ilk giriş yarım dakika kadar sürebilir…' }),
+                onSlow: () => setMsg({ text: 'Sunucu biraz geç cevap veriyor, birkaç saniye bekle…' }),
             });
             navigate('/hesap');
         } catch (err) {
@@ -33,7 +33,7 @@ export default function Login() {
         <section className="wrap auth">
             <form className="card auth-card" onSubmit={submit} noValidate>
                 <h1>Giriş yap</h1>
-                <p className="muted">Launcher'daki kullanıcı adın ve şifrenle.</p>
+                <p className="muted">Launcher'da kullandığın kullanıcı adı ve şifreyle giriş yap.</p>
                 <label>
                     Kullanıcı adı
                     <input value={username} onChange={e => setUsername(e.target.value)} autoComplete="username" maxLength={32} autoFocus />
