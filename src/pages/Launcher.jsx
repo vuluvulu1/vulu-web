@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { DOWNLOAD_URL, api, asset, latestRelease } from '../api.js';
+import { ANDROID_URL, DOWNLOAD_URL, androidRelease, api, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 import Wordmark from '../Wordmark.jsx';
@@ -21,7 +21,8 @@ const EXTRAS = [
 export default function Launcher() {
     const { status } = useAuth();
     const [release, setRelease] = useState(null);
-    useEffect(() => { latestRelease().then(setRelease); }, []);
+    const [android, setAndroid] = useState(null);
+    useEffect(() => { latestRelease().then(setRelease); androidRelease().then(setAndroid); }, []);
 
     return (
         <>
@@ -36,6 +37,11 @@ export default function Launcher() {
                         <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
                             <Icon name="windows" size={18} /> Windows için indir
                         </a>
+                        {android && (
+                            <a className="btn btn-lg" href="#android">
+                                <Icon name="android" size={18} /> Android (önizleme)
+                            </a>
+                        )}
                         {status !== 'in'
                             ? <Link className="btn btn-lg" to="/kayit">Katıl</Link>
                             : <Link className="btn btn-lg" to="/hesap">Hesabım</Link>}
@@ -105,6 +111,29 @@ export default function Launcher() {
                     <h2 className="section-title">Son sürümde neler var</h2>
                     <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
                     <ReleaseNotes text={release.notes} />
+                </Reveal>
+            )}
+
+            {android && (
+                <Reveal as="section" className="wrap section start" id="android">
+                    <h2 className="section-title">Android önizlemesi</h2>
+                    <p className="muted">
+                        Launcher'ın telefon sürümü: aynı hesap, sosyal akış, mesajlar, paketler ve sunucular. Telefon
+                        ekranına göre yeniden tasarlandı. <b>Oyunu henüz telefonda açmıyor</b>; Minecraft'ı şimdilik
+                        bilgisayardan oynaman gerekiyor.
+                    </p>
+                    <p className="muted small">
+                        <span className="mono">{android.tag}</span> · {formatDate(android.publishedAt)}
+                        {android.sizeMb ? <> · {android.sizeMb} MB</> : null} · Android 8 ve üstü
+                    </p>
+                    {android.notes && <ReleaseNotes text={android.notes} />}
+                    <p className="note">
+                        Play Store'da değil, dosyayı doğrudan kuruyorsun. Telefon "bilinmeyen kaynaklardan yükleme" izni
+                        isteyebilir; izni verip kurulumu tamamla. Yeni sürüm çıkınca uygulama kendisi haber verir.
+                    </p>
+                    <a className="btn btn-primary btn-lg" href={ANDROID_URL}>
+                        <Icon name="android" size={18} /> APK'yı indir
+                    </a>
                 </Reveal>
             )}
 

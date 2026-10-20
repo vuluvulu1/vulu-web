@@ -9,6 +9,8 @@ export const asset = path => import.meta.env.BASE_URL + path;
 
 // Launcher sürümleri sitenin yanında, sunucudaki /releases/ altında durur (launcher da güncellemeyi oradan alır)
 export const DOWNLOAD_URL = asset('releases/vulu-launcher-setup.exe');
+// Android önizlemesi: Windows sürümlerinden ayrı klasörde (tools/publish-android.ps1 yükler)
+export const ANDROID_URL = asset('releases/android/vulu-launcher.apk');
 
 
 const TOKEN_KEY = 'vulu.token';
@@ -154,6 +156,18 @@ export function githubRelease(repo, assetPattern) {
             download: file ? { url: file.browser_download_url, name: file.name, size: file.size } : null,
         };
     });
+}
+
+/** Android APK'sının sürümü ve notları; henüz yayınlanmadıysa null. */
+export async function androidRelease() {
+    try {
+        const res = await fetch(asset('releases/android/android.json'));
+        if (!res.ok) return null;
+        const data = await res.json();
+        return { tag: `v${data.version}`, publishedAt: data.publishedAt, notes: data.notes || '', sizeMb: data.size ? Math.round(data.size / 1048576) : null };
+    } catch {
+        return null;
+    }
 }
 
 /** Sunucudaki son sürümün etiketi (ör. "v0.13.0"); alınamazsa null. */
