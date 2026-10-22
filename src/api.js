@@ -69,6 +69,8 @@ export const api = {
     ping: opts => request('/ping', opts),
     login: (username, password, opts) => request('/auth/login', { method: 'POST', body: { username, password }, ...opts }),
     register: (username, email, password, opts) => request('/auth/register', { method: 'POST', body: { username, email, password }, ...opts }),
+    verifyEmail: token => request('/auth/verify-email', { method: 'POST', body: { token } }),
+    resendVerification: email => request('/auth/resend-verification', { method: 'POST', body: { email } }),
     me: () => request('/users/me', { auth: true }),
     /** Herkese açık sayılar: üye, paket, ekran görüntüsü, çevrimiçi ve oyunda olanlar. */
     stats: () => request('/stats'),

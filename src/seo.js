@@ -83,6 +83,7 @@ function app({ name, url, category, os, download, image, screenshot, description
 const PRIVATE_TITLES = [
     [/^\/giris$/, 'Giriş yap – vulu'],
     [/^\/kayit$/, 'Katıl – vulu'],
+    [/^\/dogrula$/, 'E-posta doğrulama – vulu'],
     [/^\/hesap\/admin$/, 'Admin – vulu'],
     [/^\/hesap\/profil$/, 'Profil – vulu'],
     [/^\/hesap\/paketler/, 'Paketler – vulu'],

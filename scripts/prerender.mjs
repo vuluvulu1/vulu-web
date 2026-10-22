@@ -60,6 +60,7 @@ writeFileSync(resolve(dist, 'robots.txt'), `User-agent: *
 Disallow: /hesap
 Disallow: /giris
 Disallow: /kayit
+Disallow: /dogrula
 Disallow: /u/
 Disallow: /api/
 

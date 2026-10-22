@@ -41,10 +41,10 @@ export default function Register() {
         setBusy(true);
         setMsg({ text: 'Gönderiliyor…' });
         try {
-            await api.register(username, email, form.password, {
+            const result = await api.register(username, email, form.password, {
                 onSlow: () => setMsg({ text: 'Sunucu biraz geç cevap veriyor, birkaç saniye bekle…' }),
             });
-            setDone(username);
+            setDone({ username, email, verifyEmail: !!result?.verifyEmail });
             setForm({ username: '', email: '', password: '', password2: '' });
             setMsg(null);
         } catch (err) {
@@ -54,20 +54,7 @@ export default function Register() {
         }
     }
 
-    if (done) {
-        return (
-            <section className="wrap auth">
-                <div className="card auth-card">
-                    <h1>İsteğin gönderildi</h1>
-                    <p>
-                        <b>{done}</b> için katılma isteğin bize ulaştı. Bir admin onayladığında launcher'a da siteye de
-                        aynı kullanıcı adı ve şifreyle girersin.
-                    </p>
-                    <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
-                </div>
-            </section>
-        );
-    }
+    if (done) return <Sent {...done} />;
 
     return (
         <section className="wrap auth">
@@ -95,6 +82,57 @@ export default function Register() {
                 <button className="btn btn-primary" disabled={busy}>İsteği gönder</button>
                 <p className="auth-alt">Zaten hesabın var mı? <Link to="/giris">Giriş yap</Link></p>
             </form>
+        </section>
+    );
+}
+
+/** İstek gönderildikten sonra: e-posta doğrulaması varsa bağlantıyı açmasını söyler ve yeniden gönderme sunar. */
+function Sent({ username, email, verifyEmail }) {
+    const [msg, setMsg] = useState(null);
+    const [busy, setBusy] = useState(false);
+
+    async function resend() {
+        setBusy(true);
+        setMsg({ text: 'Gönderiliyor…' });
+        try {
+            const r = await api.resendVerification(email);
+            setMsg({ text: r.message || 'Yeni bir bağlantı gönderdik.' });
+        } catch (err) {
+            setMsg({ text: err.message, error: true });
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    if (!verifyEmail) {
+        return (
+            <section className="wrap auth">
+                <div className="card auth-card">
+                    <h1>İsteğin gönderildi</h1>
+                    <p>
+                        <b>{username}</b> için katılma isteğin bize ulaştı. Bir admin onayladığında launcher'a da siteye de
+                        aynı kullanıcı adı ve şifreyle girersin.
+                    </p>
+                    <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
+                </div>
+            </section>
+        );
+    }
+    return (
+        <section className="wrap auth">
+            <div className="card auth-card">
+                <h1>E-postanı kontrol et</h1>
+                <p>
+                    <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Bağlantıyı açınca isteğin bir admine
+                    gider; admin onayladığında <b>{username}</b> adıyla launcher'a da siteye de girersin.
+                </p>
+                <p className="muted small">
+                    Bağlantı 48 saat geçerli. Birkaç dakika içinde gelmezse spam klasörüne de bak.
+                </p>
+                <Status msg={msg} />
+                <button className="btn" onClick={resend} disabled={busy}>Bağlantıyı tekrar gönder</button>
+                <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
+            </div>
         </section>
     );
 }

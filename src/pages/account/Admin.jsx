@@ -60,11 +60,13 @@ function Registrations() {
                 {items?.map(reg => (
                     <li key={reg.id}>
                         <div className="grow">
-                            <b>{reg.username}</b>
+                            <b>{reg.username}{!reg.emailVerified && <span className="badge off">e-posta doğrulanmadı</span>}</b>
                             <small className="muted">{reg.email} · {timeAgo(reg.createdAt)}</small>
                         </div>
                         <button className="btn btn-sm" disabled={busy === reg.id} onClick={() => act(reg, false)}>Reddet</button>
-                        <button className="btn btn-primary btn-sm" disabled={busy === reg.id} onClick={() => act(reg, true)}>Onayla</button>
+                        <button className="btn btn-primary btn-sm" disabled={busy === reg.id || !reg.emailVerified}
+                            title={reg.emailVerified ? undefined : 'Bu kişi e-posta adresini doğrulayınca onaylayabilirsin.'}
+                            onClick={() => act(reg, true)}>Onayla</button>
                     </li>
                 ))}
             </ul>

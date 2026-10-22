@@ -19,6 +19,7 @@ import Admin from './pages/account/Admin.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import PixelField from './PixelField.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Verify from './pages/Verify.jsx';
 import { pageMeta } from './seo.js';
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
                     <Route path="/ftbquests-editor" element={<Product product={productBySlug('ftbquests-editor')} />} />
                     <Route path="/giris" element={<Login />} />
                     <Route path="/kayit" element={<Register />} />
+                    <Route path="/dogrula" element={<Verify />} />
                     <Route path="/hesap" element={<AccountLayout />}>
                         <Route index element={<Overview />} />
                         <Route path="ekran-goruntuleri" element={<Shots />} />
