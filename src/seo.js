@@ -21,7 +21,7 @@ export const PUBLIC_PAGES = {
     },
     '/launcher': {
         title: 'vulu Launcher – Ücretsiz Türkçe Minecraft launcher\'ı',
-        description: 'Fabric, Quilt, Forge ve NeoForge instance\'ları, Modrinth\'ten mod kurulumu, hazır mod paketleri, sunucular ve arkadaşlarınla sohbet tek uygulamada. Windows için ücretsiz Minecraft launcher\'ı.',
+        description: 'Fabric, Quilt, Forge ve NeoForge instance\'ları, CurseForge ve Modrinth\'ten mod kurulumu, hazır mod paketleri, sunucular ve arkadaşlarınla sohbet tek uygulamada. Windows için ücretsiz Minecraft launcher\'ı.',
         jsonLd: app({
             name: 'vulu Launcher',
             url: `${SITE_URL}/launcher`,
@@ -30,7 +30,7 @@ export const PUBLIC_PAGES = {
             download: `${SITE_URL}/releases/vulu-launcher-setup.exe`,
             image: `${SITE_URL}/img/logo-512.png`,
             screenshot: `${SITE_URL}/img/home.png`,
-            description: 'Minecraft\'ı modlu ya da modsuz oynamak için bir launcher: instance\'lar, Modrinth modları, mod paketleri, sunucular ve sohbet.',
+            description: 'Minecraft\'ı modlu ya da modsuz oynamak için bir launcher: instance\'lar, CurseForge ve Modrinth modları, mod paketleri, sunucular ve sohbet.',
         }),
     },
     '/server-panel': {

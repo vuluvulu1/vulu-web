@@ -70,7 +70,8 @@ export default function Launcher() {
                     visual={<PackMock />}
                     flip
                 >
-                    Modrinth'teki modları, kaynak paketlerini, shader'ları ve modpack'leri launcher'ın içinden ara ve kur.
+                    CurseForge'daki modları, kaynak paketlerini, shader'ları ve modpack'leri launcher'ın içinden ara ve kur. Aradığını
+                    orada bulamazsan Modrinth'e geçebilirsin.
                     vulu Packs'teki hazır paketleri tek tıkla kurarsın; bir paket güncellendiğinde neyin eklenip neyin
                     çıkarıldığını da görürsün.
                 </Feature>
