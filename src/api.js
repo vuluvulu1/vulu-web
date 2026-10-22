@@ -9,7 +9,7 @@ export const asset = path => import.meta.env.BASE_URL + path;
 
 // Launcher sürümleri sitenin yanında, sunucudaki /releases/ altında durur (launcher da güncellemeyi oradan alır)
 export const DOWNLOAD_URL = asset('releases/vulu-launcher-setup.exe');
-// Android önizlemesi: Windows sürümlerinden ayrı klasörde (tools/publish-android.ps1 yükler)
+// Android sürümü: Windows sürümlerinden ayrı klasörde (tools/publish-android.ps1 yükler)
 export const ANDROID_URL = asset('releases/android/vulu-launcher.apk');
 
 

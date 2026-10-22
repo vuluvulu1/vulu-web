@@ -41,7 +41,7 @@ export default function Launcher() {
                         </a>
                         {android && (
                             <a className="btn btn-lg" href="#android">
-                                <Icon name="android" size={18} /> Android (önizleme)
+                                <Icon name="android" size={18} /> Android
                             </a>
                         )}
                         {status !== 'in'
@@ -119,7 +119,7 @@ export default function Launcher() {
 
             {android && (
                 <Reveal as="section" className="wrap section start" id="android">
-                    <h2 className="section-title">Android önizlemesi</h2>
+                    <h2 className="section-title">Android</h2>
                     <p className="muted">
                         Launcher'ın telefon sürümü: aynı hesap, sosyal akış, mesajlar, paketler ve sunucular. Telefon
                         ekranına göre yeniden tasarlandı. Minecraft da uygulamanın içinden açılır; paketleri ve modları
