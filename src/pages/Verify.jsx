@@ -25,10 +25,7 @@ export default function Verify() {
                 {state.status === 'ok' && (
                     <>
                         <h1>E-postan doğrulandı</h1>
-                        <p>
-                            Teşekkürler, <b>{state.username}</b>. İsteğin artık bir adminin önünde. Onaylandığında launcher'a da
-                            siteye de aynı kullanıcı adı ve şifreyle girersin.
-                        </p>
+                        <p>Teşekkürler, <b>{state.username}</b>. Senden başka bir şey beklemiyoruz.</p>
                         <Link className="btn btn-primary" to="/">Ana sayfaya dön</Link>
                     </>
                 )}

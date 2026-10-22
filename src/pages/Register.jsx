@@ -109,10 +109,7 @@ function Sent({ username, email, verifyEmail }) {
             <section className="wrap auth">
                 <div className="card auth-card">
                     <h1>İsteğin gönderildi</h1>
-                    <p>
-                        <b>{username}</b> için katılma isteğin bize ulaştı. Bir admin onayladığında launcher'a da siteye de
-                        aynı kullanıcı adı ve şifreyle girersin.
-                    </p>
+                    <p><b>{username}</b> için katılma isteğin bize ulaştı.</p>
                     <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
                 </div>
             </section>
@@ -123,8 +120,7 @@ function Sent({ username, email, verifyEmail }) {
             <div className="card auth-card">
                 <h1>E-postanı kontrol et</h1>
                 <p>
-                    <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Bağlantıyı açınca isteğin bir admine
-                    gider; admin onayladığında <b>{username}</b> adıyla launcher'a da siteye de girersin.
+                    <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Kaydını tamamlamak için bağlantıyı aç.
                 </p>
                 <p className="muted small">
                     Bağlantı 48 saat geçerli. Birkaç dakika içinde gelmezse spam klasörüne de bak.
