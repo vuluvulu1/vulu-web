@@ -13,6 +13,8 @@ const EXTRAS = [
     ['Oynama süresi', 'Hangi instance\'ta ne kadar oynadığını görürsün; istersen profilinde de gösterirsin.'],
     ['Skinler', 'Skinini launcher\'dan değiştir, oyunda arkadaşların da onu görsün.'],
     ['Discord durumu', 'Ne oynadığın Discord profilinde görünür; arkadaşların launcher\'ı oradan indirebilir.'],
+    ['Bildirimler', 'Yeni mesaj, beğeni, yorum ya da paket güncellemesi gelince launcher arkadayken bile haber verir.'],
+    ['Masaüstü kısayolları', 'Bir paketi ya da sunucuyu masaüstüne kısayol olarak koy; tek tıkla oyun açılır ya da sunucuya girersin.'],
     ['Temalar', 'Classic, Neon ve Atlas temalarından sana uyanı seç.'],
     ['Müzik', 'Launcher açıkken arkada müzik çalar; sesini ayarlardan kısabilir ya da tamamen kapatabilirsin.'],
     ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan hiçbir sürümü kurmaz.'],
@@ -120,8 +122,10 @@ export default function Launcher() {
                     <h2 className="section-title">Android önizlemesi</h2>
                     <p className="muted">
                         Launcher'ın telefon sürümü: aynı hesap, sosyal akış, mesajlar, paketler ve sunucular. Telefon
-                        ekranına göre yeniden tasarlandı. <b>Oyunu henüz telefonda açmıyor</b>; Minecraft'ı şimdilik
-                        bilgisayardan oynaman gerekiyor.
+                        ekranına göre yeniden tasarlandı. Minecraft da uygulamanın içinden açılır; paketleri ve modları
+                        telefona kurabilirsin. İlk açılışta oyun dosyaları bir kez iner (1.20.1 için yaklaşık 700 MB),
+                        Wi-Fi'de açman iyi olur. Henüz olmayanlar: Forge ve NeoForge paketleri telefonda açılmıyor,
+                        sunucuya doğrudan katılma ve oynama süresi çalışmıyor.
                     </p>
                     <p className="muted small">
                         <span className="mono">{android.tag}</span> · {formatDate(android.publishedAt)}

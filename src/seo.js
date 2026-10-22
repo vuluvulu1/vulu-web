@@ -21,12 +21,12 @@ export const PUBLIC_PAGES = {
     },
     '/launcher': {
         title: 'vulu Launcher – Ücretsiz Türkçe Minecraft launcher\'ı',
-        description: 'Fabric, Quilt, Forge ve NeoForge instance\'ları, CurseForge ve Modrinth\'ten mod kurulumu, hazır mod paketleri, sunucular ve arkadaşlarınla sohbet tek uygulamada. Windows için ücretsiz Minecraft launcher\'ı.',
+        description: 'Fabric, Quilt, Forge ve NeoForge instance\'ları, CurseForge ve Modrinth\'ten mod kurulumu, hazır mod paketleri, sunucular ve arkadaşlarınla sohbet tek uygulamada. Windows için ücretsiz Minecraft launcher\'ı; Android önizlemesi de var.',
         jsonLd: app({
             name: 'vulu Launcher',
             url: `${SITE_URL}/launcher`,
             category: 'GameApplication',
-            os: 'Windows 10, Windows 11',
+            os: 'Windows 10, Windows 11, Android 8+',
             download: `${SITE_URL}/releases/vulu-launcher-setup.exe`,
             image: `${SITE_URL}/img/logo-512.png`,
             screenshot: `${SITE_URL}/img/home.png`,

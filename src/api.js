@@ -34,7 +34,7 @@ export class ApiError extends Error {
 }
 
 /**
- * JSON isteği. Render'daki ücretsiz sunucu uykudaysa ilk istek uzun sürebilir;
+ * JSON isteği. Bağlantı yavaşsa ya da sunucu yeniden başlıyorsa istek uzun sürebilir;
  * `onSlow` o durumda kullanıcıya açıklama göstermek için birkaç saniye sonra çağrılır.
  */
 export async function request(path, { method = 'GET', body, raw, auth = false, onSlow, base = API_URL } = {}) {

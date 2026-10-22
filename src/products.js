@@ -8,7 +8,7 @@ export const PRODUCTS = [
         name: 'vulu Launcher',
         logo: 'img/logo.svg',
         summary: 'Minecraft\'ı modlu ya da modsuz oynamak için bir launcher. Instance\'larını, paketlerini, sunucularını ve arkadaşlarınla sohbetini tek yerde toplar.',
-        platforms: 'Windows',
+        platforms: 'Windows · Android (önizleme)',
     },
     {
         slug: 'server-panel',
