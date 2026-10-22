@@ -7,10 +7,10 @@ export const API_URL = (import.meta.env.VITE_API_URL || import.meta.env.BASE_URL
 /** public/ klasöründeki bir dosyanın adresi; site alt klasörde yayınlansa da doğru çalışır. */
 export const asset = path => import.meta.env.BASE_URL + path;
 
-// Launcher sürümleri sitenin yanında, sunucudaki /releases/ altında durur (launcher da güncellemeyi oradan alır)
-export const DOWNLOAD_URL = asset('releases/vulu-launcher-setup.exe');
-// Android sürümü: Windows sürümlerinden ayrı klasörde (tools/publish-android.ps1 yükler)
-export const ANDROID_URL = asset('releases/android/vulu-launcher.apk');
+// İndirme düğmeleri API'nin sayacından geçer: sayaç artar, sonra /releases/ altındaki dosyaya yönlendirilir.
+// (Launcher ve Android uygulaması kendi güncellemelerini doğrudan /releases/'ten alır; onlar sayılmaz.)
+export const DOWNLOAD_URL = `${API_URL}/download/windows`;
+export const ANDROID_URL = `${API_URL}/download/android`;
 
 
 const TOKEN_KEY = 'vulu.token';
