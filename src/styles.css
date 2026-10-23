@@ -215,6 +215,12 @@ p { margin: 0 0 1em; }
     width: 20px;
 }
 .note { color: var(--dim); font-size: 14px; margin-bottom: 24px; }
+.beta-warning {
+    margin: 0 0 18px; padding: 12px 14px; font-size: 14px; line-height: 1.55; color: var(--text);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-left-width: 3px;
+    border-radius: var(--r); background: var(--accent-soft);
+}
+.beta-warning b { color: var(--accent-hi); }
 
 @media (max-width: 860px) {
     .hero { padding-top: 48px; }

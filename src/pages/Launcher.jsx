@@ -59,7 +59,7 @@ export default function Launcher() {
                     </div>
                     <p className="hero-meta">
                         {androidFirst
-                            ? <><span className="mono">{android.tag}</span> · Android 8 ve üstü · Ücretsiz</>
+                            ? <><span className="mono">{android.tag}</span> · Android 8 ve üstü · Deneme sürümü, hatalar olabilir</>
                             : <>{release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz</>}
                     </p>
                     <LiveStats />
@@ -141,6 +141,11 @@ export default function Launcher() {
                     <p className="muted small">
                         <span className="mono">{android.tag}</span> · {formatDate(android.publishedAt)}
                         {android.sizeMb ? <> · {android.sizeMb} MB</> : null} · Android 8 ve üstü
+                    </p>
+                    <p className="beta-warning">
+                        <b>Android sürümü deneme aşamasında.</b> Çökmeler, açılmayan paketler ya da garip davranışlar
+                        görmen normal; Minecraft telefonda resmi olarak desteklenmiyor ve her cihaz farklı davranıyor.
+                        Bir sorunla karşılaşırsan uygulamadaki geri bildirim kısmından yazman çok yardımcı olur.
                     </p>
                     {android.notes && <ReleaseNotes text={android.notes} />}
                     <p className="note">
