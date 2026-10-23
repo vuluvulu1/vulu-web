@@ -20,11 +20,15 @@ const EXTRAS = [
     ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan hiçbir sürümü kurmaz.'],
 ];
 
+// Girilen cihaz Android telefonsa APK öne çıkar; diğerlerinde Windows kurulumu
+const ON_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
+
 export default function Launcher() {
     const { status } = useAuth();
     const [release, setRelease] = useState(null);
     const [android, setAndroid] = useState(null);
     useEffect(() => { latestRelease().then(setRelease); androidRelease().then(setAndroid); }, []);
+    const androidFirst = ON_ANDROID && !!android;
 
     return (
         <>
@@ -36,10 +40,15 @@ export default function Launcher() {
                         Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.
                     </p>
                     <div className="hero-actions">
-                        <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
+                        {androidFirst && (
+                            <a className="btn btn-primary btn-lg" href={ANDROID_URL}>
+                                <Icon name="android" size={18} /> Android için indir
+                            </a>
+                        )}
+                        <a className={'btn btn-lg' + (androidFirst ? '' : ' btn-primary')} href={DOWNLOAD_URL}>
                             <Icon name="windows" size={18} /> Windows için indir
                         </a>
-                        {android && (
+                        {android && !androidFirst && (
                             <a className="btn btn-lg" href="#android">
                                 <Icon name="android" size={18} /> Android
                             </a>
@@ -49,7 +58,9 @@ export default function Launcher() {
                             : <Link className="btn btn-lg" to="/hesap">Hesabım</Link>}
                     </div>
                     <p className="hero-meta">
-                        {release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz
+                        {androidFirst
+                            ? <><span className="mono">{android.tag}</span> · Android 8 ve üstü · Ücretsiz</>
+                            : <>{release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz</>}
                     </p>
                     <LiveStats />
                 </div>
@@ -154,8 +165,8 @@ export default function Launcher() {
                     Windows ilk açılışta bir SmartScreen uyarısı gösterebilir. <i>Ek bilgi</i>'ye, ardından
                     {' '}<i>Yine de çalıştır</i>'a tıklaman yeterli.
                 </p>
-                <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}>
-                    <Icon name="download" size={18} /> Kurulum dosyasını indir
+                <a className={'btn btn-lg' + (androidFirst ? '' : ' btn-primary')} href={DOWNLOAD_URL}>
+                    <Icon name="download" size={18} /> {androidFirst ? 'Windows kurulum dosyası' : 'Kurulum dosyasını indir'}
                 </a>
             </Reveal>
         </>
