@@ -144,7 +144,8 @@ export default function Launcher() {
                     </p>
                     <p className="beta-warning">
                         <b>Android sürümü deneme aşamasında.</b> Çökmeler, açılmayan paketler ya da garip davranışlar
-                        görmen normal; Minecraft telefonda resmi olarak desteklenmiyor ve her cihaz farklı davranıyor.
+                        görmen normal; Minecraft: Java Edition telefonda resmi olarak desteklenmiyor (telefonlar için resmi sürüm
+                        Bedrock Edition) ve her cihaz farklı davranıyor.
                         Bir sorunla karşılaşırsan uygulamadaki geri bildirim kısmından yazman çok yardımcı olur.
                     </p>
                     {android.notes && <ReleaseNotes text={android.notes} />}
