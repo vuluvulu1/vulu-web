@@ -14,6 +14,16 @@ export function Avatar({ username, version, size = 40 }) {
     );
 }
 
+/** Profildeki rol rozetleri; her biri kendi rengiyle. */
+export function RoleChips({ roles }) {
+    if (!roles?.length) return null;
+    return (
+        <div className="role-chips">
+            {roles.map(r => <span key={r.id} className="role-chip" style={{ '--role': r.color || 'var(--accent)' }}>{r.name}</span>)}
+        </div>
+    );
+}
+
 /** Giriş gerektiren bir resim (ekran görüntüleri). Yüklenene kadar yer tutucu gösterir. */
 export function AuthImage({ path, alt = '', className, width, height }) {
     const [src, setSrc] = useState(null);

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { api, getToken, setToken } from './api.js';
+import { resetFriends } from './social.js';
 
 const AuthContext = createContext(null);
 
@@ -31,6 +32,7 @@ export function AuthProvider({ children }) {
 
     const logout = useCallback(() => {
         setToken(null);
+        resetFriends();
         setUser(null);
         setStatus('out');
     }, []);

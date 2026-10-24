@@ -2,22 +2,23 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
-import { AuthImage, Avatar, timeAgo, useUsers } from '../../components.jsx';
+import { AuthImage, Avatar, timeAgo } from '../../components.jsx';
 
-/** Ekran görüntüsü akışı: launcher'dan paylaşılanlar. Tıklanınca büyük hâli, beğeniler ve yorumlar açılır. */
-export default function Shots() {
-    const users = useUsers();
+/**
+ * Ekran görüntüleri, sayfa sayfa (launcher'dan paylaşılanlar). author verilirse yalnızca onunkiler.
+ * update(id, değişiklikler) beğeni ve yorum sayısını listede günceller.
+ */
+export function useShotPages(author) {
     const [shots, setShots] = useState([]);
     const [more, setMore] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [open, setOpen] = useState(null);
 
     async function load(before) {
         setLoading(true);
         setError(null);
         try {
-            const page = await api.shots(before);
+            const page = await api.shots(before, author);
             setShots(list => (before ? [...list, ...page.shots] : page.shots));
             setMore(page.more);
         } catch (err) {
@@ -27,42 +28,13 @@ export default function Shots() {
         }
     }
 
-    useEffect(() => { load(); }, []);
+    useEffect(() => { load(); }, [author]);
 
-    const update = (id, changes) => setShots(list => list.map(s => (s.id === id ? { ...s, ...changes } : s)));
-
-    if (!loading && !error && !shots.length) return <p className="muted">Henüz paylaşılmış bir ekran görüntüsü yok.</p>;
-
-    return (
-        <>
-            <div className="shot-grid">
-                {shots.map(shot => (
-                    <button className="shot-card" key={shot.id} onClick={() => setOpen(shot)}>
-                        <AuthImage className="shot-thumb" path={api.shotImagePath(shot.id, 'thumb')} width={shot.width} height={shot.height} />
-                        <span className="shot-foot">
-                            <Avatar username={shot.author} version={users[shot.author]?.avatarVersion} size={22} />
-                            <b>{shot.author}</b>
-                            <span className="shot-counts">♥ {shot.likes} · {shot.commentCount} yorum</span>
-                        </span>
-                        {shot.caption && <span className="shot-caption">{shot.caption}</span>}
-                    </button>
-                ))}
-            </div>
-            {error && <p className="status error">{error}</p>}
-            {loading && <p className="muted">Yükleniyor…</p>}
-            {more && !loading && (
-                <button className="btn load-more" onClick={() => load(shots[shots.length - 1].createdAt)}>Daha fazla göster</button>
-            )}
-            {open && (
-                <ShotDialog
-                    shot={shots.find(s => s.id === open.id) || open}
-                    users={users}
-                    onChange={changes => update(open.id, changes)}
-                    onClose={() => setOpen(null)}
-                />
-            )}
-        </>
-    );
+    return {
+        shots, more, loading, error,
+        loadMore: () => load(shots[shots.length - 1].createdAt),
+        update: (id, changes) => setShots(list => list.map(s => (s.id === id ? { ...s, ...changes } : s))),
+    };
 }
 
 export function ShotDialog({ shot, users, onChange, onClose }) {

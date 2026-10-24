@@ -81,6 +81,14 @@ export const api = {
     presence: () => request('/users/presence', { auth: true }).catch(() => null),
     announcement: () => request('/announcements', { auth: true }).then(d => d.announcement),
 
+    // Arkadaşlar: { friends, incoming, outgoing } kullanıcı adları
+    friends: () => request('/friends', { auth: true }),
+    requestFriend: username => request('/friends/requests', { method: 'POST', body: { username }, auth: true }),
+    acceptFriend: username => request(`/friends/requests/${encodeURIComponent(username)}/accept`, { method: 'POST', auth: true }),
+    /** Gelen isteği reddeder ya da gönderileni geri alır. */
+    dropFriendRequest: username => request(`/friends/requests/${encodeURIComponent(username)}`, { method: 'DELETE', auth: true }),
+    removeFriend: username => request(`/friends/${encodeURIComponent(username)}`, { method: 'DELETE', auth: true }),
+
     packs: () => request('/packs', { auth: true }),
     packCoverUrl: pack => `${API_URL}/packs/${pack.id}/cover?v=${pack.revision}`,
 

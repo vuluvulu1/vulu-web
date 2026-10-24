@@ -87,8 +87,9 @@ const PRIVATE_TITLES = [
     [/^\/hesap\/admin$/, 'Admin – vulu'],
     [/^\/hesap\/profil$/, 'Profil – vulu'],
     [/^\/hesap\/paketler/, 'Paketler – vulu'],
-    [/^\/hesap\/ekran-goruntuleri$/, 'Ekran görüntüleri – vulu'],
+    [/^\/hesap\/arkadaslar$/, 'Arkadaşlar – vulu'],
     [/^\/hesap\/geri-bildirim$/, 'Geri bildirim – vulu'],
+    [/^\/hesap\/?$/, 'Akış – vulu'],
     [/^\/hesap/, 'Hesabım – vulu'],
     [/^\/u\/([^/]+)$/, m => `${decodeURIComponent(m[1])} – vulu`],
 ];

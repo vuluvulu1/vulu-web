@@ -1,18 +1,18 @@
 import { useEffect } from 'react';
-import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { api, asset } from './api.js';
 import { useAuth } from './auth.jsx';
 import { PRODUCTS, productBySlug } from './products.js';
+import { Avatar } from './components.jsx';
 import Hub from './pages/Hub.jsx';
 import Launcher from './pages/Launcher.jsx';
 import Product from './pages/Product.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import AccountLayout from './pages/account/Layout.jsx';
-import Overview from './pages/account/Overview.jsx';
-import Shots from './pages/account/Shots.jsx';
+import Feed from './pages/account/Feed.jsx';
+import Friends from './pages/account/Friends.jsx';
 import Packs from './pages/account/Packs.jsx';
-import Profile from './pages/account/Profile.jsx';
 import PackDetail from './pages/account/PackDetail.jsx';
 import Feedback from './pages/account/Feedback.jsx';
 import Admin from './pages/account/Admin.jsx';
@@ -44,12 +44,13 @@ export default function App() {
                     <Route path="/kayit" element={<Register />} />
                     <Route path="/dogrula" element={<Verify />} />
                     <Route path="/hesap" element={<AccountLayout />}>
-                        <Route index element={<Overview />} />
-                        <Route path="ekran-goruntuleri" element={<Shots />} />
+                        <Route index element={<Feed />} />
+                        <Route path="arkadaslar" element={<Friends />} />
+                        <Route path="ekran-goruntuleri" element={<Navigate to="/hesap" replace />} />
                         <Route path="paketler" element={<Packs />} />
                         <Route path="paketler/:id" element={<PackDetail />} />
                         <Route path="geri-bildirim" element={<Feedback />} />
-                        <Route path="profil" element={<Profile />} />
+                        <Route path="profil" element={<OwnProfile />} />
                         <Route path="admin" element={<Admin />} />
                     </Route>
                     <Route path="/u/:username" element={<UserProfile />} />
@@ -87,7 +88,10 @@ function Header() {
                 </nav>
                 <nav className="nav">
                     {status === 'in' ? (
-                        <NavLink to="/hesap" className="btn btn-ghost btn-sm">{user.username}</NavLink>
+                        <NavLink to="/hesap" className="btn btn-ghost btn-sm header-me">
+                            <Avatar username={user.username} version={user.avatarVersion} size={22} />
+                            {user.username}
+                        </NavLink>
                     ) : (
                         <>
                             <NavLink to="/giris" className="btn btn-ghost btn-sm">Giriş yap</NavLink>
@@ -98,6 +102,12 @@ function Header() {
             </div>
         </header>
     );
+}
+
+/** Eski "Profil" sekmesinin adresi: artık profil kendi sayfasında düzenleniyor. */
+function OwnProfile() {
+    const { user } = useAuth();
+    return <Navigate to={`/u/${user.username}`} replace />;
 }
 
 /**
