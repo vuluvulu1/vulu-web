@@ -90,7 +90,7 @@ export default function TitleEmbers({ targetRef }) {
             });
             // Sonra sürekli közler; imleç üstündeyken daha çok
             if (t > DRAW_START + glyphs.length * DRAW_STEP) {
-                const rate = hot ? 150 : 55;
+                const rate = hot ? 95 : 30;
                 let n = rate * dt;
                 while (n > 0) { if (Math.random() < n) spawn(Math.floor(Math.random() * glyphs.length), false); n -= 1; }
             }
@@ -110,7 +110,7 @@ export default function TitleEmbers({ targetRef }) {
                 const alpha = Math.max(0, (1 - k) * flicker);
                 const color = k > .65 ? COLORS[4] : k > .35 ? COLORS[3] : e.color;
                 const x = Math.round(e.x), y = Math.round(e.y);
-                g.globalAlpha = alpha * .1;
+                g.globalAlpha = alpha * .07;
                 g.fillStyle = COLORS[3];
                 g.fillRect(x - e.size * 3, y - e.size * 3, e.size * 7, e.size * 7);
                 g.globalAlpha = alpha * .28;
@@ -149,26 +149,9 @@ export default function TitleEmbers({ targetRef }) {
     return <canvas ref={ref} className="title-embers" aria-hidden="true" style={{ top: -ABOVE, left: -SIDE }} />;
 }
 
-/**
- * Tanıtım sayfalarının başlığı: el yazısı "vulu Launcher", kıvılcımlar ve imleci izleyen meşale ışığı.
- * Işık, başlığın içinde durduğu .hero bölümüne --mx/--my değişkenleriyle verilir (styles.css → .hero::after).
- */
+/** Tanıtım sayfalarının başlığı: el yazısı "vulu Launcher" ve harflerinden kopan kıvılcımlar. */
 export function HeroTitle() {
     const box = useRef(null);
-    useEffect(() => {
-        const hero = box.current?.closest('.hero');
-        if (!hero || reducedMotion()) return;
-        const move = e => {
-            const r = hero.getBoundingClientRect();
-            hero.style.setProperty('--mx', `${e.clientX - r.left}px`);
-            hero.style.setProperty('--my', `${e.clientY - r.top}px`);
-            hero.classList.add('lit');
-        };
-        const out = () => hero.classList.remove('lit');
-        hero.addEventListener('pointermove', move);
-        hero.addEventListener('pointerleave', out);
-        return () => { hero.removeEventListener('pointermove', move); hero.removeEventListener('pointerleave', out); };
-    }, []);
     return (
         <h1 className="hero-title">
             <span className="hero-title-box" ref={box}>

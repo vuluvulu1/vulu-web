@@ -3,6 +3,7 @@ import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { Avatar, useLoad } from '../../components.jsx';
 import Icon from '../../icons.jsx';
+import { sparkBurst } from '../../effects.jsx';
 
 // Launcher'ın Sosyal sekmesiyle aynı sınırlar (vulu-launcher/Launcher/wwwroot/js/social.js)
 const SHOT_MAX_SIDE = 1920, THUMB_MAX_SIDE = 480;
@@ -65,6 +66,7 @@ export default function ShareShot({ onShared }) {
 
     async function share(e) {
         e.preventDefault();
+        const button = e.currentTarget.querySelector('.btn-primary');
         setBusy(true);
         setError(null);
         try {
@@ -76,6 +78,7 @@ export default function ShareShot({ onShared }) {
                 caption: caption.trim(),
                 packId: chosen?.id, packName: chosen?.name, mcVersion: chosen?.mcVersion,
             });
+            sparkBurst(button, 24);
             onShared(shot);
             reset();
         } catch (err) {

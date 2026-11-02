@@ -7,6 +7,7 @@ import Icon from '../../icons.jsx';
 import { describePresence, friendAction, useFriends, usePresence } from '../../social.js';
 import { ChangeCounts } from './Packs.jsx';
 import ShareShot from './ShareShot.jsx';
+import { sparkBurst } from '../../effects.jsx';
 import { ShotDialog, useLike, useShotPages, useShotViewer } from './ShotDialog.jsx';
 
 /** Akış: üstte sana gelenler, ortada paylaşılan ekran görüntüleri; yanda kim oynuyor, sunucular ve paket güncellemeleri. */
@@ -20,7 +21,7 @@ export default function Feed() {
         <div className="feed">
             <div className="feed-main">
                 <header className="feed-head">
-                    <h1>Merhaba, {user.username}</h1>
+                    <h1>Merhaba, <span className="glow-text">{user.username}</span></h1>
                 </header>
                 <Announcement />
                 <Inbox users={users} onOpenShot={shot => open(shot, { comment: true })} />
@@ -63,8 +64,9 @@ function Inbox({ users, onOpenShot }) {
             .catch(() => {});
     }, []);
 
-    async function act(kind, username) {
+    async function act(kind, username, e) {
         setBusy(username);
+        if (kind === 'accept') sparkBurst(e?.currentTarget, 20);
         try { await friendAction(kind, username); } catch { /* liste yine de tazelenir */ } finally { setBusy(null); }
     }
 
@@ -84,7 +86,7 @@ function Inbox({ users, onOpenShot }) {
                         <Avatar username={name} version={users[name]?.avatarVersion} size={34} />
                         <span className="grow"><Link to={`/u/${name}`}><b>{name}</b></Link> seni arkadaş olarak eklemek istiyor.</span>
                         <span className="line-actions">
-                            <button className="btn btn-primary btn-sm" disabled={busy === name} onClick={() => act('accept', name)}>Kabul et</button>
+                            <button className="btn btn-primary btn-sm" disabled={busy === name} onClick={e => act('accept', name, e)}>Kabul et</button>
                             <button className="btn btn-quiet btn-sm" disabled={busy === name} onClick={() => act('drop', name)}>Reddet</button>
                         </span>
                     </li>

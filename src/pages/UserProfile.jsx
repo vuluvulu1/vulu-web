@@ -4,6 +4,8 @@ import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { AuthImage, Avatar, Empty, RoleChips, formatDate, formatHours, loaderName, timeAgo, useLoad, useUsers } from '../components.jsx';
 import Icon from '../icons.jsx';
+import { RisingEmbers, sparkBurst } from '../effects.jsx';
+import { CountUp } from '../motion.jsx';
 import { describePresence, friendAction, relationTo, useFriends, usePresence } from '../social.js';
 import { AccountShell } from './account/Layout.jsx';
 import { AvatarControl, BannerControls, BioEditor, SkinStage } from './account/ProfileEdit.jsx';
@@ -55,10 +57,11 @@ function ProfileView({ username, isMe }) {
             <header className="pf-hero">
                 <div className={'pf-banner' + (p.bannerVersion > 0 ? '' : ' plain')}>
                     {p.bannerVersion > 0 && <BannerImage key={p.bannerVersion} src={api.bannerUrl(p.username, p.bannerVersion)} />}
+                    <RisingEmbers rate={presence?.state === 'playing' ? 40 : 24} />
                     {isMe && <BannerControls />}
                 </div>
                 <div className="pf-head">
-                    <div className={'pf-avatar' + (presence ? ' lit' : '')}>
+                    <div className={'pf-avatar' + (presence ? ' lit ' + presence.state : '')}>
                         {isMe
                             ? <AvatarControl size={AVATAR_SIZE} />
                             : <Avatar username={p.username} version={p.avatarVersion} size={AVATAR_SIZE} />}
@@ -77,7 +80,7 @@ function ProfileView({ username, isMe }) {
                 <dl className="pf-stats">
                     <div><dt>Oynama süresi</dt><dd>{p.playtime ? formatHours(p.playtime.totalSeconds) : '—'}</dd></div>
                     <div><dt>Ekran görüntüsü</dt><dd>{shotCount}</dd></div>
-                    <div><dt>Paylaştığı paket</dt><dd>{p.packs.length}</dd></div>
+                    <div><dt>Paylaştığı paket</dt><dd><CountUp value={p.packs.length} /></dd></div>
                     <div><dt>Üyelik</dt><dd>{p.createdAt ? formatMonth(p.createdAt) : '—'}</dd></div>
                 </dl>
             </header>
@@ -133,7 +136,7 @@ function TopPlayed({ playtime, isMe }) {
             {top.length ? (
                 <ol className="pf-top">
                     {top.map((t, i) => (
-                        <li key={t.name}>
+                        <li key={t.name} style={{ '--n': i }}>
                             <span className="pf-top-row">
                                 <span className="pf-rank">{i + 1}</span>
                                 <span className="grow">{t.name}</span>
@@ -170,7 +173,8 @@ function FriendButton({ username }) {
     const relation = relationTo(friends, username);
     if (!relation) return null;
 
-    async function act(kind) {
+    async function act(kind, e) {
+        if (kind === 'request' || kind === 'accept') sparkBurst(e?.currentTarget, 20);
         setBusy(true);
         setError(null);
         try { await friendAction(kind, username); } catch (err) { setError(err.message); } finally { setBusy(false); }
@@ -178,10 +182,10 @@ function FriendButton({ username }) {
 
     return (
         <>
-            {relation === 'none' && <button className="btn btn-primary btn-sm" disabled={busy} onClick={() => act('request')}><Icon name="plus" size={16} /> Arkadaş ekle</button>}
+            {relation === 'none' && <button className="btn btn-primary btn-sm" disabled={busy} onClick={e => act('request', e)}><Icon name="plus" size={16} /> Arkadaş ekle</button>}
             {relation === 'outgoing' && <button className="btn btn-sm" disabled={busy} onClick={() => act('drop')}>İsteği geri al</button>}
             {relation === 'incoming' && <>
-                <button className="btn btn-primary btn-sm" disabled={busy} onClick={() => act('accept')}>İsteği kabul et</button>
+                <button className="btn btn-primary btn-sm" disabled={busy} onClick={e => act('accept', e)}>İsteği kabul et</button>
                 <button className="btn btn-quiet btn-sm" disabled={busy} onClick={() => act('drop')}>Reddet</button>
             </>}
             {relation === 'friend' && (
@@ -211,7 +215,7 @@ function ProfileShots({ list, isMe }) {
             {shots.length > 0 && (
                 <div className="gallery">
                     {shots.map(shot => (
-                        <button className="gallery-item" key={shot.id} onClick={() => open(shot)} aria-label={shot.caption || 'Ekran görüntüsünü aç'}>
+                        <button className="gallery-item" data-tilt="8" key={shot.id} onClick={() => open(shot)} aria-label={shot.caption || 'Ekran görüntüsünü aç'}>
                             <AuthImage path={api.shotImagePath(shot.id, 'thumb')} width={shot.width} height={shot.height} />
                             <span className="gallery-counts"><Icon name="heart" size={14} /> {shot.likes} <Icon name="comment" size={14} /> {shot.commentCount}</span>
                         </button>

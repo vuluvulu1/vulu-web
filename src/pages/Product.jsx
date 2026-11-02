@@ -34,7 +34,7 @@ export default function Product({ product: p }) {
                             : p.platforms}
                     </p>
                 </div>
-                {p.shot && <div className="hero-shot"><img src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" /></div>}
+                {p.shot && <div className="hero-shot" data-tilt="5"><img src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" /></div>}
                 </div>
             </section>
 

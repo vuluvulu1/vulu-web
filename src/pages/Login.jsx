@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
+import { RisingEmbers } from '../effects.jsx';
 import { Status } from './Register.jsx';
 
 export default function Login() {
@@ -32,6 +33,7 @@ export default function Login() {
     return (
         <section className="wrap auth">
             <form className="auth-card" onSubmit={submit} noValidate>
+                <RisingEmbers rate={10} />
                 <h1>Giriş yap</h1>
                 <p className="muted">Launcher'da kullandığın kullanıcı adı ve şifreyle giriş yap.</p>
                 <label>

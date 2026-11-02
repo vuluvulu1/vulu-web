@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../auth.jsx';
 import { Avatar, Empty, timeAgo, useUsers } from '../../components.jsx';
 import Icon from '../../icons.jsx';
+import { sparkBurst } from '../../effects.jsx';
 import { describePresence, friendAction, relationTo, useFriends, usePresence } from '../../social.js';
 
 /** Arkadaşlar: gelen istekler, arkadaşlar (oyunda, launcher açık, çevrimdışı) ve yanda üye arayıp ekleme. */
@@ -13,9 +14,10 @@ export default function Friends() {
     const [busy, setBusy] = useState(null);
     const [error, setError] = useState(null);
 
-    async function act(kind, username) {
+    async function act(kind, username, e) {
         setBusy(username);
         setError(null);
+        if (kind === 'accept') sparkBurst(e?.currentTarget, 20);
         try { await friendAction(kind, username); } catch (err) { setError(err.message); } finally { setBusy(null); }
     }
 
@@ -59,7 +61,7 @@ export default function Friends() {
                         <h2 className="label">Gelen istekler <span className="num">{friends.incoming.length}</span></h2>
                         <ul className="person-list">
                             {friends.incoming.map(name => person(name, <>
-                                <button className="btn btn-primary btn-sm" disabled={busy === name} onClick={() => act('accept', name)}>Kabul et</button>
+                                <button className="btn btn-primary btn-sm" disabled={busy === name} onClick={e => act('accept', name, e)}>Kabul et</button>
                                 <button className="btn btn-quiet btn-sm" disabled={busy === name} onClick={() => act('drop', name)}>Reddet</button>
                             </>, 'Seni arkadaş olarak eklemek istiyor'))}
                         </ul>
@@ -114,7 +116,8 @@ function FindMembers({ friends, users, presenceOf }) {
         ? all.filter(u => u.username.toLocaleLowerCase('tr').includes(q))
         : all.filter(u => relationTo(friends, u.username) === 'none').slice(0, 8);
 
-    async function add(username) {
+    async function add(username, e) {
+        sparkBurst(e?.currentTarget);
         setBusy(username);
         setMsg(null);
         try {
@@ -150,7 +153,7 @@ function FindMembers({ friends, users, presenceOf }) {
                                 <small>{p ? describePresence(p) : u.lastSeenAt ? `Son görülme ${timeAgo(u.lastSeenAt)}` : 'Henüz görülmedi'}</small>
                             </div>
                             {relation === 'none' && (
-                                <button className="btn btn-sm" disabled={busy === u.username} onClick={() => add(u.username)} aria-label={`${u.username} kullanıcısını ekle`}>
+                                <button className="btn btn-sm" disabled={busy === u.username} onClick={e => add(u.username, e)} aria-label={`${u.username} kullanıcısını ekle`}>
                                     <Icon name="plus" size={15} /> Ekle
                                 </button>
                             )}

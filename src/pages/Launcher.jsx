@@ -65,7 +65,7 @@ export default function Launcher() {
                     </p>
                     <LiveStats />
                 </div>
-                <div className="hero-shot">
+                <div className="hero-shot" data-tilt="5">
                     <img src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
                 </div>
                 </div>
@@ -213,7 +213,7 @@ function Feature({ label, title, visual, flip, children }) {
                 <h2>{title}</h2>
                 <p className="muted">{children}</p>
             </div>
-            <div className="feature-visual" aria-hidden="true">{visual}</div>
+            <div className="feature-visual" aria-hidden="true" data-tilt="4">{visual}</div>
         </Reveal>
     );
 }

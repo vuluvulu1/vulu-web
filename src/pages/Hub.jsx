@@ -5,7 +5,8 @@ import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
 import Icon from '../icons.jsx';
 import { HeroTitle } from '../TitleEmbers.jsx';
-import { Reveal } from '../motion.jsx';
+import { CountUp, Reveal } from '../motion.jsx';
+import { RisingEmbers } from '../effects.jsx';
 import { PRODUCTS } from '../products.js';
 
 // Launcher'ın yapabildikleri; yalnızca launcher sayfasında da anlatılan, gerçekten var olan özellikler
@@ -51,7 +52,7 @@ export default function Hub() {
                             <a href={ANDROID_URL}>Android deneme sürümü</a>
                         </p>
                     </div>
-                    <div className="hero-shot">
+                    <div className="hero-shot" data-tilt="5">
                         <img src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
                     </div>
                 </div>
@@ -63,7 +64,7 @@ export default function Hub() {
                 <Reveal as="section" className="home-block span-7">
                     <h2>Neler yapabilirsin</h2>
                     <ul className="rows">
-                        {ABILITIES.map(([title, text]) => <li key={title}><b>{title}.</b> {text}</li>)}
+                        {ABILITIES.map(([title, text], i) => <li key={title} style={{ '--n': i }}><b>{title}.</b> {text}</li>)}
                     </ul>
                     <p className="more"><Link to="/launcher">Launcher'ın bütün özellikleri</Link></p>
                 </Reveal>
@@ -90,6 +91,7 @@ export default function Hub() {
                 </Reveal>
 
                 <Reveal as="section" className="home-block span-5 join" delay={80}>
+                    <RisingEmbers rate={14} />
                     {status === 'in' ? <>
                         <h2>Akışta neler var</h2>
                         <p>Arkadaşlarının paylaştığı ekran görüntüleri, kimin ne oynadığı ve paket güncellemeleri akışında.</p>
@@ -132,10 +134,10 @@ function LiveNumbers() {
                     {stats.online ? <>Şu an <b>{stats.online}</b> kişi çevrimiçi{stats.playing > 0 && <>, <b>{stats.playing}</b> kişi oyunda</>}.</> : 'Şu an çevrimiçi kimse yok.'}
                 </p>
                 <dl>
-                    <div><dt>Üye</dt><dd>{stats.members}</dd></div>
-                    <div><dt>Paket</dt><dd>{stats.packs}</dd></div>
-                    <div><dt>Ekran görüntüsü</dt><dd>{stats.shots}</dd></div>
-                    {stats.downloads?.total > 0 && <div><dt>İndirme</dt><dd>{stats.downloads.total}</dd></div>}
+                    <div><dt>Üye</dt><dd><CountUp value={stats.members} /></dd></div>
+                    <div><dt>Paket</dt><dd><CountUp value={stats.packs} /></dd></div>
+                    <div><dt>Ekran görüntüsü</dt><dd><CountUp value={stats.shots} /></dd></div>
+                    {stats.downloads?.total > 0 && <div><dt>İndirme</dt><dd><CountUp value={stats.downloads.total} /></dd></div>}
                 </dl>
             </> : <p className="numbers-live placeholder" aria-hidden="true" />}
         </section>

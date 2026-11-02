@@ -4,6 +4,7 @@ import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { AuthImage, Avatar, timeAgo } from '../../components.jsx';
 import Icon from '../../icons.jsx';
+import { sparkBurst } from '../../effects.jsx';
 
 /**
  * Ekran görüntüleri, sayfa sayfa (launcher'dan ya da siteden paylaşılanlar). author verilirse yalnızca onunkiler.
@@ -43,9 +44,10 @@ export function useShotPages(author) {
 /** Beğen düğmesi: sayıyı hemen değiştirir, sunucu başka bir şey derse onu yazar. */
 export function useLike(shot, onChange) {
     const [error, setError] = useState(null);
-    async function toggle() {
+    async function toggle(e) {
         setError(null);
         const liked = !shot.liked;
+        if (liked) sparkBurst(e?.currentTarget?.querySelector('svg') || e?.currentTarget);
         onChange({ liked, likes: shot.likes + (liked ? 1 : -1) });
         try {
             const r = await api.likeShot(shot.id, liked);

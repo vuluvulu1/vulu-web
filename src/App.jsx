@@ -6,6 +6,7 @@ import { PRODUCTS, productBySlug } from './products.js';
 import { Avatar } from './components.jsx';
 import Icon from './icons.jsx';
 import PixelField from './PixelField.jsx';
+import { usePointerLight } from './effects.jsx';
 import Wordmark from './Wordmark.jsx';
 import { useFriends } from './social.js';
 import Hub from './pages/Hub.jsx';
@@ -28,6 +29,7 @@ import { pageMeta } from './seo.js';
 export default function App() {
     const { pathname } = useLocation();
     const { status } = useAuth();
+    usePointerLight();
 
     // API'yi önceden ısıt: kullanıcı formu doldururken bağlantı hazır olsun
     useEffect(() => { api.ping().catch(() => {}); }, []);
@@ -37,9 +39,12 @@ export default function App() {
     return (
         <>
             <PixelField />
+            <div className="torch" aria-hidden="true" />
             <a className="skip" href="#main">İçeriğe geç</a>
             {status === 'in' ? <MemberHeader /> : <GuestHeader />}
             <main id="main">
+                {/* Her sayfa değişiminde içerik aşağıdan yumuşakça belirir */}
+                <div className="page-enter" key={pageKey(pathname)}>
                 <Routes>
                     <Route path="/" element={<Hub />} />
                     <Route path="/launcher" element={<Launcher />} />
@@ -61,6 +66,7 @@ export default function App() {
                     <Route path="/u/:username" element={<UserProfile />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
+                </div>
             </main>
             <Footer />
             {status === 'in' && <TabBar />}
@@ -198,6 +204,9 @@ function Footer() {
         </footer>
     );
 }
+
+/** Geçiş animasyonu için sayfanın kimliği; hesap sayfaları arasında üst çubuk ve başlık sabit kalsın diye yol bütünüyle kullanılır. */
+const pageKey = pathname => pathname.replace(/\/$/, '') || '/';
 
 /** Eski "Profil" sekmesinin adresi: artık profil kendi sayfasında düzenleniyor. */
 function OwnProfile() {
