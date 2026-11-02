@@ -38,7 +38,7 @@ export default function Launcher() {
                     <HeroTitle />
                     <p className="lead">
                         Minecraft'ı kurmak, modlamak ve oynamak için ihtiyacın olan her şey tek bir uygulamada.
-                        Java'yı, mod yükleyicileri ve güncellemeleri biz düşünürüz; sana yalnızca oynamak kalır.
+                        Java'yı, mod yükleyicileri ve güncellemeleri launcher kendisi halleder; sen yalnızca oyununa odaklanırsın.
                     </p>
                     <div className="hero-actions">
                         {androidFirst && (
