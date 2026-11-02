@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { ANDROID_URL, DOWNLOAD_URL, androidRelease, api, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
-import Wordmark from '../Wordmark.jsx';
 import { ReleaseNotes, formatDate } from '../components.jsx';
 import { Reveal, reducedMotion, useTicker } from '../motion.jsx';
 
@@ -15,8 +14,8 @@ const EXTRAS = [
     ['Discord durumu', 'Ne oynadığın Discord profilinde görünür; arkadaşların launcher\'ı oradan indirebilir.'],
     ['Bildirimler', 'Yeni mesaj, beğeni, yorum ya da paket güncellemesi gelince launcher arkadayken bile haber verir.'],
     ['Masaüstü kısayolları', 'Bir paketi ya da sunucuyu masaüstüne kısayol olarak koy; tek tıkla oyun açılır ya da sunucuya girersin.'],
-    ['Temalar', 'Classic, Neon ve Atlas temalarından sana uyanı seç.'],
-    ['Müzik', 'Launcher açıkken arkada müzik çalar; sesini ayarlardan kısabilir ya da tamamen kapatabilirsin.'],
+    ['Temalar', 'Meşale, Klasik, Neon ve Atlas temalarından sana uyanı seç.'],
+    ['Radyo', 'Launcher açıkken internet radyosu dinleyebilirsin; istasyonu değiştirebilir ya da tamamen kapatabilirsin.'],
     ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan hiçbir sürümü kurmaz.'],
 ];
 
@@ -32,9 +31,10 @@ export default function Launcher() {
 
     return (
         <>
-            <section className="wrap hero">
+            <section className="hero">
+                <div className="wrap hero-grid">
                 <div className="hero-text">
-                    <h1 className="hero-title"><Wordmark full animate /><span className="sr-only">vulu Launcher: ücretsiz Türkçe Minecraft launcher'ı</span></h1>
+                    <h1>vulu Launcher</h1>
                     <p className="lead">
                         vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
                         Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.
@@ -54,8 +54,8 @@ export default function Launcher() {
                             </a>
                         )}
                         {status !== 'in'
-                            ? <Link className="btn btn-lg" to="/kayit">Katıl</Link>
-                            : <Link className="btn btn-lg" to="/hesap">Hesabım</Link>}
+                            ? <Link className="btn btn-lg btn-quiet" to="/kayit">Katıl</Link>
+                            : <Link className="btn btn-lg btn-quiet" to="/hesap">Akışa git</Link>}
                     </div>
                     <p className="hero-meta">
                         {androidFirst
@@ -64,7 +64,10 @@ export default function Launcher() {
                     </p>
                     <LiveStats />
                 </div>
-                <img className="hero-shot" src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
+                <div className="hero-shot">
+                    <img src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
+                </div>
+                </div>
             </section>
 
             <section className="wrap features">

@@ -1,15 +1,24 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { asset, githubRelease, latestRelease } from '../api.js';
+import { ANDROID_URL, DOWNLOAD_URL, api, asset, githubRelease, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
+import Icon from '../icons.jsx';
 import { Reveal } from '../motion.jsx';
 import { PRODUCTS } from '../products.js';
-import Wordmark from '../Wordmark.jsx';
 
-/** Ana sayfa: vulu'nun üç ürünü arasından seçim ve son sürümler. */
+// Launcher'ın yapabildikleri; yalnızca launcher sayfasında da anlatılan, gerçekten var olan özellikler
+const ABILITIES = [
+    ['Mod ve paket kur', 'CurseForge ve Modrinth\'teki modları, kaynak paketlerini ve shader\'ları launcher\'dan çıkmadan ara ve kur.'],
+    ['Hazır paketlerle oyna', 'vulu Packs\'teki paketleri tek tıkla kur. Paket güncellenince hangi modun eklenip hangisinin çıkarıldığını görürsün.'],
+    ['Sunuculara bağlan', 'Sunucunun açık olup olmadığını ve içeride kaç kişi olduğunu gör, Bağlan\'a basınca doğrudan içeri gir.'],
+    ['Çökmeyi anla', 'Oyun çökerse launcher kayıtları okur ve sorunun nereden çıktığını sade bir dille anlatır.'],
+    ['Arkadaşlarınla buluş', 'Kim çevrimiçi, kim ne oynuyor gör; şifreli mesajlaş, ekran görüntülerini paylaş.'],
+];
+
+/** Ana sayfa: launcher'ı tanıtır, canlı sayıları ve son sürümleri gösterir, diğer araçlara yönlendirir. */
 export default function Hub() {
-    const { status, user } = useAuth();
+    const { status } = useAuth();
     const [releases, setReleases] = useState({});
 
     useEffect(() => {
@@ -19,37 +28,115 @@ export default function Hub() {
         }
     }, []);
 
+    const launcher = releases.launcher;
+    const tools = PRODUCTS.filter(p => p.slug !== 'launcher');
+
     return (
-        <section className="wrap hub">
-            <h1 className="hub-title"><Wordmark animate /><span className="sr-only">vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü</span></h1>
-            <h2 className="hub-question">Ne için buradasın?</h2>
-            <p className="lead">Devam etmek için aşağıdan birini seç.</p>
+        <>
+            <section className="hero">
+                <div className="wrap hero-grid">
+                    <div className="hero-text">
+                        <h1>Modlu Minecraft için Türkçe launcher.</h1>
+                        <p className="lead">
+                            Mod ve paket kur, sunuculara tek tıkla bağlan, arkadaşlarınla aynı oyunda buluş. Java'yı, mod
+                            yükleyicileri ve güncellemeleri launcher halleder.
+                        </p>
+                        <div className="hero-actions">
+                            <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}><Icon name="windows" size={18} /> Windows için indir</a>
+                            <Link className="btn btn-lg" to="/launcher">Neler yapabildiğine bak</Link>
+                        </div>
+                        <p className="hero-meta">
+                            Ücretsiz ve açık kaynak{launcher && <> · <span className="mono">{launcher.tag}</span></>} · Windows 10 ve 11 ·{' '}
+                            <a href={ANDROID_URL}>Android deneme sürümü</a>
+                        </p>
+                    </div>
+                    <div className="hero-shot">
+                        <img src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
+                    </div>
+                </div>
+            </section>
 
+            <LiveNumbers />
 
-            <div className="products">
-                {PRODUCTS.map((p, i) => (
-                    <Reveal key={p.slug} delay={i * 90}>
-                        <Link to={'/' + p.slug} className="product-card">
-                            <img src={asset(p.logo)} alt="" width="56" height="56" />
-                            <h3>{p.name}</h3>
-                            <p>{p.summary}</p>
-                            <span className="product-meta">
-                                {p.platforms}{releases[p.slug] && <> · <span className="mono">{releases[p.slug].tag}</span></>}
-                            </span>
-                            <span className="product-go">Göz at →</span>
-                        </Link>
-                    </Reveal>
-                ))}
+            <div className="wrap home-grid">
+                <Reveal as="section" className="home-block span-7">
+                    <h2>Neler yapabilirsin</h2>
+                    <ul className="rows">
+                        {ABILITIES.map(([title, text]) => <li key={title}><b>{title}.</b> {text}</li>)}
+                    </ul>
+                    <p className="more"><Link to="/launcher">Launcher'ın bütün özellikleri</Link></p>
+                </Reveal>
+
+                <Reveal as="section" className="home-block span-5" delay={80}>
+                    <h2>Son güncellemeler</h2>
+                    <RecentReleases releases={releases} />
+                </Reveal>
+
+                <Reveal as="section" className="home-block span-7">
+                    <h2>Paket ya da sunucu hazırlayanlar için</h2>
+                    <div className="tools">
+                        {tools.map(p => (
+                            <Link key={p.slug} to={'/' + p.slug} className="tool">
+                                <img src={asset(p.logo)} alt="" width="44" height="44" />
+                                <span>
+                                    <b>{p.name}</b>
+                                    <span>{p.summary}</span>
+                                    <small>{p.platforms}{releases[p.slug] && <> · <span className="mono">{releases[p.slug].tag}</span></>}</small>
+                                </span>
+                            </Link>
+                        ))}
+                    </div>
+                </Reveal>
+
+                <Reveal as="section" className="home-block span-5 join" delay={80}>
+                    {status === 'in' ? <>
+                        <h2>Akışta neler var</h2>
+                        <p>Arkadaşlarının paylaştığı ekran görüntüleri, kimin ne oynadığı ve paket güncellemeleri akışında.</p>
+                        <Link className="btn btn-primary" to="/hesap">Akışa git</Link>
+                    </> : <>
+                        <h2>Ücretsiz hesap</h2>
+                        <p>
+                            Hesapla arkadaş ekler, mesajlaşır, ekran görüntüsü paylaşır ve hazır paketleri kurarsın. Hesaplar şimdilik
+                            bir admin onayıyla açılıyor.
+                        </p>
+                        <div className="row">
+                            <Link className="btn btn-primary" to="/kayit">Katılma isteği gönder</Link>
+                            <Link className="btn btn-quiet" to="/giris">Giriş yap</Link>
+                        </div>
+                    </>}
+                </Reveal>
             </div>
+        </>
+    );
+}
 
-            {status === 'in' && (
-                <p className="hub-account">
-                    Tekrar hoş geldin, <b>{user.username}</b>. Duyurular, ekran görüntüleri ve paketler için{' '}
-                    <Link to="/hesap">hesabına</Link> göz at.
+const NUMBERS_REFRESH = 30 * 1000;
+
+/** Herkese açık canlı sayılar: şu an kaç kişi çevrimiçi, kaç üye, paket ve ekran görüntüsü. */
+function LiveNumbers() {
+    const [stats, setStats] = useState(null);
+    useEffect(() => {
+        let cancelled = false;
+        const load = () => api.stats().then(s => { if (!cancelled) setStats(s); }).catch(() => {});
+        load();
+        const id = setInterval(load, NUMBERS_REFRESH);
+        return () => { cancelled = true; clearInterval(id); };
+    }, []);
+
+    return (
+        <section className="wrap numbers" aria-label="Şu an vulu'da">
+            {stats ? <>
+                <p className="numbers-live">
+                    <span className={'fire' + (stats.online ? '' : ' out')} />
+                    {stats.online ? <>Şu an <b>{stats.online}</b> kişi çevrimiçi{stats.playing > 0 && <>, <b>{stats.playing}</b> kişi oyunda</>}.</> : 'Şu an çevrimiçi kimse yok.'}
                 </p>
-            )}
-
-            <RecentReleases releases={releases} />
+                <dl>
+                    <div><dt>Üye</dt><dd>{stats.members}</dd></div>
+                    <div><dt>Paket</dt><dd>{stats.packs}</dd></div>
+                    <div><dt>Ekran görüntüsü</dt><dd>{stats.shots}</dd></div>
+                    {stats.downloads?.total > 0 && <div><dt>İndirme</dt><dd>{stats.downloads.total}</dd></div>}
+                </dl>
+            </> : <p className="numbers-live placeholder" aria-hidden="true" />}
         </section>
     );
 }
@@ -60,27 +147,20 @@ function RecentReleases({ releases }) {
         .map(p => ({ product: p, release: releases[p.slug] }))
         .filter(x => x.release?.publishedAt)
         .sort((a, b) => new Date(b.release.publishedAt) - new Date(a.release.publishedAt));
-    if (!items.length) return null;
+    if (!items.length) return <p className="muted small">Sürümler yükleniyor…</p>;
 
     return (
-        <section className="section recent">
-            <h2 className="section-title">Son güncellemeler</h2>
-            <ol className="release-feed">
-                {items.map(({ product: p, release: r }, i) => (
-                    <Reveal as="li" key={p.slug} delay={i * 80}>
-                        <img src={asset(p.logo)} alt="" width="36" height="36" />
-                        <div className="grow">
-                            <div className="release-head">
-                                <Link to={'/' + p.slug}><b>{p.name}</b></Link>
-                                <span className="mono">{r.tag}</span>
-                                <small className="muted" title={formatDate(r.publishedAt)}>{timeAgo(r.publishedAt)}</small>
-                            </div>
-                            {firstNote(r.notes) && <p className="muted">{firstNote(r.notes)}</p>}
-                        </div>
-                    </Reveal>
-                ))}
-            </ol>
-        </section>
+        <ol className="rows releases">
+            {items.map(({ product: p, release: r }) => (
+                <li key={p.slug}>
+                    <div className="row-tight">
+                        <Link to={'/' + p.slug} className="grow"><b>{p.name}</b> <span className="mono">{r.tag}</span></Link>
+                        <small className="muted" title={formatDate(r.publishedAt)}>{timeAgo(r.publishedAt)}</small>
+                    </div>
+                    {firstNote(r.notes) && <p className="muted">{firstNote(r.notes)}</p>}
+                </li>
+            ))}
+        </ol>
     );
 }
 

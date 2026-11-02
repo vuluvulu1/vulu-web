@@ -20,7 +20,7 @@ export default function Verify() {
 
     return (
         <section className="wrap auth">
-            <div className="card auth-card">
+            <div className="auth-card">
                 {state.status === 'working' && <><h1>Doğrulanıyor…</h1><p className="muted">Bir saniye.</p></>}
                 {state.status === 'ok' && (
                     <>

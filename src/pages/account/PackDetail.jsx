@@ -41,7 +41,7 @@ export default function PackDetail() {
             <div className="pack-top">
                 {pack.hasCover
                     ? <img className="pack-cover" src={api.packCoverUrl(pack)} alt="" />
-                    : <span className="pack-cover pack-cover-empty">{pack.name[0]}</span>}
+                    : <span className="pack-cover pack-cover-empty">{pack.name[0].toLocaleUpperCase('tr')}</span>}
                 <div className="pack-info">
                     <h1>{pack.name}</h1>
                     <p className="pack-meta">

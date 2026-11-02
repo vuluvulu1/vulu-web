@@ -16,7 +16,8 @@ export default function Product({ product: p }) {
 
     return (
         <>
-            <section className="wrap hero product-hero">
+            <section className="hero product-hero">
+                <div className="wrap hero-grid">
                 <div className="hero-text">
                     <img className="product-logo" src={asset(p.logo)} alt="" width="88" height="88" />
                     <h1>{p.name}</h1>
@@ -25,7 +26,7 @@ export default function Product({ product: p }) {
                         <a className="btn btn-primary btn-lg" href={download?.url || release?.pageUrl || repoUrl + '/releases/latest'}>
                             <Icon name="download" size={18} /> İndir
                         </a>
-                        <a className="btn btn-lg" href={repoUrl} target="_blank" rel="noreferrer">GitHub</a>
+                        <a className="btn btn-lg btn-quiet" href={repoUrl} target="_blank" rel="noreferrer">GitHub</a>
                     </div>
                     <p className="hero-meta">
                         {release
@@ -33,7 +34,8 @@ export default function Product({ product: p }) {
                             : p.platforms}
                     </p>
                 </div>
-                {p.shot && <img className="hero-shot" src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" />}
+                {p.shot && <div className="hero-shot"><img src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" /></div>}
+                </div>
             </section>
 
             <Reveal as="section" className="wrap section">

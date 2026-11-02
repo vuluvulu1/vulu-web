@@ -103,6 +103,15 @@ export const api = {
     deleteComment: (id, commentId) => request(`/shots/${id}/comments/${commentId}`, { method: 'DELETE', auth: true }),
     likeShot: (id, like) => request(`/shots/${id}/like`, { method: 'POST', body: { like }, auth: true }),
     shotImagePath: (id, size) => `/shots/${id}/${size}`,
+    shot: id => request(`/shots/${id}`, { auth: true }),
+    /** { image, thumb } base64 (WebP ya da JPEG), caption, packName, packId, width, height */
+    postShot: body => request('/shots', { method: 'POST', body, auth: true }),
+    deleteShot: id => request(`/shots/${id}`, { method: 'DELETE', auth: true }),
+    /** Ekran görüntülerine since'ten beri gelen beğeni ve yorumlar: { events, now } */
+    shotEvents: since => request(`/shots/events?since=${encodeURIComponent(since)}`, { auth: true }),
+
+    /** Launcher'ın Sunucular sekmesindeki liste (açık mı, kaç kişi var bilgisi launcher'ın kendi yoklamasıdır, burada yok). */
+    servers: () => request('/servers', { auth: true }),
 
     // Profiller
     profile: username => request(`/users/${encodeURIComponent(username)}`, { auth: true }),

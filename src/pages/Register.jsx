@@ -58,7 +58,7 @@ export default function Register() {
 
     return (
         <section className="wrap auth">
-            <form className="card auth-card" onSubmit={submit} noValidate>
+            <form className="auth-card" onSubmit={submit} noValidate>
                 <h1>Katılma isteği</h1>
                 <p className="muted">Hesaplar davetle açılıyor. Formu doldur; bir admin isteğini onaylayınca hesabın hazır olur.</p>
                 <label>
@@ -107,7 +107,7 @@ function Sent({ username, email, verifyEmail }) {
     if (!verifyEmail) {
         return (
             <section className="wrap auth">
-                <div className="card auth-card">
+                <div className="auth-card">
                     <h1>İsteğin gönderildi</h1>
                     <p><b>{username}</b> için katılma isteğin bize ulaştı.</p>
                     <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
@@ -117,7 +117,7 @@ function Sent({ username, email, verifyEmail }) {
     }
     return (
         <section className="wrap auth">
-            <div className="card auth-card">
+            <div className="auth-card">
                 <h1>E-postanı kontrol et</h1>
                 <p>
                     <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Kaydını tamamlamak için bağlantıyı aç.

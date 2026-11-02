@@ -244,16 +244,16 @@ function Users() {
                         </div>
                         {u.username !== me.username && (
                             <div className="row-actions">
-                                <button className="btn btn-ghost btn-sm" onClick={() => change(u, { isAdmin: !u.isAdmin },
+                                <button className="btn btn-quiet btn-sm" onClick={() => change(u, { isAdmin: !u.isAdmin },
                                     u.isAdmin ? `${u.username} adminlikten çıkarılsın mı?` : `${u.username} admin yapılsın mı?`)}>
                                     {u.isAdmin ? 'Adminliği al' : 'Admin yap'}
                                 </button>
-                                <button className="btn btn-ghost btn-sm" onClick={() => change(u, { isActive: !u.isActive },
+                                <button className="btn btn-quiet btn-sm" onClick={() => change(u, { isActive: !u.isActive },
                                     u.isActive ? `${u.username} hesabı kapatılsın mı? Giriş yapamaz.` : null)}>
                                     {u.isActive ? 'Kapat' : 'Aç'}
                                 </button>
-                                <button className="btn btn-ghost btn-sm" onClick={() => resetPassword(u)}>Şifre</button>
-                                <button className="btn btn-ghost btn-sm danger" onClick={() => remove(u)}>Sil</button>
+                                <button className="btn btn-quiet btn-sm" onClick={() => resetPassword(u)}>Şifre</button>
+                                <button className="btn btn-quiet btn-sm danger" onClick={() => remove(u)}>Sil</button>
                             </div>
                         )}
                     </li>

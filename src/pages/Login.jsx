@@ -31,7 +31,7 @@ export default function Login() {
 
     return (
         <section className="wrap auth">
-            <form className="card auth-card" onSubmit={submit} noValidate>
+            <form className="auth-card" onSubmit={submit} noValidate>
                 <h1>Giriş yap</h1>
                 <p className="muted">Launcher'da kullandığın kullanıcı adı ve şifreyle giriş yap.</p>
                 <label>

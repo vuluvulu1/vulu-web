@@ -1,16 +1,39 @@
 import { useEffect, useState } from 'react';
 import { api, fetchAuthImage } from './api.js';
+import Icon from './icons.jsx';
 
-/** Kullanıcının avatarı; yüklenmemişse ya da açılmazsa adının baş harfi. */
-export function Avatar({ username, version, size = 40 }) {
+// Resmi olmayan üyelerin baş harfi bu sıcak tonlardan birinin üstünde durur; ad aynı kaldıkça renk de aynı kalır.
+const INITIAL_COLORS = ['#e9a95c', '#9cc3de', '#d98c6a', '#c9a992', '#bfa8d9', '#a7c78a', '#e3c07a', '#8fb3a8'];
+
+function colorOf(username) {
+    let h = 0;
+    for (const ch of username) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return INITIAL_COLORS[h % INITIAL_COLORS.length];
+}
+
+/** Kullanıcının avatarı; yüklenmemişse ya da açılmazsa adının baş harfi. state verilirse çevrimiçi durumu köşede görünür. */
+export function Avatar({ username, version, size = 40, state }) {
     const [failed, setFailed] = useState(false);
-    const style = { width: size, height: size, fontSize: Math.round(size * .4) };
+    const style = { width: size, height: size, fontSize: Math.round(size * .42), '--initial': colorOf(username) };
     return (
-        <span className="avatar" style={style}>
+        <span className={'avatar' + (state ? ' is-' + state : '')} style={style}>
             {version > 0 && !failed
                 ? <img src={api.avatarUrl(username, version)} alt="" onError={() => setFailed(true)} />
-                : <span>{username[0].toUpperCase()}</span>}
+                : <span className="avatar-initial">{username[0].toUpperCase()}</span>}
+            {state && <span className={'presence-dot ' + state} />}
         </span>
+    );
+}
+
+/** Boş liste ya da henüz içerik olmayan bir bölüm için kısa açıklama ve isteğe bağlı bir eylem. */
+export function Empty({ icon, title, children, action }) {
+    return (
+        <div className="empty">
+            {icon && <Icon name={icon} size={26} />}
+            {title && <b>{title}</b>}
+            {children && <p>{children}</p>}
+            {action}
+        </div>
     );
 }
 

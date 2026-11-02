@@ -44,7 +44,7 @@ function PackCard({ pack }) {
             <div className="pack-top">
                 {pack.hasCover && !coverFailed
                     ? <img className="pack-cover" src={api.packCoverUrl(pack)} alt="" onError={() => setCoverFailed(true)} />
-                    : <span className="pack-cover pack-cover-empty">{pack.name[0]}</span>}
+                    : <span className="pack-cover pack-cover-empty">{pack.name[0].toLocaleUpperCase('tr')}</span>}
                 <div className="pack-info">
                     <h3><Link to={`/hesap/paketler/${pack.id}`}>{pack.name}</Link></h3>
                     <p className="pack-meta">

@@ -75,7 +75,7 @@ export function FeedbackSection({ pack }) {
 
             {done.length > 0 && (
                 <>
-                    <button className="btn btn-ghost btn-sm" onClick={() => setShowDone(v => !v)}>
+                    <button className="btn btn-quiet btn-sm" onClick={() => setShowDone(v => !v)}>
                         {showDone ? 'Tamamlananları gizle' : `Tamamlananları göster (${done.length})`}
                     </button>
                     {showDone && done.map(item => <FeedbackItem key={item.id} item={item} users={users} onChange={replace} onDelete={() => drop(item.id)} />)}
@@ -131,7 +131,7 @@ export function FeedbackItem({ item, users, onChange, onDelete }) {
                     <div className="row">
                         <input className="grow" value={reply} onChange={e => setReply(e.target.value)} maxLength={500} placeholder="Yanıt" />
                         <button className="btn btn-primary btn-sm" onClick={() => update({ reply })}>Kaydet</button>
-                        <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(false); setReply(item.reply); }}>Vazgeç</button>
+                        <button className="btn btn-quiet btn-sm" onClick={() => { setEditing(false); setReply(item.reply); }}>Vazgeç</button>
                     </div>
                 )}
                 {(user.isAdmin || item.canDelete) && !editing && (

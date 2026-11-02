@@ -6,6 +6,7 @@ export const PRODUCTS = [
     {
         slug: 'launcher',
         name: 'vulu Launcher',
+        short: 'Launcher',
         logo: 'img/logo.svg',
         summary: 'Minecraft\'ı modlu ya da modsuz oynamak için bir launcher. Instance\'larını, paketlerini, sunucularını ve arkadaşlarınla sohbetini tek yerde toplar.',
         platforms: 'Windows · Android',
@@ -13,6 +14,7 @@ export const PRODUCTS = [
     {
         slug: 'server-panel',
         name: 'vulu Server Panel',
+        short: 'Server Panel',
         logo: 'img/server-panel.svg',
         shot: ['img/server-panel-shot.webp', 'vulu Server Panel\'de çalışan bir sunucunun sayfası'],
         repo: 'vulu-server-panel',
@@ -42,6 +44,7 @@ export const PRODUCTS = [
     {
         slug: 'ftbquests-editor',
         name: 'FTB Quests Editor',
+        short: 'Quests Editor',
         logo: 'img/ftbquests-editor.svg',
         shot: ['img/ftbquests-editor-shot.webp', 'FTB Quests Editor\'de bir görev haritası'],
         repo: 'vulu-ftbquests-editor',

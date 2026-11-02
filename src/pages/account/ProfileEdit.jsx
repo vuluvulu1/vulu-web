@@ -102,7 +102,7 @@ export function BioEditor() {
                 placeholder="Profilinde görünecek kısa bir açıklama." />
             <div className="row">
                 <small className="muted grow">{bio.length}/300</small>
-                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEditing(false)}>Vazgeç</button>
+                <button type="button" className="btn btn-quiet btn-sm" onClick={() => setEditing(false)}>Vazgeç</button>
                 <button className="btn btn-primary btn-sm" disabled={state === 'saving' || bio.trim() === (user.bio || '')}>Kaydet</button>
             </div>
             {state && state !== 'saving' && <p className="status error">{state}</p>}
@@ -149,7 +149,7 @@ function SkinControls() {
             </div>
             <div className="row">
                 <button className="btn btn-sm" disabled={skin.busy} onClick={skin.pick}>{skin.busy ? 'Yükleniyor…' : 'Skin yükle'}</button>
-                {user.skinHash && <button className="btn btn-ghost btn-sm" disabled={skin.busy} onClick={reset}>Varsayılana dön</button>}
+                {user.skinHash && <button className="btn btn-quiet btn-sm" disabled={skin.busy} onClick={reset}>Varsayılana dön</button>}
             </div>
             <small className="muted">64×64 piksel bir PNG olmalı. Skinin oyunda ve sunucularda görünür.</small>
             <input ref={skin.input} type="file" accept="image/png" hidden onChange={skin.onChange} />
