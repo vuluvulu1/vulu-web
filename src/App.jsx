@@ -5,6 +5,8 @@ import { useAuth } from './auth.jsx';
 import { PRODUCTS, productBySlug } from './products.js';
 import { Avatar } from './components.jsx';
 import Icon from './icons.jsx';
+import PixelField from './PixelField.jsx';
+import Wordmark from './Wordmark.jsx';
 import { useFriends } from './social.js';
 import Hub from './pages/Hub.jsx';
 import Launcher from './pages/Launcher.jsx';
@@ -34,6 +36,7 @@ export default function App() {
 
     return (
         <>
+            <PixelField />
             <a className="skip" href="#main">İçeriğe geç</a>
             {status === 'in' ? <MemberHeader /> : <GuestHeader />}
             <main id="main">
@@ -69,7 +72,7 @@ function Brand() {
     return (
         <Link to="/" className="brand" aria-label="vulu ana sayfa">
             <img src={asset('img/logo.svg')} alt="" width="26" height="26" />
-            <span>vulu</span>
+            <Wordmark />
         </Link>
     );
 }
@@ -183,7 +186,7 @@ function Footer() {
             <div className="wrap footer-inner">
                 <div className="footer-brand">
                     <img src={asset('img/logo.svg')} alt="" width="20" height="20" />
-                    <b>vulu</b>
+                    <Wordmark />
                     <span>© {new Date().getFullYear()}</span>
                 </div>
                 <nav className="footer-links" aria-label="Alt menü">
