@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ANDROID_URL, DOWNLOAD_URL, api, asset, githubRelease, latestRelease } from '../api.js';
+import { api, asset, githubRelease, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
 import Icon from '../icons.jsx';
@@ -9,18 +9,9 @@ import { CountUp, Reveal } from '../motion.jsx';
 import { RisingEmbers } from '../effects.jsx';
 import { PRODUCTS } from '../products.js';
 
-// Launcher'ın yapabildikleri; yalnızca launcher sayfasında da anlatılan, gerçekten var olan özellikler
-const ABILITIES = [
-    ['Mod ve paket kur', 'CurseForge ve Modrinth\'teki modları, kaynak paketlerini ve shader\'ları launcher\'dan çıkmadan ara ve kur.'],
-    ['Hazır paketlerle oyna', 'vulu Packs\'teki paketleri tek tıkla kur. Paket güncellenince hangi modun eklenip hangisinin çıkarıldığını görürsün.'],
-    ['Sunuculara bağlan', 'Sunucunun açık olup olmadığını ve içeride kaç kişi olduğunu gör, Bağlan\'a basınca doğrudan içeri gir.'],
-    ['Çökmeyi anla', 'Oyun çökerse launcher kayıtları okur ve sorunun nereden çıktığını sade bir dille anlatır.'],
-    ['Arkadaşlarınla buluş', 'Kim çevrimiçi, kim ne oynuyor gör; şifreli mesajlaş, ekran görüntülerini paylaş.'],
-];
-
-/** Ana sayfa: launcher'ı tanıtır, canlı sayıları ve son sürümleri gösterir, diğer araçlara yönlendirir. */
+/** Ana sayfa: "Ne için buradasın?" — vulu'nun üç ürünü arasından seçim, canlı sayılar ve son sürümler. */
 export default function Hub() {
-    const { status } = useAuth();
+    const { status, user } = useAuth();
     const [releases, setReleases] = useState({});
 
     useEffect(() => {
@@ -30,64 +21,40 @@ export default function Hub() {
         }
     }, []);
 
-    const launcher = releases.launcher;
-    const tools = PRODUCTS.filter(p => p.slug !== 'launcher');
-
     return (
         <>
-            <section className="hero">
-                <div className="wrap hero-grid">
-                    <div className="hero-text">
-                        <HeroTitle />
-                        <p className="lead">
-                            Mod ve paket kur, sunuculara tek tıkla bağlan, arkadaşlarınla aynı oyunda buluş. Java'yı, mod
-                            yükleyicileri ve güncellemeleri launcher halleder.
-                        </p>
-                        <div className="hero-actions">
-                            <a className="btn btn-primary btn-lg" href={DOWNLOAD_URL}><Icon name="windows" size={18} /> Windows için indir</a>
-                            <Link className="btn btn-lg" to="/launcher">Neler yapabildiğine bak</Link>
-                        </div>
-                        <p className="hero-meta">
-                            Ücretsiz ve açık kaynak{launcher && <> · <span className="mono">{launcher.tag}</span></>} · Windows 10 ve 11 ·{' '}
-                            <a href={ANDROID_URL}>Android deneme sürümü</a>
-                        </p>
-                    </div>
-                    <div className="hero-shot" data-tilt="5">
-                        <img src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
-                    </div>
+            <section className="hero hub">
+                <div className="wrap hub-head">
+                    <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" />
+                    <h2 className="hub-question">Ne için buradasın?</h2>
+                    <p className="hub-lead">Oynamak, sunucu kurmak ya da görev kitabı yazmak için üç ücretsiz araç. Birini seç.</p>
                 </div>
+                <div className="wrap products">
+                    {PRODUCTS.map((p, i) => (
+                        <Link key={p.slug} to={'/' + p.slug} className="product-card" data-tilt="5" style={{ '--n': i }}>
+                            <span className="product-logo-wrap"><img src={asset(p.logo)} alt="" width="64" height="64" /></span>
+                            <h3>{p.name}</h3>
+                            <p>{p.summary}</p>
+                            <span className="product-meta">
+                                {p.platforms}{releases[p.slug] && <> · <span className="mono">{releases[p.slug].tag}</span></>}
+                            </span>
+                            <span className="product-go">{p.slug === 'launcher' ? 'İndir ve oyna' : 'Göz at'} <Icon name="right" size={16} /></span>
+                        </Link>
+                    ))}
+                </div>
+                {status === 'in' && (
+                    <p className="wrap hub-account">
+                        Tekrar hoş geldin, <b>{user.username}</b>. Arkadaşlarının paylaştıkları ve kimin ne oynadığı <Link to="/hesap">akışında</Link>.
+                    </p>
+                )}
             </section>
 
             <LiveNumbers />
 
             <div className="wrap home-grid">
                 <Reveal as="section" className="home-block span-7">
-                    <h2>Neler yapabilirsin</h2>
-                    <ul className="rows">
-                        {ABILITIES.map(([title, text], i) => <li key={title} style={{ '--n': i }}><b>{title}.</b> {text}</li>)}
-                    </ul>
-                    <p className="more"><Link to="/launcher">Launcher'ın bütün özellikleri</Link></p>
-                </Reveal>
-
-                <Reveal as="section" className="home-block span-5" delay={80}>
                     <h2>Son güncellemeler</h2>
                     <RecentReleases releases={releases} />
-                </Reveal>
-
-                <Reveal as="section" className="home-block span-7">
-                    <h2>Paket ya da sunucu hazırlayanlar için</h2>
-                    <div className="tools">
-                        {tools.map(p => (
-                            <Link key={p.slug} to={'/' + p.slug} className="tool">
-                                <img src={asset(p.logo)} alt="" width="44" height="44" />
-                                <span>
-                                    <b>{p.name}</b>
-                                    <span>{p.summary}</span>
-                                    <small>{p.platforms}{releases[p.slug] && <> · <span className="mono">{releases[p.slug].tag}</span></>}</small>
-                                </span>
-                            </Link>
-                        ))}
-                    </div>
                 </Reveal>
 
                 <Reveal as="section" className="home-block span-5 join" delay={80}>

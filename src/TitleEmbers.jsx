@@ -6,7 +6,8 @@ import { reducedMotion } from './motion.jsx';
 // sonra yazının üstünden sürekli közler yükselir; imleç yazının üstündeyken daha çok yanar.
 // Kıvılcımlar harflerin gerçek şeklinin içinden doğar (Wordmark'taki yollar Path2D olarak kullanılır).
 
-const VIEW = { x: -3, y: -831, w: 4401, h: 1182 };   // Wordmark full viewBox
+// Wordmark'ın viewBox'ları: "vulu Launcher" ve yalnızca "vulu"
+const VIEWS = { full: { x: -3, y: -831, w: 4401, h: 1182 }, short: { x: -3, y: -650, w: 1320, h: 670 } };
 const ABOVE = 180;                                    // tuvalin yazının üstüne taşan kısmı (px)
 const SIDE = 60;
 const DRAW_START = 0.5, DRAW_STEP = 0.07;             // styles.css'teki ink-fill zamanlamasıyla aynı (sn)
@@ -24,7 +25,7 @@ function bbox(d) {
     return { x0, y0, x1, y1 };
 }
 
-export default function TitleEmbers({ targetRef }) {
+export default function TitleEmbers({ targetRef, full = true }) {
     const ref = useRef(null);
 
     useEffect(() => {
@@ -33,7 +34,8 @@ export default function TitleEmbers({ targetRef }) {
         if (!canvas || !target) return;
         const g = canvas.getContext('2d');
         const probe = document.createElement('canvas').getContext('2d');
-        const glyphs = GLYPHS.map(d => ({ path: new Path2D(d), box: bbox(d) }));
+        const VIEW = full ? VIEWS.full : VIEWS.short;
+        const glyphs = (full ? GLYPHS : GLYPHS.slice(0, 4)).map(d => ({ path: new Path2D(d), box: bbox(d) }));
 
         let w = 0, h = 0, scale = 1, dpr = 1, raf = 0, running = false, hot = false;
         const start = performance.now();
@@ -144,21 +146,21 @@ export default function TitleEmbers({ targetRef }) {
             target.removeEventListener('pointerenter', enter);
             target.removeEventListener('pointerleave', leave);
         };
-    }, [targetRef]);
+    }, [targetRef, full]);
 
     return <canvas ref={ref} className="title-embers" aria-hidden="true" style={{ top: -ABOVE, left: -SIDE }} />;
 }
 
-/** Tanıtım sayfalarının başlığı: el yazısı "vulu Launcher" ve harflerinden kopan kıvılcımlar. */
-export function HeroTitle() {
+/** Tanıtım sayfalarının başlığı: el yazısı "vulu Launcher" (full) ya da "vulu" ve harflerinden kopan kıvılcımlar. */
+export function HeroTitle({ full = true, label = 'vulu Launcher', className = '' }) {
     const box = useRef(null);
     return (
-        <h1 className="hero-title">
+        <h1 className={'hero-title' + (className ? ' ' + className : '')}>
             <span className="hero-title-box" ref={box}>
-                <Wordmark full animate shine />
-                <TitleEmbers targetRef={box} />
+                <Wordmark full={full} animate shine />
+                <TitleEmbers targetRef={box} full={full} />
             </span>
-            <span className="sr-only">vulu Launcher</span>
+            <span className="sr-only">{label}</span>
         </h1>
     );
 }

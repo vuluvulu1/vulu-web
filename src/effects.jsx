@@ -7,7 +7,7 @@ import { reducedMotion } from './motion.jsx';
 //   - eğim: [data-tilt] öğeler imlece doğru hafifçe döner (--rx/--ry, --gx/--gy parlama).
 // Yalnızca fareli cihazlarda ve "hareketi azalt" kapalıyken çalışır.
 
-export const SPOT_SELECTOR = '.panel, .rail-card, .post, .pf-section, .pf-hero, .tool, .join, .card, .feedback-item, .auth-card, .inbox, .share, .pack-tile, .numbers, .announcement';
+export const SPOT_SELECTOR = '.panel, .rail-card, .post, .pf-section, .pf-hero, .tool, .join, .card, .feedback-item, .auth-card, .inbox, .share, .pack-tile, .numbers, .announcement, .product-card';
 
 export function usePointerLight() {
     useEffect(() => {
