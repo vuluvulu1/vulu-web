@@ -84,7 +84,7 @@ function Inbox({ users, onOpenShot }) {
                 {requests.map(name => (
                     <li key={'r' + name} className="line">
                         <Avatar username={name} version={users[name]?.avatarVersion} size={34} />
-                        <span className="grow"><Link to={`/u/${name}`}><b>{name}</b></Link> seninle arkadaş olmak istiyor.</span>
+                        <span className="grow"><Link to={`/u/${name}`}><b>{name}</b></Link> seni arkadaş olarak eklemek istiyor.</span>
                         <span className="line-actions">
                             <button className="btn btn-primary btn-sm" disabled={busy === name} onClick={e => act('accept', name, e)}>Kabul et</button>
                             <button className="btn btn-quiet btn-sm" disabled={busy === name} onClick={() => act('drop', name)}>Reddet</button>
@@ -112,8 +112,8 @@ function ShotFeed({ list, users, open }) {
 
     if (!loading && !error && !shots.length) {
         return (
-            <Empty icon="image" title="Akış şimdilik sessiz">
-                İlk görüntüyü yukarıdan sen paylaş ya da oyundayken launcher'ın Sosyal sekmesini kullan.
+            <Empty icon="image" title="Henüz paylaşım yok">
+                İlk ekran görüntüsünü yukarıdan paylaşabilir ya da oyundayken launcher'ın Sosyal sekmesini kullanabilirsin.
             </Empty>
         );
     }
@@ -238,7 +238,7 @@ function Servers({ users }) {
                     );
                 })}
             </ul>
-            <p className="muted small">Bağlanmak için launcher'da Sunucular sekmesini açman yeterli.</p>
+            <p className="muted small">Bağlanmak için launcher'da Sunucular sekmesini aç.</p>
         </section>
     );
 }

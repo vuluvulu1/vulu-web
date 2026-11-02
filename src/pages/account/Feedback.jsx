@@ -11,9 +11,8 @@ export default function Feedback() {
     return (
         <div className="stack-lg">
             <p className="muted">
-                Bir hata mı buldun, aklında bir öneri ya da "şu modpack de eklensin" gibi bir istek mi var? Buraya yaz,
-                hepsini okuyoruz. Konu belirli bir paketle ilgiliyse <Link to="/hesap/paketler">o paketin sayfasından</Link>
-                yazarsan takip etmemiz daha kolay olur.
+                Hata, öneri ya da istek (örneğin eklenmesini istediğin bir modpack) için buraya yaz. Konu belirli bir
+                paketle ilgiliyse <Link to="/hesap/paketler">paketin sayfasından</Link> yazman takibi kolaylaştırır.
             </p>
             <FeedbackSection pack="general" />
         </div>
@@ -61,7 +60,7 @@ export function FeedbackSection({ pack }) {
                     ))}
                 </div>
                 <textarea value={text} onChange={e => setText(e.target.value)} maxLength={1000} rows={3}
-                    placeholder={kind === 'request' ? 'Neyin eklenmesini istersin?' : 'Ne oldu, ne önerirsin?'} />
+                    placeholder={kind === 'request' ? 'Ne eklenmesini istiyorsun?' : 'Ne oldu, ne öneriyorsun?'} />
                 <div className="row">
                     <small className="muted grow">{text.length}/1000</small>
                     <button className="btn btn-primary btn-sm" disabled={busy || text.trim().length < 3}>Gönder</button>
@@ -70,7 +69,7 @@ export function FeedbackSection({ pack }) {
             {error && <p className="status error">{error}</p>}
 
             {items === null && !error && <p className="muted small">Yükleniyor…</p>}
-            {items && !open.length && <p className="muted small">Şu an açık bir geri bildirim yok.</p>}
+            {items && !open.length && <p className="muted small">Açık geri bildirim yok.</p>}
             {open.map(item => <FeedbackItem key={item.id} item={item} users={users} onChange={replace} onDelete={() => drop(item.id)} />)}
 
             {done.length > 0 && (

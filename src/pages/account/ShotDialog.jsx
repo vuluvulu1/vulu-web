@@ -110,7 +110,7 @@ export function ShotDialog({ shot, users, onChange, onClose, onDelete, onPrev, o
     }
 
     async function removeShot() {
-        if (!confirm('Bu ekran görüntüsünü silmek istediğine emin misin? Beğeniler ve yorumlar da onunla birlikte silinir.')) return;
+        if (!confirm('Bu ekran görüntüsü silinsin mi? Beğeniler ve yorumlar da silinir.')) return;
         try {
             await api.deleteShot(shot.id);
             onDelete(shot.id);
@@ -161,7 +161,7 @@ export function ShotDialog({ shot, users, onChange, onClose, onDelete, onPrev, o
 
                 <div className="comments">
                     {comments === null && !error && <p className="muted small">Yorumlar yükleniyor…</p>}
-                    {comments?.length === 0 && <p className="muted small">Henüz yorum yok. İlk yorumu sen yaz.</p>}
+                    {comments?.length === 0 && <p className="muted small">Henüz yorum yok.</p>}
                     {comments?.map(c => (
                         <div className="comment" key={c.id}>
                             <Avatar username={c.author} version={users[c.author]?.avatarVersion} size={28} />

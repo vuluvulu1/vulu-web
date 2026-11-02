@@ -12,7 +12,7 @@ export default function Verify() {
     useEffect(() => {
         if (sent.current) return;   // React geliştirme modunda effect iki kez çalışır; token bir kez harcanır
         sent.current = true;
-        if (!token) { setState({ status: 'error', message: 'Bağlantı eksik görünüyor. E-postadaki bağlantıyı eksiksiz açtığından emin olur musun?' }); return; }
+        if (!token) { setState({ status: 'error', message: 'Bağlantı eksik görünüyor. E-postadaki bağlantıyı tam olarak açtığından emin ol.' }); return; }
         api.verifyEmail(token)
             .then(r => setState({ status: 'ok', username: r.username }))
             .catch(err => setState({ status: 'error', message: err.message }));
@@ -21,11 +21,11 @@ export default function Verify() {
     return (
         <section className="wrap auth">
             <div className="auth-card">
-                {state.status === 'working' && <><h1>Doğrulanıyor…</h1><p className="muted">Bir saniye, hemen bakıyoruz.</p></>}
+                {state.status === 'working' && <><h1>Doğrulanıyor…</h1><p className="muted">Bir saniye.</p></>}
                 {state.status === 'ok' && (
                     <>
                         <h1>E-postan doğrulandı</h1>
-                        <p>Teşekkürler, <b>{state.username}</b>. Senden başka bir şey beklemiyoruz; admin onayından sonra hesabın hazır olacak.</p>
+                        <p>Teşekkürler, <b>{state.username}</b>. Admin onayından sonra hesabın açılacak; başka bir şey yapmana gerek yok.</p>
                         <Link className="btn btn-primary" to="/">Ana sayfaya dön</Link>
                     </>
                 )}

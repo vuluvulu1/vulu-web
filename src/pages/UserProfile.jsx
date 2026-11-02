@@ -22,7 +22,7 @@ export default function UserProfile() {
             <section className="wrap auth">
                 <div className="auth-card">
                     <h1>{username}</h1>
-                    <p className="muted">Profiller yalnızca üyelere açık. Bu profili görmek için giriş yapman yeterli.</p>
+                    <p className="muted">Profiller yalnızca üyelere açık. Görmek için giriş yap.</p>
                     <Link className="btn btn-primary" to="/giris">Giriş yap</Link>
                     <p className="auth-alt">Hesabın yok mu? <Link to="/kayit">Katıl</Link></p>
                 </div>
@@ -89,7 +89,7 @@ function ProfileView({ username, isMe }) {
                 <div className="pf-main">
                     <section className="pf-section" id="pf-about">
                         <h2>Hakkında</h2>
-                        {isMe ? <BioEditor /> : <p className={'pf-bio' + (p.bio ? '' : ' empty')}>{p.bio || 'Henüz kendinden bahsetmemiş.'}</p>}
+                        {isMe ? <BioEditor /> : <p className={'pf-bio' + (p.bio ? '' : ' empty')}>{p.bio || 'Henüz bir şey yazmamış.'}</p>}
                     </section>
 
                     <ProfileShots list={shots} isMe={isMe} />
@@ -146,7 +146,7 @@ function TopPlayed({ playtime, isMe }) {
                         </li>
                     ))}
                 </ol>
-            ) : <p className="muted small">{isMe ? 'Burası henüz boş. Launcher\'la oynadıkça dolacak; ayarlardan gizlediysen orada da açabilirsin.' : 'Oynama süresi henüz yok ya da gizli.'}</p>}
+            ) : <p className="muted small">{isMe ? 'Henüz kayıtlı oynama süren yok. Launcher\'la oynadıkça burada görünür; ayarlardan gizlediysen oradan açabilirsin.' : 'Oynama süresi yok ya da gizli.'}</p>}
         </section>
     );
 }
@@ -158,8 +158,8 @@ function AccountBox({ createdAt }) {
             <h2>Hesap</h2>
             {createdAt && <p className="small">Üyelik: {formatDate(createdAt)}</p>}
             <p className="muted small">
-                Şifreni launcher'daki profil sayfandan değiştirebilirsin. Şifreli mesajlarının anahtarı şifrene bağlı olduğu
-                için bu işlemi şimdilik yalnızca launcher'da yapabiliyoruz.
+                Şifreni launcher'daki profil sayfasından değiştirebilirsin. Şifreli mesajlarının anahtarı şifrene bağlı
+                olduğu için bu işlem şimdilik yalnızca launcher'da yapılabiliyor.
             </p>
             <button className="btn btn-sm" onClick={logout}><Icon name="logout" size={16} /> Çıkış yap</button>
         </section>
@@ -209,7 +209,7 @@ function ProfileShots({ list, isMe }) {
             <h2>Ekran görüntüleri</h2>
             {!loading && !shots.length && (
                 isMe
-                    ? <Empty icon="image">Henüz bir ekran görüntüsü paylaşmadın. İlkini <Link to="/hesap">akıştan</Link> ya da launcher'ın Sosyal sekmesinden paylaşabilirsin.</Empty>
+                    ? <Empty icon="image">Henüz ekran görüntüsü paylaşmadın. <Link to="/hesap">Akıştan</Link> ya da launcher'ın Sosyal sekmesinden paylaşabilirsin.</Empty>
                     : <p className="muted small">Henüz bir ekran görüntüsü paylaşmamış.</p>
             )}
             {shots.length > 0 && (
