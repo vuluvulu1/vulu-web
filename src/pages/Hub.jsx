@@ -4,6 +4,7 @@ import { ANDROID_URL, DOWNLOAD_URL, api, asset, githubRelease, latestRelease } f
 import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
 import Icon from '../icons.jsx';
+import Wordmark from '../Wordmark.jsx';
 import { Reveal } from '../motion.jsx';
 import { PRODUCTS } from '../products.js';
 
@@ -36,7 +37,7 @@ export default function Hub() {
             <section className="hero">
                 <div className="wrap hero-grid">
                     <div className="hero-text">
-                        <h1>vulu Launcher</h1>
+                        <h1 className="hero-title"><Wordmark full animate /><span className="sr-only">vulu Launcher</span></h1>
                         <p className="lead">
                             Mod ve paket kur, sunuculara tek tıkla bağlan, arkadaşlarınla aynı oyunda buluş. Java'yı, mod
                             yükleyicileri ve güncellemeleri launcher halleder.

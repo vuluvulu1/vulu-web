@@ -260,6 +260,28 @@ main, .footer { position: relative; z-index: 1; }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
 .hero-text { min-width: 0; }
 .hero h1 { font-weight: 300; font-size: clamp(40px, 5.6vw, 72px); line-height: 1.03; letter-spacing: -.035em; margin: 0 0 20px; }
+/* "vulu Launcher": launcher'ın açılışındaki el yazısı. Harfler amber kalemle çizilip dolar, sonra arkasında kor gibi
+   yavaşça nefes alan bir ışık kalır. */
+.hero-title { position: relative; margin: 0 0 26px; line-height: 0; }
+.hero-title::before {
+    content: ""; position: absolute; left: -6%; right: 10%; top: 10%; bottom: -6%; z-index: -1; pointer-events: none;
+    background: radial-gradient(ellipse 50% 55% at 40% 60%, rgba(242, 130, 42, .22), transparent 70%);
+    opacity: 0; animation: title-light 1.4s ease-out 1.2s forwards, title-breathe 4.5s ease-in-out 2.6s infinite;
+}
+.hero-title .wordmark { width: min(560px, 100%); filter: drop-shadow(0 0 1px rgba(255, 200, 115, .5)) drop-shadow(0 0 18px rgba(242, 130, 42, .35)) drop-shadow(0 4px 14px rgba(0, 0, 0, .7)); }
+.wordmark.draw path {
+    fill-opacity: 0;
+    stroke: #ffc873; stroke-width: 1.2px; vector-effect: non-scaling-stroke;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 1; stroke-dashoffset: 1;
+    animation:
+        pen-draw .55s cubic-bezier(.45, 0, .35, 1) calc(.15s + var(--i) * .07s) forwards,
+        ink-fill .45s ease-out calc(.5s + var(--i) * .07s) forwards;
+}
+@keyframes pen-draw { to { stroke-dashoffset: 0; } }
+@keyframes ink-fill { to { fill-opacity: 1; stroke-opacity: 0; } }
+@keyframes title-light { to { opacity: 1; } }
+@keyframes title-breathe { 0%, 100% { opacity: 1; } 30% { opacity: .72; } 55% { opacity: .95; } 78% { opacity: .8; } }
 .lead { font-size: clamp(18px, 1.6vw, 20px); line-height: 1.5; color: var(--text); max-width: 31em; margin: 0 0 26px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .hero-meta { margin: 18px 0 0; font-size: 15px; color: var(--muted); }
@@ -742,5 +764,7 @@ main, .footer { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1; transform: none; transition: none; }
     .pop, .bubble.typing i, .mock-progress i, .skeleton { animation: none; }
+    .wordmark.draw path { animation: none; fill-opacity: 1; stroke: none; }
+    .hero-title::before { animation: none; opacity: 1; }
     .gallery-item img { transition: none; }
 }
