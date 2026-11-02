@@ -805,6 +805,33 @@ main, .footer { position: relative; z-index: 1; }
 .hub-account { margin: 28px auto 0; text-align: center; color: var(--muted); }
 @media (max-width: 900px) { .products { grid-template-columns: 1fr; } }
 
+
+/* "vulu" (ana sayfa): harfler alttan yukarı eriyik metalle dolar; dolum çizgisi beyaz-sıcak parlar, sonra içinde akış sürer */
+@property --pour { syntax: "<percentage>"; inherits: true; initial-value: 0%; }
+.hero-title .wordmark.molten {
+    -webkit-mask-image: linear-gradient(to top, #000 var(--pour), transparent calc(var(--pour) + 6%));
+    mask-image: linear-gradient(to top, #000 var(--pour), transparent calc(var(--pour) + 6%));
+    animation: pour 1.9s cubic-bezier(.45, .05, .25, 1) .25s both, molten-glow 3.8s ease-in-out 2.2s infinite;
+}
+.hub-title .hero-title-box::after {
+    content: ""; position: absolute; left: -6%; right: -6%; height: 3px; pointer-events: none; z-index: 1;
+    bottom: calc(var(--pour) - 1.5px); opacity: 0;
+    background: linear-gradient(90deg, transparent, #fff2c8 20%, #ffc873 50%, #fff2c8 80%, transparent);
+    box-shadow: 0 0 18px 4px rgba(255, 170, 70, .8); filter: blur(.5px);
+    animation: pour 1.9s cubic-bezier(.45, .05, .25, 1) .25s both, pour-line 1.9s linear .25s both;
+}
+.wordmark-molten { mix-blend-mode: screen; }
+/* Dolum bitince maske kalkar; yoksa parlama harflerin kutusunda kesilir */
+.hero-title .wordmark.molten.poured { -webkit-mask-image: none; mask-image: none; }
+@keyframes pour { from { --pour: -8%; } to { --pour: 108%; } }
+@keyframes pour-line { 0% { opacity: 0; } 8%, 85% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes molten-glow {
+    0%, 100% { filter: drop-shadow(0 0 1px rgba(255, 210, 140, .6)) drop-shadow(0 0 16px rgba(255, 110, 30, .45)) drop-shadow(0 6px 18px rgba(0, 0, 0, .7)); }
+    50% { filter: drop-shadow(0 0 2px rgba(255, 230, 170, .8)) drop-shadow(0 0 30px rgba(255, 110, 30, .7)) drop-shadow(0 6px 18px rgba(0, 0, 0, .7)); }
+}
+.hub-title .hero-title-box:hover .wordmark.molten { animation-duration: 1.9s, 1.2s; }
+.hub-title::before { background: radial-gradient(ellipse 60% 60% at 50% 75%, rgba(255, 100, 30, .3), rgba(232, 105, 58, .08) 50%, transparent 75%); }
+
 /* ══ Işık ve hareket (effects.jsx) ═══════════════════════════════════════════════════════════════════════ */
 
 /* Meşale: imlecin çevresini bütün sayfada hafifçe aydınlatan sıcak ışık */
@@ -964,4 +991,6 @@ main, .footer { position: relative; z-index: 1; }
     *, ::before, ::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
     .rows > li { opacity: 1; transform: none; }
     .torch { display: none; }
+    .wordmark.molten { -webkit-mask-image: none; mask-image: none; }
+    .hub-title .hero-title-box::after { display: none; }
 }

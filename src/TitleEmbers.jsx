@@ -8,8 +8,9 @@ import { reducedMotion } from './motion.jsx';
 
 // Wordmark'ın viewBox'ları: "vulu Launcher" ve yalnızca "vulu"
 const VIEWS = { full: { x: -3, y: -831, w: 4401, h: 1182 }, short: { x: -3, y: -650, w: 1320, h: 670 } };
-const ABOVE = 180;                                    // tuvalin yazının üstüne taşan kısmı (px)
-const SIDE = 60;
+// Tuvalin yazının dışına taşan kısımları (px): közler yukarı çıkar, kaynak kıvılcımları yana fışkırıp aşağı düşer
+const MARGINS = { rise: { above: 180, below: 20, side: 60 }, forge: { above: 90, below: 150, side: 160 } };
+const FLOOR = 70;                                     // forge: kıvılcımların sektiği zemin, yazının altından (px)
 const DRAW_START = 0.5, DRAW_STEP = 0.07;             // styles.css'teki ink-fill zamanlamasıyla aynı (sn)
 const COLORS = ['#fff4d6', '#ffd59a', '#ffc873', '#f2a33a', '#e8693a'];
 
@@ -25,7 +26,8 @@ function bbox(d) {
     return { x0, y0, x1, y1 };
 }
 
-export default function TitleEmbers({ targetRef, full = true }) {
+export default function TitleEmbers({ targetRef, full = true, mode = 'rise' }) {
+    const { above: ABOVE, below: BELOW, side: SIDE } = MARGINS[mode];
     const ref = useRef(null);
 
     useEffect(() => {
@@ -37,7 +39,7 @@ export default function TitleEmbers({ targetRef, full = true }) {
         const VIEW = full ? VIEWS.full : VIEWS.short;
         const glyphs = (full ? GLYPHS : GLYPHS.slice(0, 4)).map(d => ({ path: new Path2D(d), box: bbox(d) }));
 
-        let w = 0, h = 0, scale = 1, dpr = 1, raf = 0, running = false, hot = false;
+        let w = 0, h = 0, scale = 1, dpr = 1, raf = 0, running = false, hot = false, textBottom = 0, nextBurst = 1.2;
         const start = performance.now();
         let last = start;
         const embers = [];
@@ -46,7 +48,8 @@ export default function TitleEmbers({ targetRef, full = true }) {
         function resize() {
             const r = target.getBoundingClientRect();
             dpr = Math.min(window.devicePixelRatio || 1, 2);
-            w = r.width + SIDE * 2; h = r.height + ABOVE + 20;
+            w = r.width + SIDE * 2; h = r.height + ABOVE + BELOW;
+            textBottom = ABOVE + r.height;
             canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
             canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
             g.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -78,10 +81,66 @@ export default function TitleEmbers({ targetRef, full = true }) {
             });
         }
 
+        /** Kaynak kıvılcımı: bir noktadan yana ve yukarı hızla fışkırır, yerçekimiyle düşer, zeminde bir kez seker. */
+        function forgeBurst(i, count) {
+            const p = pointIn(i);
+            if (!p) return;
+            const dir = Math.random() < .5 ? -1 : 1;
+            for (let k = 0; k < count; k++) {
+                const speed = 120 + Math.random() * 260;
+                const angle = -Math.PI / 2 + dir * (.25 + Math.random() * 1.05);
+                embers.push({
+                    x: p.x, y: p.y, px: p.x, py: p.y,
+                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                    life: 0, max: .7 + Math.random() * .9, size: Math.random() < .3 ? 2 : 1.4,
+                    phase: Math.random() * 6.28, bounced: false, forge: true,
+                    color: COLORS[Math.floor(Math.random() * 3)],
+                });
+            }
+        }
+
+        function forgeFrame(t, dt) {
+            // Dolum sırasında eriyik yükseldikçe sık, sonra arada bir kıvılcım fışkırır; imleç üstündeyken sürekli
+            if (t > nextBurst) {
+                forgeBurst(Math.floor(Math.random() * glyphs.length), 10 + Math.floor(Math.random() * 18));
+                nextBurst = t + (hot ? .12 + Math.random() * .2 : t < 2.4 ? .15 : .7 + Math.random() * 1.4);
+            }
+            g.clearRect(0, 0, w, h);
+            g.globalCompositeOperation = 'lighter';
+            g.lineCap = 'round';
+            const floor = textBottom + FLOOR;
+            for (let i = embers.length - 1; i >= 0; i--) {
+                const e = embers[i];
+                e.life += dt;
+                if (e.life >= e.max) { embers.splice(i, 1); continue; }
+                e.px = e.x; e.py = e.y;
+                e.vy += 520 * dt;                                  // yerçekimi
+                e.vx *= 1 - .9 * dt;
+                e.x += e.vx * dt; e.y += e.vy * dt;
+                if (e.y > floor && !e.bounced) { e.y = floor; e.vy *= -.32; e.vx *= .6; e.bounced = true; }
+                const k = e.life / e.max;
+                const alpha = Math.max(0, 1 - k * k) * (.75 + .25 * Math.sin(t * 30 + e.phase));
+                const color = k > .7 ? COLORS[4] : k > .4 ? COLORS[3] : e.color;
+                // Hızla orantılı ince bir iz: kaynak kıvılcımı gibi çizgi hâlinde
+                const tx = e.x - e.vx * .028, ty = e.y - e.vy * .028;
+                g.globalAlpha = alpha * .25;
+                g.strokeStyle = COLORS[3];
+                g.lineWidth = e.size * 3.5;
+                g.beginPath(); g.moveTo(tx, ty); g.lineTo(e.x, e.y); g.stroke();
+                g.globalAlpha = alpha;
+                g.strokeStyle = color;
+                g.lineWidth = e.size;
+                g.beginPath(); g.moveTo(tx, ty); g.lineTo(e.x, e.y); g.stroke();
+            }
+            g.globalAlpha = 1;
+            g.globalCompositeOperation = 'source-over';
+        }
+
         function frame(now) {
             const dt = Math.min(.05, (now - last) / 1000);
             last = now;
             const t = (now - start) / 1000;
+            if (mode === 'forge') { forgeFrame(t, dt); raf = requestAnimationFrame(frame); return; }
 
             // Harfler çizilirken: her harf dolmaya başlayınca ondan kıvılcım fışkırır
             glyphs.forEach((_, i) => {
@@ -146,19 +205,22 @@ export default function TitleEmbers({ targetRef, full = true }) {
             target.removeEventListener('pointerenter', enter);
             target.removeEventListener('pointerleave', leave);
         };
-    }, [targetRef, full]);
+    }, [targetRef, full, mode]);
 
     return <canvas ref={ref} className="title-embers" aria-hidden="true" style={{ top: -ABOVE, left: -SIDE }} />;
 }
 
-/** Tanıtım sayfalarının başlığı: el yazısı "vulu Launcher" (full) ya da "vulu" ve harflerinden kopan kıvılcımlar. */
-export function HeroTitle({ full = true, label = 'vulu Launcher', className = '' }) {
+/**
+ * Tanıtım sayfalarının başlığı: el yazısı "vulu Launcher" (full) ya da "vulu".
+ * mode="rise": harfler kalemle çizilir, közler yükselir. mode="forge": harfler alttan eriyik metalle dolar, kaynak kıvılcımları fışkırır.
+ */
+export function HeroTitle({ full = true, label = 'vulu Launcher', className = '', mode = 'rise' }) {
     const box = useRef(null);
     return (
         <h1 className={'hero-title' + (className ? ' ' + className : '')}>
             <span className="hero-title-box" ref={box}>
-                <Wordmark full={full} animate shine />
-                <TitleEmbers targetRef={box} full={full} />
+                <Wordmark full={full} animate={mode === 'rise'} shine={mode === 'rise'} molten={mode === 'forge'} />
+                <TitleEmbers targetRef={box} full={full} mode={mode} />
             </span>
             <span className="sr-only">{label}</span>
         </h1>

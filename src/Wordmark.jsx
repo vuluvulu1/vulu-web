@@ -22,13 +22,13 @@ export const GLYPHS = [
  * animate: açılış ekranındaki gibi harfler sırayla kalemle çizilip amberle dolar.
  */
 // Süs olarak çizilir (aria-hidden); başlıklarda yanına .sr-only bir metin eşi konur.
-export default function Wordmark({ full = false, animate = false, shine = false, className = '' }) {
+export default function Wordmark({ full = false, animate = false, shine = false, molten = false, className = '' }) {
     const id = useId().replace(/:/g, '');
     const glyphs = full ? GLYPHS : GLYPHS.slice(0, 4);
     const viewBox = full ? '-3 -831 4401 1182' : '-3 -650 1320 670';
     return (
-        <svg className={'wordmark' + (animate ? ' draw' : '') + (className ? ' ' + className : '')} viewBox={viewBox}
-            aria-hidden="true">
+        <svg className={'wordmark' + (animate ? ' draw' : '') + (molten ? ' molten' : '') + (className ? ' ' + className : '')} viewBox={viewBox}
+            aria-hidden="true" onAnimationEnd={molten ? e => { if (e.animationName === 'pour') e.currentTarget.classList.add('poured'); } : undefined}>
             <defs>
                 <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="-3" y1="-831" x2="4398" y2="351">
                     <stop offset="0" stopColor="#a8601e" />
@@ -47,8 +47,20 @@ export default function Wordmark({ full = false, animate = false, shine = false,
                             keyTimes="0; .42; 1" dur="6.5s" begin="2.1s" repeatCount="indefinite" />
                     </linearGradient>
                 )}
+                {/* Eriyik: harflerin içinde yavaşça akan beyaz-sıcak ve kızıl damarlar */}
+                {molten && (
+                    <linearGradient id={id + 'm'} gradientUnits="userSpaceOnUse" x1="0" y1="-650" x2="700" y2="20" spreadMethod="reflect">
+                        <stop offset="0" stopColor="#ff5a1f" stopOpacity=".0" />
+                        <stop offset=".35" stopColor="#ff7a2a" stopOpacity=".55" />
+                        <stop offset=".5" stopColor="#fff2c8" stopOpacity=".9" />
+                        <stop offset=".65" stopColor="#ff7a2a" stopOpacity=".55" />
+                        <stop offset="1" stopColor="#ff5a1f" stopOpacity="0" />
+                        <animateTransform attributeName="gradientTransform" type="translate" values="-700 0; 700 0" dur="5s" repeatCount="indefinite" />
+                    </linearGradient>
+                )}
             </defs>
             {glyphs.map((d, i) => <path key={i} d={d} pathLength="1" fill={`url(#${id})`} style={{ '--i': i }} />)}
+            {molten && <g className="wordmark-molten">{glyphs.map((d, i) => <path key={i} d={d} fill={`url(#${id}m)`} />)}</g>}
             {shine && <g className="wordmark-shine">{glyphs.map((d, i) => <path key={i} d={d} fill={`url(#${id}s)`} />)}</g>}
         </svg>
     );

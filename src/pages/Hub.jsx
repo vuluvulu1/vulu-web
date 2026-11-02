@@ -25,7 +25,7 @@ export default function Hub() {
         <>
             <section className="hero hub">
                 <div className="wrap hub-head">
-                    <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" />
+                    <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" mode="forge" />
                     <h2 className="hub-question">Ne için buradasın?</h2>
                     <p className="hub-lead">Oynamak, sunucu kurmak ya da görev kitabı yazmak için üç ücretsiz araç. Birini seç.</p>
                 </div>
