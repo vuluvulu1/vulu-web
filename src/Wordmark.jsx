@@ -2,7 +2,7 @@ import { useId } from 'react';
 
 // Launcher'ın açılış ekranındaki "vulu Launcher" yazısı: Great Vibes harfleri SVG yola çevrilmiş hâli
 // (vulu-launcher/Launcher/wwwroot/index.html). İlk dört yol "vulu", geri kalanı "Launcher".
-const GLYPHS = [
+export const GLYPHS = [
     'M92 7Q61 7 49.0 -9.0Q37 -25 37 -50Q37 -76 46.0 -109.0Q55 -142 70 -183Q59 -183 59 -193Q67 -213 76.5 -238.5Q86 -264 86 -296Q86 -312 82.0 -323.0Q78 -334 70 -336Q70 -336 80.5 -338.0Q91 -340 103.0 -342.0Q115 -344 119 -344Q125 -345 130.0 -345.5Q135 -346 139 -346Q149 -346 152.5 -338.0Q156 -330 155 -303Q154 -278 145.0 -242.5Q136 -207 126 -181Q113 -147 102.0 -112.0Q91 -77 91 -54Q91 -34 102 -28Q110 -25 116 -25Q139 -25 161.0 -47.0Q183 -69 202.5 -100.5Q222 -132 235 -161Q229 -184 229 -216Q229 -250 237.0 -285.0Q245 -320 262.0 -343.5Q279 -367 306 -367Q325 -367 325 -350Q325 -346 315.5 -316.0Q306 -286 291.0 -245.0Q276 -204 259 -166Q255 -158 252 -150Q256 -133 267.0 -122.5Q278 -112 294 -112Q314 -112 331.5 -130.5Q349 -149 368 -193Q380 -193 380 -184Q364 -144 341.5 -120.0Q319 -96 291 -96Q257 -96 242 -131Q225 -96 202.0 -64.5Q179 -33 151.5 -13.0Q124 7 92 7Z',
     'M397 0Q386 0 370.5 -5.0Q355 -10 343.5 -23.5Q332 -37 332 -64Q332 -90 349.0 -124.0Q366 -158 379 -184Q368 -184 368 -193Q369 -196 377.0 -212.0Q385 -228 396.0 -250.0Q407 -272 417.5 -292.5Q428 -313 434 -324Q446 -346 472 -346H534Q517 -333 503.5 -317.5Q490 -302 470 -261Q470 -261 463.0 -247.0Q456 -233 445.5 -211.5Q435 -190 424.5 -168.0Q414 -146 407 -131Q394 -103 390.0 -86.5Q386 -70 386 -56Q386 -23 408 -23Q432 -23 466 -62Q494 -95 521.0 -141.0Q548 -187 572.5 -236.0Q597 -285 616 -324Q627 -346 655 -346H710Q688 -328 665.5 -292.0Q643 -256 616 -200Q609 -185 598.0 -162.0Q587 -139 578.5 -113.0Q570 -87 570 -61Q570 -26 595 -26Q629 -26 661.0 -73.0Q693 -120 724 -193Q732 -193 733.5 -192.0Q735 -191 736 -184Q725 -157 709.5 -125.5Q694 -94 674.5 -65.0Q655 -36 631.5 -18.0Q608 0 580 0Q555 0 539.0 -18.5Q523 -37 523 -71Q523 -98 533 -129Q516 -99 494.0 -69.0Q472 -39 447.0 -19.5Q422 0 397 0Z',
     'M771 3Q734 3 716.5 -19.5Q699 -42 699 -73Q699 -105 708.0 -139.0Q717 -173 724 -196Q740 -252 764.5 -315.5Q789 -379 818.5 -440.5Q848 -502 877 -551Q900 -590 926.5 -609.5Q953 -629 973 -629Q989 -629 998.5 -617.5Q1008 -606 1008 -583Q1008 -567 1002.5 -545.0Q997 -523 984 -495Q949 -417 900.5 -339.0Q852 -261 778 -193Q766 -165 758.0 -133.0Q750 -101 750 -81Q750 -19 792 -19Q824 -19 863.0 -65.5Q902 -112 937 -193Q941 -193 945.0 -191.5Q949 -190 949 -184Q938 -157 921.5 -124.5Q905 -92 883.5 -63.0Q862 -34 834.0 -15.5Q806 3 771 3ZM786 -225Q822 -262 856.0 -310.5Q890 -359 919.5 -411.5Q949 -464 969 -511Q976 -526 980.5 -544.0Q985 -562 985 -574Q985 -588 978 -588Q974 -588 966.0 -580.5Q958 -573 945 -555Q926 -530 903.5 -487.0Q881 -444 858.0 -395.0Q835 -346 816.0 -300.5Q797 -255 786 -225Z',
@@ -22,7 +22,7 @@ const GLYPHS = [
  * animate: açılış ekranındaki gibi harfler sırayla kalemle çizilip amberle dolar.
  */
 // Süs olarak çizilir (aria-hidden); başlıklarda yanına .sr-only bir metin eşi konur.
-export default function Wordmark({ full = false, animate = false, className = '' }) {
+export default function Wordmark({ full = false, animate = false, shine = false, className = '' }) {
     const id = useId().replace(/:/g, '');
     const glyphs = full ? GLYPHS : GLYPHS.slice(0, 4);
     const viewBox = full ? '-3 -831 4401 1182' : '-3 -650 1320 670';
@@ -37,8 +37,19 @@ export default function Wordmark({ full = false, animate = false, className = ''
                     <stop offset=".7" stopColor="#e8902e" />
                     <stop offset="1" stopColor="#9a5418" />
                 </linearGradient>
+                {/* Parlama: harflerin üstünden ara ara geçen beyaz-sıcak bir ışık şeridi */}
+                {shine && (
+                    <linearGradient id={id + 's'} gradientUnits="userSpaceOnUse" x1="-900" y1="0" x2="0" y2="-260">
+                        <stop offset="0" stopColor="#fff4d6" stopOpacity="0" />
+                        <stop offset=".5" stopColor="#fff4d6" stopOpacity=".95" />
+                        <stop offset="1" stopColor="#fff4d6" stopOpacity="0" />
+                        <animateTransform attributeName="gradientTransform" type="translate" values="-1200 0; 5600 0; 5600 0"
+                            keyTimes="0; .42; 1" dur="6.5s" begin="2.1s" repeatCount="indefinite" />
+                    </linearGradient>
+                )}
             </defs>
             {glyphs.map((d, i) => <path key={i} d={d} pathLength="1" fill={`url(#${id})`} style={{ '--i': i }} />)}
+            {shine && <g className="wordmark-shine">{glyphs.map((d, i) => <path key={i} d={d} fill={`url(#${id}s)`} />)}</g>}
         </svg>
     );
 }

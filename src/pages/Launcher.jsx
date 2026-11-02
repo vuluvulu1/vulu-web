@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ANDROID_URL, DOWNLOAD_URL, androidRelease, api, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
-import Wordmark from '../Wordmark.jsx';
+import { HeroTitle } from '../TitleEmbers.jsx';
 import { ReleaseNotes, formatDate } from '../components.jsx';
 import { Reveal, reducedMotion, useTicker } from '../motion.jsx';
 
@@ -35,7 +35,7 @@ export default function Launcher() {
             <section className="hero">
                 <div className="wrap hero-grid">
                 <div className="hero-text">
-                    <h1 className="hero-title"><Wordmark full animate /><span className="sr-only">vulu Launcher</span></h1>
+                    <HeroTitle />
                     <p className="lead">
                         vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
                         Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.

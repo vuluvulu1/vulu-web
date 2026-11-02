@@ -257,7 +257,13 @@ main, .footer { position: relative; z-index: 1; }
         radial-gradient(ellipse 42% 60% at 74% 52%, rgba(242, 130, 42, .17), transparent 70%),
         linear-gradient(180deg, rgba(26, 18, 12, .55), transparent 85%);
 }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
+.hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity .5s;
+    background: radial-gradient(circle 340px at var(--mx, 30%) var(--my, 40%), rgba(255, 170, 70, .13), rgba(242, 110, 30, .05) 45%, transparent 75%);
+    mix-blend-mode: screen;
+}
+.hero.lit::after { opacity: 1; }
+.hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 4vw, 56px); align-items: center; }
 .hero-text { min-width: 0; }
 .hero h1 { font-weight: 300; font-size: clamp(40px, 5.6vw, 72px); line-height: 1.03; letter-spacing: -.035em; margin: 0 0 20px; }
 /* "vulu Launcher": launcher'ın açılışındaki el yazısı. Harfler amber kalemle çizilip dolar, sonra arkasında kor gibi
@@ -265,11 +271,17 @@ main, .footer { position: relative; z-index: 1; }
 .hero-title { position: relative; margin: 0 0 26px; line-height: 0; }
 .hero-title::before {
     content: ""; position: absolute; left: -6%; right: 10%; top: 10%; bottom: -6%; z-index: -1; pointer-events: none;
-    background: radial-gradient(ellipse 50% 55% at 40% 60%, rgba(242, 130, 42, .22), transparent 70%);
+    background: radial-gradient(ellipse 55% 70% at 45% 60%, rgba(242, 120, 36, .34), rgba(232, 105, 58, .1) 50%, transparent 75%);
     opacity: 0; animation: title-light 1.4s ease-out 1.2s forwards, title-breathe 4.5s ease-in-out 2.6s infinite;
 }
-.hero-title .wordmark { width: min(560px, 100%); filter: drop-shadow(0 0 1px rgba(255, 200, 115, .5)) drop-shadow(0 0 18px rgba(242, 130, 42, .35)) drop-shadow(0 4px 14px rgba(0, 0, 0, .7)); }
-.wordmark.draw path {
+.hero-title-box { position: relative; display: inline-block; width: min(600px, 100%); vertical-align: top; }
+.title-embers { position: absolute; pointer-events: none; z-index: 2; }
+.wordmark-shine { mix-blend-mode: screen; }
+.hero-title .wordmark { transition: filter .4s; animation: title-flicker 3.2s ease-in-out 2s infinite; }
+@keyframes title-flicker { 0%, 100% { opacity: 1; } 18% { opacity: .9; } 22% { opacity: 1; } 61% { opacity: .94; } 64% { opacity: 1; } }
+.hero-title-box:hover .wordmark { filter: drop-shadow(0 0 1px rgba(255, 220, 160, .8)) drop-shadow(0 0 26px rgba(242, 130, 42, .6)) drop-shadow(0 4px 14px rgba(0, 0, 0, .7)); }
+.hero-title .wordmark { width: 100%; filter: drop-shadow(0 0 1px rgba(255, 200, 115, .5)) drop-shadow(0 0 18px rgba(242, 130, 42, .35)) drop-shadow(0 4px 14px rgba(0, 0, 0, .7)); }
+.wordmark.draw > path {
     fill-opacity: 0;
     stroke: #ffc873; stroke-width: 1.2px; vector-effect: non-scaling-stroke;
     stroke-linecap: round; stroke-linejoin: round;
@@ -764,7 +776,7 @@ main, .footer { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1; transform: none; transition: none; }
     .pop, .bubble.typing i, .mock-progress i, .skeleton { animation: none; }
-    .wordmark.draw path { animation: none; fill-opacity: 1; stroke: none; }
+    .wordmark.draw > path { animation: none; fill-opacity: 1; stroke: none; }
     .hero-title::before { animation: none; opacity: 1; }
     .gallery-item img { transition: none; }
 }
