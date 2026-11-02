@@ -3,8 +3,8 @@ import { useAuth } from '../../auth.jsx';
 
 // Sayfanın üstündeki başlık ve kısa açıklama; akış, profil ve paket ayrıntısı kendi başlığını çizer
 const TITLES = [
-    [/^\/hesap\/arkadaslar$/, 'Arkadaşlar', 'Kim çevrimiçi, kim ne oynuyor; yeni arkadaşları da buradan eklersin.'],
-    [/^\/hesap\/paketler$/, 'Paketler', 'vulu Packs\'teki paketler ve her güncellemede neyin değiştiği. Kurmak için launcher\'da vulu Packs\'i aç.'],
+    [/^\/hesap\/arkadaslar$/, 'Arkadaşlar', 'Kim çevrimiçi, kim ne oynuyor, hepsi burada. Yeni arkadaşlarını da buradan ekleyebilirsin.'],
+    [/^\/hesap\/paketler$/, 'Paketler', 'vulu Packs\'teki paketler ve her güncellemede neyin değiştiği. Bir paketi kurmak için launcher\'da vulu Packs\'i açman yeterli.'],
     [/^\/hesap\/geri-bildirim$/, 'Geri bildirim', null],
     [/^\/hesap\/admin$/, 'Admin', null],
 ];

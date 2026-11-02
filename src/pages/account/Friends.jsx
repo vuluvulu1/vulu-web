@@ -63,14 +63,14 @@ export default function Friends() {
                             {friends.incoming.map(name => person(name, <>
                                 <button className="btn btn-primary btn-sm" disabled={busy === name} onClick={e => act('accept', name, e)}>Kabul et</button>
                                 <button className="btn btn-quiet btn-sm" disabled={busy === name} onClick={() => act('drop', name)}>Reddet</button>
-                            </>, 'Seni arkadaş olarak eklemek istiyor'))}
+                            </>, 'Seninle arkadaş olmak istiyor'))}
                         </ul>
                     </section>
                 )}
 
                 {!friends.friends.length && (
                     <Empty icon="users" title="Henüz arkadaşın yok">
-                        Yandaki listeden üyeleri bul ve ekle. Arkadaşların kabul edince ne oynadıklarını burada görürsün.
+                        Yandaki "Üye bul" kutusundan tanıdıklarını bul ve ekle. İsteğini kabul ettiklerinde ne oynadıklarını burada görürsün.
                     </Empty>
                 )}
 
@@ -122,7 +122,7 @@ function FindMembers({ friends, users, presenceOf }) {
         setMsg(null);
         try {
             await friendAction('request', username);
-            setMsg({ ok: true, text: `${username} kullanıcısına istek gönderildi.` });
+            setMsg({ ok: true, text: `İsteğin ${username} kullanıcısına gönderildi.` });
         } catch (err) {
             setMsg({ ok: false, text: err.message });
         } finally {

@@ -84,7 +84,7 @@ function Inbox({ users, onOpenShot }) {
                 {requests.map(name => (
                     <li key={'r' + name} className="line">
                         <Avatar username={name} version={users[name]?.avatarVersion} size={34} />
-                        <span className="grow"><Link to={`/u/${name}`}><b>{name}</b></Link> seni arkadaş olarak eklemek istiyor.</span>
+                        <span className="grow"><Link to={`/u/${name}`}><b>{name}</b></Link> seninle arkadaş olmak istiyor.</span>
                         <span className="line-actions">
                             <button className="btn btn-primary btn-sm" disabled={busy === name} onClick={e => act('accept', name, e)}>Kabul et</button>
                             <button className="btn btn-quiet btn-sm" disabled={busy === name} onClick={() => act('drop', name)}>Reddet</button>
@@ -112,8 +112,8 @@ function ShotFeed({ list, users, open }) {
 
     if (!loading && !error && !shots.length) {
         return (
-            <Empty icon="image" title="Henüz paylaşılmış bir ekran görüntüsü yok">
-                Yukarıdan ilk görüntüyü sen paylaş ya da oyundayken launcher'ın Sosyal sekmesini kullan.
+            <Empty icon="image" title="Akış şimdilik sessiz">
+                İlk görüntüyü yukarıdan sen paylaş ya da oyundayken launcher'ın Sosyal sekmesini kullan.
             </Empty>
         );
     }
@@ -181,7 +181,7 @@ function Online({ users }) {
             <h2 className="label">Şu an çevrimiçi{others.length > 0 && <span> {others.length}</span>}</h2>
             {online === undefined && <p className="muted small">Yükleniyor…</p>}
             {online === null && <p className="muted small">Çevrimiçi durumu şu an alınamadı.</p>}
-            {online && !others.length && <p className="muted small">Şu an launcher'ı açık olan kimse yok.</p>}
+            {online && !others.length && <p className="muted small">Şu an launcher'ı açık kimse yok.</p>}
             {playing > 0 && <p className="rail-sum"><span className="fire" />{playing} kişi oyunda</p>}
             <ul className="people">
                 {others.slice(0, 8).map(p => (
@@ -238,7 +238,7 @@ function Servers({ users }) {
                     );
                 })}
             </ul>
-            <p className="muted small">Bağlanmak için launcher'da Sunucular'ı aç.</p>
+            <p className="muted small">Bağlanmak için launcher'da Sunucular sekmesini açman yeterli.</p>
         </section>
     );
 }
@@ -251,7 +251,7 @@ function PackUpdates() {
             <h2 className="label">Paket güncellemeleri</h2>
             {!packs && !error && <p className="muted small">Yükleniyor…</p>}
             {error && <p className="muted small">{error}</p>}
-            {packs && !packs.length && <p className="muted small">Henüz paylaşılmış bir paket yok.</p>}
+            {packs && !packs.length && <p className="muted small">Henüz paylaşılan bir paket yok.</p>}
             <ul className="pack-updates">
                 {recent.map(pack => {
                     const latest = [...pack.changelog].sort((a, b) => b.revision - a.revision)[0];

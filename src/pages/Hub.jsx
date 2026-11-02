@@ -27,7 +27,7 @@ export default function Hub() {
                 <div className="wrap hub-head">
                     <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" mode="forge" />
                     <h2 className="hub-question">Ne için buradasın?</h2>
-                    <p className="hub-lead">Oynamak, sunucu kurmak ya da görev kitabı yazmak için üç ücretsiz araç. Birini seç.</p>
+                    <p className="hub-lead">Oynamak, kendi sunucunu kurmak ya da görev kitabını hazırlamak için yaptığımız ücretsiz araçlar. Hangisiyle başlamak istersin?</p>
                 </div>
                 <div className="wrap products">
                     {PRODUCTS.map((p, i) => (
@@ -44,7 +44,7 @@ export default function Hub() {
                 </div>
                 {status === 'in' && (
                     <p className="wrap hub-account">
-                        Tekrar hoş geldin, <b>{user.username}</b>. Arkadaşlarının paylaştıkları ve kimin ne oynadığı <Link to="/hesap">akışında</Link>.
+                        Tekrar hoş geldin, <b>{user.username}</b>. Arkadaşlarının son paylaşımları ve kimin ne oynadığı <Link to="/hesap">akışında</Link> seni bekliyor.
                     </p>
                 )}
             </section>
@@ -61,13 +61,13 @@ export default function Hub() {
                     <RisingEmbers rate={14} />
                     {status === 'in' ? <>
                         <h2>Akışta neler var</h2>
-                        <p>Arkadaşlarının paylaştığı ekran görüntüleri, kimin ne oynadığı ve paket güncellemeleri akışında.</p>
+                        <p>Arkadaşlarının ekran görüntüleri, kimin ne oynadığı ve paketlerdeki son değişiklikler seni akışında bekliyor.</p>
                         <Link className="btn btn-primary" to="/hesap">Akışa git</Link>
                     </> : <>
                         <h2>Ücretsiz hesap</h2>
                         <p>
-                            Hesapla arkadaş ekler, mesajlaşır, ekran görüntüsü paylaşır ve hazır paketleri kurarsın. Hesaplar şimdilik
-                            bir admin onayıyla açılıyor.
+                            Bir hesapla arkadaşlarını ekler, onlarla mesajlaşır, ekran görüntülerini paylaşır ve hazır paketleri
+                            kurarsın. Hesaplar şimdilik bir admin onayıyla açılıyor; genellikle uzun sürmez.
                         </p>
                         <div className="row">
                             <Link className="btn btn-primary" to="/kayit">Katılma isteği gönder</Link>
@@ -98,7 +98,7 @@ function LiveNumbers() {
             {stats ? <>
                 <p className="numbers-live">
                     <span className={'fire' + (stats.online ? '' : ' out')} />
-                    {stats.online ? <>Şu an <b>{stats.online}</b> kişi çevrimiçi{stats.playing > 0 && <>, <b>{stats.playing}</b> kişi oyunda</>}.</> : 'Şu an çevrimiçi kimse yok.'}
+                    {stats.online ? <>Şu an <b>{stats.online}</b> kişi çevrimiçi{stats.playing > 0 && <>, <b>{stats.playing}</b> kişi oyunda</>}.</> : 'Şu an çevrimiçi kimse yok; ilk gelen sen ol.'}
                 </p>
                 <dl>
                     <div><dt>Üye</dt><dd><CountUp value={stats.members} /></dd></div>
@@ -117,7 +117,7 @@ function RecentReleases({ releases }) {
         .map(p => ({ product: p, release: releases[p.slug] }))
         .filter(x => x.release?.publishedAt)
         .sort((a, b) => new Date(b.release.publishedAt) - new Date(a.release.publishedAt));
-    if (!items.length) return <p className="muted small">Sürümler yükleniyor…</p>;
+    if (!items.length) return <p className="muted small">Son sürümler yükleniyor…</p>;
 
     return (
         <ol className="rows releases">

@@ -8,16 +8,16 @@ import { ReleaseNotes, formatDate } from '../components.jsx';
 import { Reveal, reducedMotion, useTicker } from '../motion.jsx';
 
 const EXTRAS = [
-    ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları okur ve sorunun nereden çıktığını sade bir dille anlatır.'],
-    ['Dünya yedekleri', 'Dünyanın yedeğini tek tıkla al; bir şey ters giderse aynı kolaylıkla geri yükle.'],
-    ['Oynama süresi', 'Hangi instance\'ta ne kadar oynadığını görürsün; istersen profilinde de gösterirsin.'],
-    ['Skinler', 'Skinini launcher\'dan değiştir, oyunda arkadaşların da onu görsün.'],
-    ['Discord durumu', 'Ne oynadığın Discord profilinde görünür; arkadaşların launcher\'ı oradan indirebilir.'],
-    ['Bildirimler', 'Yeni mesaj, beğeni, yorum ya da paket güncellemesi gelince launcher arkadayken bile haber verir.'],
-    ['Masaüstü kısayolları', 'Bir paketi ya da sunucuyu masaüstüne kısayol olarak koy; tek tıkla oyun açılır ya da sunucuya girersin.'],
-    ['Temalar', 'Meşale, Klasik, Neon ve Atlas temalarından sana uyanı seç.'],
-    ['Radyo', 'Launcher açıkken internet radyosu dinleyebilirsin; istasyonu değiştirebilir ya da tamamen kapatabilirsin.'],
-    ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan hiçbir sürümü kurmaz.'],
+    ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları senin yerine okur ve sorunun nereden çıktığını sade bir dille anlatır.'],
+    ['Dünya yedekleri', 'Dünyanın yedeğini tek tıkla al; bir şey ters giderse aynı kolaylıkla geri dön.'],
+    ['Oynama süresi', 'Hangi instance\'ta ne kadar vakit geçirdiğini gör; istersen profilinde arkadaşlarına da göster.'],
+    ['Skinler', 'Skinini launcher\'dan değiştir; oyunda arkadaşların seni yeni hâlinle görsün.'],
+    ['Discord durumu', 'Ne oynadığın Discord profilinde görünür; merak eden arkadaşların launcher\'ı oradan indirebilir.'],
+    ['Bildirimler', 'Yeni bir mesaj, beğeni, yorum ya da paket güncellemesi geldiğinde launcher arka plandayken bile haber verir.'],
+    ['Masaüstü kısayolları', 'Sevdiğin paketi ya da sunucuyu masaüstüne koy; tek tıkla oyun açılır ya da doğrudan sunucuya girersin.'],
+    ['Temalar', 'Meşale, Klasik, Neon ve Atlas arasından sana en çok yakışanı seç.'],
+    ['Radyo', 'Launcher açıkken internet radyosu dinle; istasyonu değiştir ya da dilediğinde tamamen kapat.'],
+    ['Güvenli güncellemeler', 'Launcher kendini kendisi günceller ve imzası doğrulanmayan hiçbir sürümü kurmaz.'],
 ];
 
 // Girilen cihaz Android telefonsa APK öne çıkar; diğerlerinde Windows kurulumu
@@ -37,8 +37,8 @@ export default function Launcher() {
                 <div className="hero-text">
                     <HeroTitle />
                     <p className="lead">
-                        vulu Launcher, Minecraft'ı kurmayı, modlamayı ve oynamayı tek bir uygulamada toplar.
-                        Java'yı, mod yükleyicileri ve güncellemeleri senin yerine o halleder.
+                        Minecraft'ı kurmak, modlamak ve oynamak için ihtiyacın olan her şey tek bir uygulamada.
+                        Java'yı, mod yükleyicileri ve güncellemeleri biz düşünürüz; sana yalnızca oynamak kalır.
                     </p>
                     <div className="hero-actions">
                         {androidFirst && (
@@ -60,7 +60,7 @@ export default function Launcher() {
                     </div>
                     <p className="hero-meta">
                         {androidFirst
-                            ? <><span className="mono">{android.tag}</span> · Android 8 ve üstü · Deneme sürümü, hatalar olabilir</>
+                            ? <><span className="mono">{android.tag}</span> · Android 8 ve üstü · Deneme sürümü, ufak hatalar çıkabilir</>
                             : <>{release ? <span className="mono">{release.tag}</span> : 'Beta'} · Windows 10 ve 11 · Ücretsiz</>}
                     </p>
                     <LiveStats />
@@ -78,8 +78,8 @@ export default function Launcher() {
                     visual={<InstancesMock />}
                 >
                     Vanilla, Fabric, Quilt, Forge ya da NeoForge ile istediğin kadar instance aç. Her birinin sürümü,
-                    modları, RAM ayarı ve dünyaları birbirinden ayrı durur. Hangi Java sürümü gerekiyorsa launcher
-                    onu kendisi indirir.
+                    modları, RAM ayarı ve dünyaları kendine ait; biri diğerini bozmaz. Hangi Java sürümü gerekiyorsa
+                    launcher onu kendisi indirir.
                 </Feature>
                 <Feature
                     label="Modlar ve paketler"
@@ -87,19 +87,18 @@ export default function Launcher() {
                     visual={<PackMock />}
                     flip
                 >
-                    CurseForge'daki modları, kaynak paketlerini, shader'ları ve modpack'leri launcher'ın içinden ara ve kur. Aradığını
-                    orada bulamazsan Modrinth'e geçebilirsin.
-                    vulu Packs'teki hazır paketleri tek tıkla kurarsın; bir paket güncellendiğinde neyin eklenip neyin
-                    çıkarıldığını da görürsün.
+                    CurseForge'daki modları, kaynak paketlerini, shader'ları ve modpack'leri launcher'ın içinden ara ve kur;
+                    aradığını orada bulamazsan Modrinth bir tık uzağında. vulu Packs'teki hazır paketleri tek tıkla
+                    kurarsın, bir paket güncellendiğinde de neyin eklenip neyin çıkarıldığını açıkça görürsün.
                 </Feature>
                 <Feature
                     label="Sosyal"
                     title="Arkadaşların da burada"
                     visual={<ChatMock />}
                 >
-                    Oyunda aldığın ekran görüntülerini akışa at, arkadaşlarının paylaştıklarına yorum yaz. Arkadaş
-                    listende kimin çevrimiçi olduğunu ve kimin ne oynadığını görürsün. Mesajların uçtan uca şifrelenir;
-                    sunucu bile içlerini okuyamaz.
+                    Oyunda aldığın ekran görüntülerini akışta paylaş, arkadaşlarının paylaştıklarına yorum yaz. Kimin
+                    çevrimiçi olduğunu, kimin ne oynadığını arkadaş listenden görürsün. Mesajların uçtan uca şifrelenir;
+                    sunucu bile içlerini okuyamaz, yazdıkların aranızda kalır.
                 </Feature>
                 <Feature
                     label="Sunucular"
@@ -107,8 +106,8 @@ export default function Launcher() {
                     visual={<ServerMock />}
                     flip
                 >
-                    Sunucular sekmesi her sunucunun açık olup olmadığını, içeride kaç kişi olduğunu ve gecikmeyi
-                    gösterir. Bağlan'a bastığında oyun açılır ve doğrudan sunucuya girersin.
+                    Sunucular sekmesinde her sunucunun açık olup olmadığını, içeride kaç kişi olduğunu ve gecikmeyi
+                    bir bakışta görürsün. Bağlan'a basman yeterli; oyun açılır ve seni doğrudan sunucuya bırakır.
                 </Feature>
             </section>
 
@@ -136,26 +135,27 @@ export default function Launcher() {
                 <Reveal as="section" className="wrap section start" id="android">
                     <h2 className="section-title">Android</h2>
                     <p className="muted">
-                        Launcher'ın telefon sürümü: aynı hesap, sosyal akış, mesajlar, paketler ve sunucular. Telefon
-                        ekranına göre yeniden tasarlandı. Minecraft da uygulamanın içinden açılır; paketleri ve modları
-                        telefona kurabilirsin. İlk açılışta oyun dosyaları bir kez iner (1.20.1 için yaklaşık 700 MB),
-                        Wi-Fi'de açman iyi olur. Henüz olmayanlar: Forge ve NeoForge paketleri telefonda açılmıyor,
-                        sunucuya doğrudan katılma ve oynama süresi çalışmıyor.
+                        Launcher artık cebinde de: aynı hesap, aynı akış, mesajlar, paketler ve sunucular, telefon ekranına
+                        göre baştan tasarlandı. Minecraft da uygulamanın içinden açılır; paketleri ve modları telefonuna
+                        kurabilirsin. İlk açılışta oyun dosyaları bir kez iner (1.20.1 için yaklaşık 700 MB), bu yüzden
+                        Wi-Fi'ye bağlıyken açmanı öneririz. Henüz hazır olmayanlar: Forge ve NeoForge paketleri telefonda
+                        açılmıyor, sunucuya doğrudan katılma ve oynama süresi de şimdilik çalışmıyor.
                     </p>
                     <p className="muted small">
                         <span className="mono">{android.tag}</span> · {formatDate(android.publishedAt)}
                         {android.sizeMb ? <> · {android.sizeMb} MB</> : null} · Android 8 ve üstü
                     </p>
                     <p className="beta-warning">
-                        <b>Android sürümü deneme aşamasında.</b> Çökmeler, açılmayan paketler ya da garip davranışlar
-                        görmen normal; Minecraft: Java Edition telefonda resmi olarak desteklenmiyor (telefonlar için resmi sürüm
-                        Bedrock Edition) ve her cihaz farklı davranıyor.
-                        Bir sorunla karşılaşırsan uygulamadaki geri bildirim kısmından yazman çok yardımcı olur.
+                        <b>Android sürümü henüz deneme aşamasında.</b> Ara sıra çökmeler, açılmayan paketler ya da tuhaf
+                        davranışlarla karşılaşabilirsin. Minecraft: Java Edition telefonlarda resmi olarak desteklenmiyor
+                        (telefonlar için resmi sürüm Bedrock Edition) ve her cihaz biraz farklı davranıyor.
+                        Bir sorun görürsen uygulamadaki geri bildirim bölümünden bize yazman çok işimize yarar.
                     </p>
                     {android.notes && <ReleaseNotes text={android.notes} />}
                     <p className="note">
-                        Play Store'da değil, dosyayı doğrudan kuruyorsun. Telefon "bilinmeyen kaynaklardan yükleme" izni
-                        isteyebilir; izni verip kurulumu tamamla. Yeni sürüm çıkınca uygulama kendisi haber verir.
+                        Uygulama Play Store'da değil; dosyayı doğrudan kuruyorsun. Telefonun "bilinmeyen kaynaklardan
+                        yükleme" izni isteyebilir; izni verip kurulumu tamamlaman yeterli. Yeni sürüm çıktığında uygulama
+                        sana kendisi haber verir.
                     </p>
                     <a className="btn btn-primary btn-lg" href={ANDROID_URL}>
                         <Icon name="android" size={18} /> APK'yı indir
@@ -164,15 +164,15 @@ export default function Launcher() {
             )}
 
             <Reveal as="section" className="wrap section start">
-                <h2 className="section-title">Nasıl başlanır</h2>
-                <p className="muted">Hesaplar davetle açılıyor, o yüzden önce bir katılma isteği göndermen gerekiyor.</p>
+                <h2 className="section-title">Nasıl başlarım?</h2>
+                <p className="muted">Hesaplar şimdilik davetle açılıyor; ilk adım bize kısa bir katılma isteği göndermek.</p>
                 <ol className="steps">
                     <li><span><Link to="/kayit">Katılma formunu</Link> doldur ve isteğini gönder.</span></li>
-                    <li><span>Bir admin isteğini onaylayınca hesabın açılır.</span></li>
-                    <li><span>Kurulum dosyasını indirip çalıştır, ardından aynı kullanıcı adı ve şifreyle giriş yap.</span></li>
+                    <li><span>Bir admin isteğini onayladığında hesabın hazır olur.</span></li>
+                    <li><span>Kurulum dosyasını indirip çalıştır, ardından aynı kullanıcı adı ve şifreyle giriş yap. Hepsi bu.</span></li>
                 </ol>
                 <p className="note">
-                    Windows ilk açılışta bir SmartScreen uyarısı gösterebilir. <i>Ek bilgi</i>'ye, ardından
+                    Windows ilk açılışta bir SmartScreen uyarısı gösterebilir; endişelenme. <i>Ek bilgi</i>'ye, ardından
                     {' '}<i>Yine de çalıştır</i>'a tıklaman yeterli.
                 </p>
                 <a className={'btn btn-lg' + (androidFirst ? '' : ' btn-primary')} href={DOWNLOAD_URL}>
@@ -200,7 +200,7 @@ function LiveStats() {
     return (
         <Reveal as="p" className="live-now">
             <span className={'live-dot' + (online > 0 ? ' on' : '')} />
-            <span>{online > 0 ? <>Şu an <b>{online}</b> oyuncu aktif.</> : 'Şu an aktif oyuncu yok.'}</span>
+            <span>{online > 0 ? <>Şu an <b>{online}</b> oyuncu launcher'da.</> : 'Şu an launcher\'da kimse yok.'}</span>
         </Reveal>
     );
 }

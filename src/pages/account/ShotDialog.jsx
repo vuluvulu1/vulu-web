@@ -110,7 +110,7 @@ export function ShotDialog({ shot, users, onChange, onClose, onDelete, onPrev, o
     }
 
     async function removeShot() {
-        if (!confirm('Bu ekran görüntüsü silinsin mi? Beğeniler ve yorumlar da silinir.')) return;
+        if (!confirm('Bu ekran görüntüsünü silmek istediğine emin misin? Beğeniler ve yorumlar da onunla birlikte silinir.')) return;
         try {
             await api.deleteShot(shot.id);
             onDelete(shot.id);

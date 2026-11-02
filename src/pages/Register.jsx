@@ -33,17 +33,17 @@ export default function Register() {
         const username = form.username.trim(), email = form.email.trim();
         const fail = text => setMsg({ text, error: true });
 
-        if (username.length < 3 || username.length > 16) return fail('Kullanıcı adı 3-16 karakter olmalı.');
-        if (!EMAIL.test(email)) return fail('Geçerli bir e-posta adresi gir.');
-        if (form.password.length < 6) return fail('Şifre en az 6 karakter olmalı.');
-        if (new TextEncoder().encode(form.password).length > 72) return fail('Şifre en fazla 72 karakter olabilir.');
-        if (form.password !== form.password2) return fail('Şifreler aynı değil.');
+        if (username.length < 3 || username.length > 16) return fail('Kullanıcı adın 3-16 karakter olmalı.');
+        if (!EMAIL.test(email)) return fail('Geçerli bir e-posta adresi yazar mısın?');
+        if (form.password.length < 6) return fail('Şifren en az 6 karakter olmalı.');
+        if (new TextEncoder().encode(form.password).length > 72) return fail('Şifren en fazla 72 karakter olabilir.');
+        if (form.password !== form.password2) return fail('Şifreler birbirini tutmuyor; bir kez daha dener misin?');
 
         setBusy(true);
         setMsg({ text: 'Gönderiliyor…' });
         try {
             const result = await api.register(username, email, form.password, {
-                onSlow: () => setMsg({ text: 'Sunucu biraz geç cevap veriyor, birkaç saniye bekle…' }),
+                onSlow: () => setMsg({ text: 'Sunucu biraz geç cevap veriyor, birkaç saniye bekler misin…' }),
             });
             setDone({ username, email, verifyEmail: !!result?.verifyEmail });
             setForm({ username: '', email: '', password: '', password2: '' });
@@ -62,11 +62,11 @@ export default function Register() {
             <form className="auth-card" onSubmit={submit} noValidate>
                 <RisingEmbers rate={10} />
                 <h1>Katılma isteği</h1>
-                <p className="muted">Hesaplar davetle açılıyor. Formu doldur; bir admin isteğini onaylayınca hesabın hazır olur.</p>
+                <p className="muted">Aramıza hoş geldin. Hesaplar şimdilik davetle açılıyor: formu doldur, bir admin isteğini onayladığında hesabın hazır olur.</p>
                 <label>
                     Kullanıcı adı
                     <input value={form.username} onChange={set('username')} autoComplete="username" maxLength={16} autoFocus />
-                    <small>Oyunda bu adla görüneceksin. 3-16 karakter olmalı; İngilizce harf, rakam ve alt çizgi kullanılabilir.</small>
+                    <small>Oyunda herkes seni bu adla görecek. 3-16 karakter olmalı; İngilizce harf, rakam ve alt çizgi kullanabilirsin.</small>
                 </label>
                 <label>
                     E-posta
@@ -111,7 +111,7 @@ function Sent({ username, email, verifyEmail }) {
             <section className="wrap auth">
                 <div className="auth-card">
                     <h1>İsteğin gönderildi</h1>
-                    <p><b>{username}</b> için katılma isteğin bize ulaştı.</p>
+                    <p>Teşekkürler! <b>{username}</b> için katılma isteğin bize ulaştı. Onaylandığında launcher'a bu adla giriş yapabilirsin.</p>
                     <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
                 </div>
             </section>
@@ -122,10 +122,10 @@ function Sent({ username, email, verifyEmail }) {
             <div className="auth-card">
                 <h1>E-postanı kontrol et</h1>
                 <p>
-                    <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Kaydını tamamlamak için bağlantıyı aç.
+                    <b>{email}</b> adresine bir doğrulama bağlantısı gönderdik. Kaydını tamamlamak için e-postadaki bağlantıyı açman yeterli.
                 </p>
                 <p className="muted small">
-                    Bağlantı 48 saat geçerli. Birkaç dakika içinde gelmezse spam klasörüne de bak.
+                    Bağlantı 48 saat geçerli. Birkaç dakika içinde gelmezse spam klasörüne de bir göz at.
                 </p>
                 <Status msg={msg} />
                 <button className="btn" onClick={resend} disabled={busy}>Bağlantıyı tekrar gönder</button>

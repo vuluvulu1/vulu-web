@@ -93,7 +93,7 @@ export default function ShareShot({ onShared }) {
             {!file ? (
                 <button type="button" className="share-start" onClick={() => input.current?.click()}>
                     <Avatar username={user.username} version={user.avatarVersion} size={36} />
-                    <span className="grow">Bir ekran görüntüsü paylaş…</span>
+                    <span className="grow">Bugün oyunda neler oldu? Bir ekran görüntüsü paylaş…</span>
                     <span className="btn btn-sm"><Icon name="upload" size={16} /> Resim seç</span>
                 </button>
             ) : (
@@ -103,7 +103,7 @@ export default function ShareShot({ onShared }) {
                         <label className="field-label">
                             Açıklama
                             <textarea value={caption} onChange={e => setCaption(e.target.value)} maxLength={200} rows={3} autoFocus
-                                placeholder="Nerede, ne oldu? (isteğe bağlı)" />
+                                placeholder="Nerede, ne oldu? Birkaç kelime yeter (isteğe bağlı)" />
                         </label>
                         <label className="field-label">
                             Hangi paketten
@@ -113,7 +113,7 @@ export default function ShareShot({ onShared }) {
                             </select>
                         </label>
                         <div className="row">
-                            <small className="muted grow">{caption.length}/200 · Herkes görür, beğenip yorum yazabilir.</small>
+                            <small className="muted grow">{caption.length}/200 · Bütün üyeler görür, beğenip yorum yazabilir.</small>
                             <button type="button" className="btn btn-quiet btn-sm" onClick={reset} disabled={busy}>Vazgeç</button>
                             <button className="btn btn-primary btn-sm" disabled={busy}>{busy ? 'Paylaşılıyor…' : 'Paylaş'}</button>
                         </div>

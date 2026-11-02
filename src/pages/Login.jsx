@@ -16,12 +16,12 @@ export default function Login() {
 
     async function submit(event) {
         event.preventDefault();
-        if (!username.trim() || !password) { setMsg({ text: 'Kullanıcı adı ve şifre gerekli.', error: true }); return; }
+        if (!username.trim() || !password) { setMsg({ text: 'Kullanıcı adını ve şifreni yazman gerekiyor.', error: true }); return; }
         setBusy(true);
         setMsg({ text: 'Giriş yapılıyor…' });
         try {
             await login(username.trim(), password, {
-                onSlow: () => setMsg({ text: 'Sunucu biraz geç cevap veriyor, birkaç saniye bekle…' }),
+                onSlow: () => setMsg({ text: 'Sunucu biraz geç cevap veriyor, birkaç saniye bekler misin…' }),
             });
             navigate('/hesap');
         } catch (err) {
@@ -35,7 +35,7 @@ export default function Login() {
             <form className="auth-card" onSubmit={submit} noValidate>
                 <RisingEmbers rate={10} />
                 <h1>Giriş yap</h1>
-                <p className="muted">Launcher'da kullandığın kullanıcı adı ve şifreyle giriş yap.</p>
+                <p className="muted">Tekrar hoş geldin. Launcher'da kullandığın kullanıcı adı ve şifreyle giriş yapabilirsin.</p>
                 <label>
                     Kullanıcı adı
                     <input value={username} onChange={e => setUsername(e.target.value)} autoComplete="username" maxLength={32} autoFocus />
