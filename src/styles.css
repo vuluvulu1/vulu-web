@@ -197,9 +197,9 @@ main, .footer { position: relative; z-index: 1; }
 }
 .topbar-inner { display: flex; align-items: center; gap: 24px; height: var(--topbar-h); }
 .brand { display: flex; align-items: center; gap: 10px; color: var(--text); flex: none; }
-.brand .wordmark { width: 64px; margin-top: 2px; filter: drop-shadow(0 0 8px rgba(242, 163, 58, .28)); }
+.brand .wordmark { width: 64px; margin-top: -9px; filter: drop-shadow(0 0 8px rgba(242, 163, 58, .28)); }
 .wordmark { display: block; height: auto; overflow: visible; }
-.footer-brand .wordmark { width: 48px; }
+.footer-brand .wordmark { width: 48px; margin-top: -7px; }
 .brand:hover { text-decoration: none; }
 .topnav { display: flex; align-items: stretch; align-self: stretch; gap: 2px; min-width: 0; }
 .topnav a {

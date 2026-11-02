@@ -36,7 +36,7 @@ export default function Hub() {
             <section className="hero">
                 <div className="wrap hero-grid">
                     <div className="hero-text">
-                        <h1>Modlu Minecraft için Türkçe launcher.</h1>
+                        <h1>vulu Launcher</h1>
                         <p className="lead">
                             Mod ve paket kur, sunuculara tek tıkla bağlan, arkadaşlarınla aynı oyunda buluş. Java'yı, mod
                             yükleyicileri ve güncellemeleri launcher halleder.
