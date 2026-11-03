@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { sparkBurst } from './effects.jsx';
 import { reducedMotion } from './motion.jsx';
+import { hafifMi } from './vulusalEngine.js';
 
 export const VULUSAL_YOL = '/vulusalvululauncher';
 
@@ -26,8 +27,9 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
     suruyor = true;
 
     const html = document.documentElement;
+    const hafif = hafifMi();   // telefonda pahalı filtreler ve karışımlar kapanır, konfeti azalır
     const el = document.createElement('div');
-    el.className = 'vg';
+    el.className = 'vg' + (hafif ? ' hafif' : '');
     el.setAttribute('aria-hidden', 'true');
     el.style.setProperty('--x', x + 'px');
     el.style.setProperty('--y', y + 'px');
@@ -45,6 +47,7 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
         <div class="vg-flash"></div>`;
     document.body.appendChild(el);
     html.classList.add('vg-bozul');
+    if (hafif) html.classList.add('vg-hafif');
 
     const zaman = [];
     const sonra = (ms, fn) => zaman.push(setTimeout(fn, ms));
@@ -70,25 +73,28 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
     sonra(1400, () => {
         el.classList.add('drop');
         html.classList.remove('vg-bozul');
-        konfeti(el.querySelector('.vg-canvas'), 3000);
-        navigate(VULUSAL_YOL, { state: { gecis: true } });
+        konfeti(el.querySelector('.vg-canvas'), 3000, hafif);
+        // Yeni sayfanın açılması bir an takılabilir: flaşın ilk (bembeyaz) karesi çizildikten sonra geç ki görünmesin
+        requestAnimationFrame(() => requestAnimationFrame(() => navigate(VULUSAL_YOL, { state: { gecis: true } })));
     });
 
     // 4. çıkış
     sonra(2300, () => el.classList.add('cikis'));
     sonra(3000, () => {
         el.remove();
+        html.classList.remove('vg-hafif');
         ses?.close().catch(() => {});
         suruyor = false;
     });
 
-    return () => { zaman.forEach(clearTimeout); el.remove(); html.classList.remove('vg-bozul'); suruyor = false; };
+    return () => { zaman.forEach(clearTimeout); el.remove(); html.classList.remove('vg-bozul', 'vg-hafif'); suruyor = false; };
 }
 
 /** Kendi kendine sönen konfeti patlaması. */
-function konfeti(canvas, sure) {
+function konfeti(canvas, sure, hafif) {
     const ctx = canvas.getContext('2d');
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const dpr = hafif ? 1 : Math.min(devicePixelRatio || 1, 2);
+    const az = hafif ? 0.4 : 1;
     const W = innerWidth, H = innerHeight;
     canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.scale(dpr, dpr);
@@ -99,8 +105,8 @@ function konfeti(canvas, sure) {
             p.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, r: rastgele(0, 6), vr: rastgele(-.4, .4), b: rastgele(5, 11), c: sec(RENKLER), o: 1, d: rastgele(.006, .014) });
         }
     };
-    at(W / 2, H / 2, 260, 1.3);
-    setTimeout(() => { at(W * .15, H * .35, 90, 1); at(W * .85, H * .35, 90, 1); }, 180);
+    at(W / 2, H / 2, Math.round(260 * az), 1.3);
+    setTimeout(() => { at(W * .15, H * .35, Math.round(90 * az), 1); at(W * .85, H * .35, Math.round(90 * az), 1); }, 180);
     const bitis = performance.now() + sure;
     (function ciz(t) {
         ctx.clearRect(0, 0, W, H);
@@ -126,7 +132,7 @@ function gecisSesi() {
     master.gain.value = 0.45;
     master.connect(out); out.connect(ac.destination);
 
-    const gurultu = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+    const gurultu = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);   // 1 sn, kaynaklar döngüde çalar
     const d = gurultu.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
 
@@ -146,7 +152,7 @@ function gecisSesi() {
 
     // riser: kabaran gürültü
     const n = ac.createBufferSource(), nf = ac.createBiquadFilter(), ng = ac.createGain();
-    n.buffer = gurultu; nf.type = 'highpass';
+    n.buffer = gurultu; n.loop = true; nf.type = 'highpass';
     nf.frequency.setValueAtTime(400, now);
     nf.frequency.exponentialRampToValueAtTime(6000, drop);
     ng.gain.setValueAtTime(0.0001, now);
@@ -166,7 +172,7 @@ function gecisSesi() {
 
     // drop: crash
     const c = ac.createBufferSource(), cf = ac.createBiquadFilter(), cg = ac.createGain();
-    c.buffer = gurultu; cf.type = 'highpass'; cf.frequency.value = 3000;
+    c.buffer = gurultu; c.loop = true; cf.type = 'highpass'; cf.frequency.value = 3000;
     cg.gain.setValueAtTime(0.5, drop);
     cg.gain.exponentialRampToValueAtTime(0.001, drop + 1.5);
     c.connect(cf); cf.connect(cg); cg.connect(master);

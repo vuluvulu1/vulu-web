@@ -187,6 +187,7 @@ label small { color: var(--dim); font-size: 13px; }
 
 /* Sitenin arkasında süzülen amber pikseller (PixelField.jsx); içerik ve bantlar önünde kalır */
 .pixel-field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.pikseller-kapali .pixel-field { display: none; }
 main, .footer { position: relative; z-index: 1; }
 
 /* ── Üst çubuk ──────────────────────────────────────── */
