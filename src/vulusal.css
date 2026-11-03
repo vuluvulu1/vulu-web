@@ -35,11 +35,11 @@ html.vulusal-acik .topbar::after {
 }
 /* çubuğun üstünden ara ara geçen ışık */
 html.vulusal-acik .topbar::before {
-    content: ""; position: absolute; top: 0; bottom: 0; left: -30%; width: 22%; pointer-events: none;
+    content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 22%; pointer-events: none;
     background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .14), transparent);
-    transform: skewX(-20deg); animation: vs-bar-shine 4.5s ease-in-out infinite;
+    transform: translateX(-140%) skewX(-20deg); will-change: transform; animation: vs-bar-shine 4.5s ease-in-out infinite;
 }
-@keyframes vs-bar-shine { 0%, 55% { left: -30%; } 100% { left: 130%; } }
+@keyframes vs-bar-shine { 0%, 55% { transform: translateX(-140%) skewX(-20deg); } 100% { transform: translateX(600%) skewX(-20deg); } }
 
 html.vulusal-acik .brand img { animation: vs-hue 4s linear infinite; filter: drop-shadow(0 0 6px var(--pembe)); }
 html.vulusal-acik .brand .wordmark { filter: drop-shadow(0 0 4px var(--pembe)) drop-shadow(0 0 12px var(--cyan)); }
@@ -543,16 +543,20 @@ html.vulusal-acik .menu-panel hr { border-color: rgba(255, 45, 241, .3); }
     75% { transform: translate(calc(var(--v) * -1px), calc(var(--v) * 1px)) rotate(calc(var(--v) * .4deg)); }
 }
 
-/* 1. bozulma: site titrer, renkleri kayar */
-html.vg-bozul #root { animation: vg-bozul .85s steps(12) forwards; }
-@keyframes vg-bozul {
-    0%   { filter: none; transform: none; }
-    15%  { filter: hue-rotate(40deg) contrast(1.4); transform: translate(-6px, 2px) skewX(-2deg); }
-    30%  { filter: hue-rotate(-90deg) saturate(3); transform: translate(8px, -3px) skewX(3deg); }
-    45%  { filter: invert(1) hue-rotate(180deg); transform: translate(-4px, 4px) scale(1.01); }
-    60%  { filter: hue-rotate(200deg) saturate(4) contrast(1.6); transform: translate(10px, 0) skewX(-5deg); }
-    75%  { filter: hue-rotate(280deg) saturate(5) blur(1px); transform: translate(-12px, -4px) scale(1.03); }
-    100% { filter: hue-rotate(300deg) saturate(6) blur(3px) brightness(1.6); transform: scale(1.08); }
+/* ── EVREN İKİYE BÖLÜNÜR ──────────────────────────────────────────────────────────────────────
+   1. çatlak: sayfa titrer, ekranı glitch şeritleri keser, tıklanan noktadan şimşek gibi bir çatlak iki yana koşar
+   2. yarılma (.yar): sayfanın iki kopyası çizginin iki yanından kırpılıp zıt yönlere savrulur, aradan ışık ve kozmos
+   3. .slam: VULUSAL harfleri  4. .drop: flaş, şok dalgaları, konfeti  5. .cikis: harfler saçılır, perde kalkar */
+
+html.vg-bozul #root { animation: vg-titre .65s steps(10) forwards; }
+@keyframes vg-titre {
+    10% { transform: translate(-5px, 2px) skewX(-1.5deg); filter: hue-rotate(40deg) contrast(1.3); }
+    25% { transform: translate(7px, -3px) skewX(2deg); filter: hue-rotate(-80deg) saturate(2.5); }
+    40% { transform: translate(-9px, 4px) scale(1.01); filter: invert(1) hue-rotate(180deg); }
+    55% { transform: translate(10px, -2px) skewX(-4deg); filter: hue-rotate(220deg) saturate(4) contrast(1.5); }
+    70% { transform: translate(-12px, -4px) scale(1.02); filter: hue-rotate(300deg) saturate(5); }
+    85% { transform: translate(6px, 5px) skewX(3deg); filter: brightness(1.6) saturate(4); }
+    100% { transform: none; filter: brightness(2); }
 }
 
 .vg {
@@ -560,10 +564,12 @@ html.vg-bozul #root { animation: vg-bozul .85s steps(12) forwards; }
     position: fixed; inset: 0; z-index: 9999; pointer-events: all; overflow: hidden; cursor: wait;
     font-family: "Orbitron", "Russo One", sans-serif;
 }
+.vg > * { position: absolute; }
 .vg.cikis { animation: vg-perde-cik .7s ease-in forwards; pointer-events: none; }
 @keyframes vg-perde-cik { to { opacity: 0; } }
 
-/* glitch şeritleri */
+/* glitch şeritleri (yalnızca çatlak anında) */
+.vg-seritler { inset: 0; }
 .vg-seritler i {
     position: absolute; left: -10%; width: 120%; background: var(--c); mix-blend-mode: difference; opacity: 0;
     animation: vg-serit var(--d) steps(2) infinite;
@@ -573,42 +579,53 @@ html.vg-bozul #root { animation: vg-bozul .85s steps(12) forwards; }
     50%  { opacity: 0; transform: translateX(calc(var(--g) * -1)); }
     100% { opacity: .7; transform: translateX(0); }
 }
-.vg.portal .vg-seritler { opacity: 0; transition: opacity .3s .2s; }
+.vg.yar .vg-seritler { display: none; }
 
-.vg-terminal {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(420px, calc(100vw - 32px));
-    padding: 18px 20px; background: rgba(9, 0, 13, .85); border: 1px solid var(--pembe);
-    box-shadow: 0 0 20px var(--pembe), inset 0 0 20px rgba(255, 45, 241, .3);
-    color: #fff; text-align: center; animation: vg-terminal-titre .12s steps(2) infinite;
+/* çatlak: üç kat çizgi (geniş pembe ışıma, cyan, beyaz çekirdek), tıklanan noktadan iki yana çizilir ve titrer */
+.vg-catlak { inset: 0; width: 100%; height: 100%; overflow: visible; animation: vg-catlak-titre .09s steps(2) infinite; }
+.vg:not(.hafif) .vg-catlak { filter: drop-shadow(0 0 6px var(--pembe)) drop-shadow(0 0 18px var(--cyan)); }
+.vg-catlak polyline {
+    fill: none; stroke-linecap: round; stroke-linejoin: round;
+    animation: vg-catla .42s cubic-bezier(.2, .8, .3, 1) forwards; animation-delay: var(--g);
 }
-.vg-terminal b { display: block; font-size: 15px; letter-spacing: 3px; color: var(--pembe); text-shadow: 0 0 10px var(--pembe); }
-.vg-yuzde { display: block; margin: 8px 0; font-size: 38px; font-weight: 900; color: var(--sari); text-shadow: 0 0 14px var(--sari); }
-.vg-bar { height: 8px; border: 1px solid var(--cyan); }
-.vg-bar > div { width: 0; height: 100%; background: linear-gradient(90deg, var(--pembe), var(--cyan), var(--sari)); box-shadow: 0 0 10px var(--cyan); }
-@keyframes vg-terminal-titre { 50% { transform: translate(calc(-50% + 2px), calc(-50% - 1px)); } }
-.vg.portal .vg-terminal { animation: vg-terminal-git .35s ease-in forwards; }
-@keyframes vg-terminal-git { to { transform: translate(-50%, -50%) scale(0) rotate(180deg); opacity: 0; } }
+.vg-catlak .k1 { stroke: var(--pembe); stroke-width: 18; opacity: .35; }
+.vg-catlak .k2 { stroke: var(--cyan); stroke-width: 7; opacity: .85; }
+.vg-catlak .k3 { stroke: #fff; stroke-width: 2.5; }
+.vg-catlak .dal.k1 { stroke-width: 9; } .vg-catlak .dal.k2 { stroke-width: 3.5; } .vg-catlak .dal.k3 { stroke-width: 1.4; }
+@keyframes vg-catla { to { stroke-dashoffset: 0; } }
+@keyframes vg-catlak-titre { 50% { opacity: .7; } }
+.vg.yar .vg-catlak { animation: vg-perde-cik .35s ease-out forwards; }
 
-/* 2. portal: tıklanan noktadan açılan dönen gökkuşağı */
+/* şok dalgaları: ilk üçü çatlağın başladığı noktadan, drop'takiler ekranın ortasından */
+.vg-halkalar { inset: 0; }
+.vg-halkalar i {
+    position: absolute; left: var(--x); top: var(--y); width: 30vmax; height: 30vmax; margin: -15vmax 0 0 -15vmax;
+    border-radius: 50%; border: 3px solid var(--c); box-shadow: 0 0 22px var(--c), inset 0 0 22px var(--c);
+    opacity: 0; transform: scale(0); will-change: transform, opacity;
+}
+.vg-halkalar i.ilk { animation: vg-halka .7s cubic-bezier(.1, .7, .3, 1) forwards; animation-delay: calc(var(--i) * 150ms); }
+.vg-halkalar i.drop { left: 50%; top: 50%; border-width: 5px; }
+.vg.drop .vg-halkalar i.drop { animation: vg-halka-buyuk .9s cubic-bezier(.1, .7, .3, 1) forwards; animation-delay: calc(var(--i) * 90ms); }
+@keyframes vg-halka { 0% { opacity: 1; transform: scale(0); } 100% { opacity: 0; transform: scale(2.6); } }
+@keyframes vg-halka-buyuk { 0% { opacity: 1; transform: scale(.1); } 100% { opacity: 0; transform: scale(5); } }
+
+/* kozmos: yarılınca arkada görünür; ışınlar çatlağın başladığı noktadan döner */
 .vg-portal {
-    position: absolute; inset: 0;
-    background: radial-gradient(circle at var(--x) var(--y), #fff 0, #ff2df1 6%, #5800ff 22%, #09000d 60%);
-    clip-path: circle(0 at var(--x) var(--y));
+    inset: 0; visibility: hidden;
+    background: radial-gradient(circle at var(--x) var(--y), #fff 0, #ff2df1 6%, #5800ff 24%, #09000d 62%);
 }
-.vg.portal .vg-portal { animation: vg-portal-ac .55s cubic-bezier(.7, 0, .3, 1) forwards; }
-@keyframes vg-portal-ac { to { clip-path: circle(150vmax at var(--x) var(--y)); } }
+.vg.yar .vg-portal { visibility: visible; }
 .vg-isinlar {
     position: absolute; left: var(--x); top: var(--y); width: 300vmax; height: 300vmax; transform: translate(-50%, -50%);
-    background: repeating-conic-gradient(from 0deg, rgba(255, 45, 241, .55) 0 6deg, transparent 6deg 12deg, rgba(0, 215, 255, .5) 12deg 18deg, transparent 18deg 24deg, rgba(246, 220, 67, .45) 24deg 30deg, transparent 30deg 36deg);
+    background: repeating-conic-gradient(from 0deg, rgba(255, 45, 241, .6) 0 6deg, transparent 6deg 12deg, rgba(0, 215, 255, .55) 12deg 18deg, transparent 18deg 24deg, rgba(246, 220, 67, .5) 24deg 30deg, transparent 30deg 36deg);
+    will-change: transform;
     animation: vg-donus 1.2s linear infinite;
-    -webkit-mask: radial-gradient(circle, transparent 0, #000 8%, #000 40%, transparent 70%);
-    mask: radial-gradient(circle, transparent 0, #000 8%, #000 40%, transparent 70%);
+    -webkit-mask: radial-gradient(circle, transparent 0, #000 6%, #000 40%, transparent 70%);
+    mask: radial-gradient(circle, transparent 0, #000 6%, #000 40%, transparent 70%);
 }
 @keyframes vg-donus { to { transform: translate(-50%, -50%) rotate(360deg); } }
 .vg.drop .vg-isinlar { animation-duration: .4s; }
-.vg-izgara {
-    position: absolute; left: -50%; right: -50%; bottom: 0; height: 45vh; perspective: 260px; overflow: hidden;
-}
+.vg-izgara { position: absolute; left: -50%; right: -50%; bottom: 0; height: 45vh; perspective: 260px; overflow: hidden; }
 .vg-izgara::before {
     content: ""; position: absolute; inset: -100% 0 0 0; transform: rotateX(62deg); transform-origin: bottom;
     background-image: linear-gradient(var(--pembe) 2px, transparent 2px), linear-gradient(90deg, var(--cyan) 2px, transparent 2px);
@@ -616,12 +633,54 @@ html.vg-bozul #root { animation: vg-bozul .85s steps(12) forwards; }
     -webkit-mask: linear-gradient(to bottom, transparent, #000 60%); mask: linear-gradient(to bottom, transparent, #000 60%);
 }
 @keyframes vg-izgara { from { transform: rotateX(62deg) translateY(0); } to { transform: rotateX(62deg) translateY(60px); } }
+.vg-cekirdek {
+    position: absolute; left: var(--x); top: var(--y); width: 40vmax; height: 40vmax; margin: -20vmax 0 0 -20vmax; border-radius: 50%;
+    background: radial-gradient(circle, #fff 0, rgba(255, 255, 255, .9) 10%, rgba(255, 45, 241, .55) 30%, transparent 68%);
+    will-change: transform; animation: vg-nabiz .18s ease-in-out infinite alternate;
+}
+@keyframes vg-nabiz { from { transform: scale(.85); } to { transform: scale(1.15); } }
+.vg.cikis .vg-portal { transition: transform .7s ease-in; transform: scale(1.6); }
 
-.vg-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* yarılan sayfa: iki donmuş kopya, çatlak noktasından dönerek zıt yönlere savrulur */
+.vg-yari { inset: 0; overflow: hidden; will-change: transform; transform-origin: var(--x) var(--y); }
+.vg.yar .vg-yari.a { animation: vg-ayril-a .95s cubic-bezier(.45, 0, .3, 1) forwards; }
+.vg.yar .vg-yari.b { animation: vg-ayril-b .95s cubic-bezier(.45, 0, .3, 1) forwards; }
+@keyframes vg-ayril-a {
+    0%   { transform: none; }
+    14%  { transform: translate(calc(var(--nx) * -10px), calc(var(--ny) * -10px)) rotate(-.6deg); }
+    100% { transform: translate(calc(var(--nx) * -80vmax), calc(var(--ny) * -80vmax)) rotate(-11deg); }
+}
+@keyframes vg-ayril-b {
+    0%   { transform: none; }
+    14%  { transform: translate(calc(var(--nx) * 10px), calc(var(--ny) * 10px)) rotate(.6deg); }
+    100% { transform: translate(calc(var(--nx) * 80vmax), calc(var(--ny) * 80vmax)) rotate(11deg); }
+}
+/* kopya perdenin içinde durduğu için perdenin yazı tipini almasın: sayfanın (body'nin) yazısı ve rengi geri verilir */
+.vg-kopya { position: absolute; left: 0; margin: 0; background: var(--bg, #0b0a09); font: 16px/1.55 var(--font); color: var(--text); text-align: left; letter-spacing: normal; }
+.vg-kopya *, .vg-kopya *::before, .vg-kopya *::after { animation: none !important; transition: none !important; }
+.vg-kopya .wordmark.draw > path { fill-opacity: 1; stroke: none; }
+.vg-kopya .topbar { position: fixed; top: 0; left: 0; right: 0; }
+.vg-kopya .torch, .vg-kopya .skip { display: none; }
+
+/* yarıktan fışkıran ışık hüzmesi: çatlak çizgisi boyunca, önce ince bir çizgi, sonra kör edici bir perde */
+.vg-huzme {
+    left: var(--x); top: var(--y); width: 400vmax; height: 140vmax; opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--aci)) scaleY(.002);
+    background: linear-gradient(to bottom, transparent 22%, rgba(88, 0, 255, .35) 34%, rgba(255, 45, 241, .75) 44%, #fff 48.5%, #fff 51.5%, rgba(0, 215, 255, .75) 56%, rgba(88, 0, 255, .35) 66%, transparent 78%);
+    will-change: transform, opacity;
+}
+.vg.yar .vg-huzme { animation: vg-huzme 1s cubic-bezier(.3, 0, .2, 1) forwards; }
+@keyframes vg-huzme {
+    0%   { opacity: 1; transform: translate(-50%, -50%) rotate(var(--aci)) scaleY(.004); }
+    35%  { opacity: 1; transform: translate(-50%, -50%) rotate(var(--aci)) scaleY(.35); }
+    100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--aci)) scaleY(1.2); }
+}
+
+.vg-canvas { inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
 /* VULUSAL harfleri */
 .vg-baslik {
-    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-58%);
+    left: 0; right: 0; top: 50%; transform: translateY(-58%);
     display: flex; justify-content: center; gap: .04em; padding: 0 12px;
     font-size: clamp(46px, 13vw, 190px); font-weight: 900; line-height: 1;
 }
@@ -635,13 +694,13 @@ html.vg-bozul #root { animation: vg-bozul .85s steps(12) forwards; }
     to   { opacity: 1; transform: none; filter: none; }
 }
 .vg.drop .vg-baslik { animation: vg-baslik-zipla .5s ease-out, vg-hue .6s linear infinite; }
-@keyframes vg-baslik-zipla { 0% { transform: translateY(-58%) scale(1.25); } 100% { transform: translateY(-58%) scale(1); } }
+@keyframes vg-baslik-zipla { 0% { transform: translateY(-58%) scale(1.3); } 100% { transform: translateY(-58%) scale(1); } }
 @keyframes vg-hue { to { filter: hue-rotate(360deg); } }
 .vg.cikis .vg-baslik span { animation: vg-sacil .7s cubic-bezier(.5, 0, .9, .4) forwards; opacity: 1; }
 @keyframes vg-sacil { to { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(2.5); opacity: 0; } }
 
 .vg-alt {
-    position: absolute; left: 0; right: 0; top: calc(50% + clamp(40px, 8vw, 110px)); text-align: center;
+    left: 0; right: 0; top: calc(50% + clamp(40px, 8vw, 110px)); text-align: center;
     font-size: clamp(16px, 3vw, 30px); font-weight: 900; letter-spacing: 4px; color: var(--sari);
     text-shadow: 0 0 12px var(--sari), 0 0 30px var(--pembe); opacity: 0;
 }
@@ -649,86 +708,67 @@ html.vg-bozul #root { animation: vg-bozul .85s steps(12) forwards; }
 @keyframes vg-alt { from { opacity: 0; transform: scale(0) rotate(-10deg); } to { opacity: 1; transform: none; } }
 .vg.cikis .vg-alt { opacity: 1; animation: vg-perde-cik .3s forwards; }
 
-/* 3. drop: flaş ve sarsıntı */
-.vg-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
-.vg.drop .vg-flash { animation: vg-flash .5s ease-out; }
+/* flaşlar ve sarsıntı */
+.vg-flash { inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+.vg.yar .vg-flash { animation: vg-flash-kisa .3s ease-out; }
+.vg.drop .vg-flash { animation: vg-flash .55s ease-out; }
+@keyframes vg-flash-kisa { from { opacity: .75; } to { opacity: 0; } }
 @keyframes vg-flash { from { opacity: 1; } to { opacity: 0; } }
-.vg.drop:not(.cikis) { animation: vg-sars .45s cubic-bezier(.36, .07, .19, .97); }
+.vg.yar:not(.drop) { animation: vg-sars .45s cubic-bezier(.36, .07, .19, .97); }
+.vg.drop:not(.cikis) { animation: vg-sars .5s cubic-bezier(.36, .07, .19, .97); }
 @keyframes vg-sars {
-    10%, 90% { transform: translate(-3px, 2px); } 20%, 80% { transform: translate(6px, -3px); }
-    30%, 50%, 70% { transform: translate(-12px, 5px) rotate(-.5deg); } 40%, 60% { transform: translate(12px, -5px) rotate(.5deg); }
+    10%, 90% { transform: translate(-3px, 2px); } 20%, 80% { transform: translate(7px, -3px); }
+    30%, 50%, 70% { transform: translate(-14px, 6px) rotate(-.6deg); } 40%, 60% { transform: translate(14px, -6px) rotate(.6deg); }
 }
-.vg.cikis .vg-portal { transition: transform .7s ease-in; transform: scale(1.6); }
 
 /* ══ Hafif mod: telefonlar ve zayıf cihazlar (hafifMi() → html.vs-hafif, .vulusal.vs-hafif, .vg.hafif) ══════════
-   Görünüm aynı kalır; pahalı olanlar kapanır: büyük bulanıklıklar, sürekli renk döndüren filtreler, karışım modları,
-   arka plan bulanıklığı, çok katmanlı ışık gölgeleri ve sürekli yeniden boyanan gradyan animasyonları. */
-.vs-hafif .vs-sun { filter: none; box-shadow: none; animation: none; opacity: .6; }
-.vs-hafif .vs-oyna-wrap::after { display: none; }
-.vs-hafif .vs-oyna-wrap::before { filter: none; }
-.vs-hafif .vs-oyna { animation: none; box-shadow: 0 0 6px var(--cyan), 0 0 18px var(--pembe); }
-.vs-hafif .vs-oyna:hover { animation: none; }
-.vs-hafif .vs-h1 { animation: none; text-shadow: 0 0 8px var(--pembe), 0 0 24px var(--mor); }
-.vs-hafif .vs-glitch::before, .vs-hafif .vs-glitch::after { display: none; }
-.vs-hafif .vs-altyazi { animation: none; filter: none; }
-.vs-hafif .vs-rozet { animation: none; }
-.vs-hafif .vs-floating span { text-shadow: none; opacity: .45; }
-.vs-hafif .vs-kart { animation: none; }
-.vs-hafif .vs-kart, .vs-hafif .vs-ekstralar > div { box-shadow: 0 0 10px color-mix(in srgb, var(--c) 40%, transparent); }
-.vs-hafif .vs-btn.sari { animation: none; }
-.vs-hafif .vs-bolum-baslik { text-shadow: 0 0 10px var(--cyan), 0 0 24px var(--pembe); }
-.vs-hafif .vs-aura { text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--pembe); }
-.vs-hafif.audio-active .vs-aura { filter: none; }
-.vs-hafif .vs-aura::before, .vs-hafif .vs-aura::after { display: none; }
-.vs-hafif .vs-lasers span { box-shadow: none; }
+   Efekt kısılmaz, ucuz yollarla yapılır: bulanıklık (blur) ve sürekli renk döndüren filtreler yerine renk ve opaklık
+   animasyonları, karışım modları yerine düz katmanlar, canlı arka plan bulanıklığı yerine koyu zemin. */
+.vs-hafif .vs-sun { filter: none; box-shadow: none; }
+.vs-hafif .vs-oyna-wrap::before { filter: none; animation: none; }   /* kenar gökkuşağı sabit; ışımayı hale verir */
+.vs-hafif .vs-oyna { animation: none; box-shadow: 0 0 8px var(--cyan), 0 0 22px var(--pembe), inset 0 0 20px rgba(255, 45, 241, .5); }
+/* bulanık dönen gökkuşağı hale yerine nabız gibi atan düz bir ışıma */
+.vs-hafif .vs-oyna-wrap::after {
+    filter: none; animation: vs-hale 1s ease-in-out infinite alternate; inset: -26px; border-radius: 40px;
+    background: radial-gradient(closest-side, rgba(255, 45, 241, .75), rgba(0, 215, 255, .35) 55%, transparent);
+}
+@keyframes vs-hale { from { opacity: .45; transform: scale(.96); } to { opacity: 1; transform: scale(1.06); } }
+/* başlık: filtreyle renk döndürmek yerine rengi flaş gibi atlar (pembe → cyan → sarı → yeşil), ışıması rengi izler.
+   Yumuşak geçiş her karede büyük gölgeleri yeniden boyuyordu; atlayınca yalnızca renk değişirken boyanır. */
+.vs-hafif .vs-h1 { animation: vs-renk 2.4s steps(1, end) infinite; text-shadow: 0 0 6px currentColor, 0 0 22px currentColor, 0 0 50px var(--mor); }
+@keyframes vs-renk { 0%, 100% { color: var(--pembe); } 25% { color: var(--cyan); } 50% { color: var(--sari); } 75% { color: var(--yesil); } }
+.vs-hafif .vs-glitch::before, .vs-hafif .vs-glitch::after { mix-blend-mode: normal; opacity: .6; }
+.vs-hafif .vs-glitch:not(.vs-h1)::before, .vs-hafif .vs-glitch:not(.vs-h1)::after { display: none; }   /* glitch yalnızca ana başlıkta */
 .vs-hafif .vs-scanlines { display: none; }
-.vs-hafif .vs-marquee { box-shadow: none; }
-.vs-hafif .vs-small, .vs-hafif .vs-aura-hint { animation: none; }
-.vs-hafif .vs-modal { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(9, 0, 13, .88); }
-.vs-hafif .vs-modal-rays { display: none; }
+.vs-hafif .vs-altyazi { filter: none; }
+.vs-hafif .vs-floating span { text-shadow: none; opacity: .55; }
+.vs-hafif .vs-kart { will-change: translate; }
+.vs-hafif .vs-aura::before, .vs-hafif .vs-aura::after { mix-blend-mode: normal; }
+.vs-hafif.audio-active .vs-aura { filter: none; animation: vs-aura-float 3s ease-in-out infinite, vs-renk .8s steps(1, end) infinite; }
+.vs-hafif .vs-modal { backdrop-filter: none; -webkit-backdrop-filter: none; background: radial-gradient(circle, rgba(88, 0, 255, .55), rgba(9, 0, 13, .94) 70%); }
+.vs-hafif .vs-modal-rays { -webkit-mask: none; mask: none; opacity: .18; }
+/* ULTRA: dev katmanlara filtre yerine ekrana renk döndüren yarı saydam bir perde */
 .vs-hafif.ultra :is(.vs-canvas, .vs-sun, .vs-grid, .vs-icerik) { animation: none; }
 .vs-hafif.ultra .vs-icerik.shake { animation: vs-shake .4s cubic-bezier(.36, .07, .19, .97) both; }
+.vs-hafif.ultra .vs-flash { mix-blend-mode: normal; opacity: .14; animation: vs-renk-zemin .6s linear infinite; }
+@keyframes vs-renk-zemin { 0%, 100% { background: var(--pembe); } 33% { background: var(--cyan); } 66% { background: var(--sari); } }
 
 html.vs-hafif .topbar { backdrop-filter: none; -webkit-backdrop-filter: none; }
-html.vs-hafif .topbar::before { display: none; }
-html.vs-hafif .brand img, html.vs-hafif .brand .wordmark path { animation: none; }
-html.vs-hafif .brand .wordmark { filter: drop-shadow(0 0 6px var(--pembe)); }
-html.vs-hafif .topbar .btn-primary { animation: none; }
 html.vs-hafif .tabbar { backdrop-filter: none; -webkit-backdrop-filter: none; }
 
-/* Geçiş: bütün sayfaya filtre (özellikle blur) uygulamak yerine yalnızca kaydır ve eğ; renkleri şeritler verir */
-html.vg-hafif.vg-bozul #root { animation: vg-bozul-hafif .85s steps(8) forwards; }
-@keyframes vg-bozul-hafif {
-    15% { transform: translate(-6px, 2px) skewX(-2deg); }
-    30% { transform: translate(8px, -3px) skewX(3deg); }
-    45% { transform: translate(-4px, 4px); }
-    60% { transform: translate(10px, 0) skewX(-5deg); }
-    75% { transform: translate(-12px, -4px) scale(1.03); }
-    100% { transform: scale(1.08); opacity: .6; }
+/* Geçiş, hafif mod: sayfa yalnızca titrer (bütün sayfaya filtre yok), şeritler düz renk, ışınlar maskesiz ve küçük doku */
+html.vg-hafif.vg-bozul #root { animation: vg-titre-hafif .65s steps(10) forwards; }
+@keyframes vg-titre-hafif {
+    10% { transform: translate(-5px, 2px) skewX(-1.5deg); } 25% { transform: translate(7px, -3px) skewX(2deg); }
+    40% { transform: translate(-9px, 4px) scale(1.01); } 55% { transform: translate(10px, -2px) skewX(-4deg); }
+    70% { transform: translate(-12px, -4px) scale(1.02); } 85% { transform: translate(6px, 5px) skewX(3deg); }
+    100% { transform: none; }
 }
 .vg.hafif .vg-seritler i { mix-blend-mode: normal; }
-.vg.hafif .vg-seritler i:nth-child(n+7) { display: none; }
-.vg.hafif .vg-terminal { box-shadow: 0 0 12px var(--pembe); }
-.vg.hafif .vg-isinlar { width: 170vmax; height: 170vmax; -webkit-mask: none; mask: none; will-change: transform; }
+.vg.hafif .vg-isinlar { width: 170vmax; height: 170vmax; -webkit-mask: none; mask: none; }
 .vg.hafif .vg-baslik span { text-shadow: 0 0 10px var(--c), 0 0 30px var(--pembe), 3px 0 0 var(--cyan), -3px 0 0 var(--pembe); }
 .vg.hafif.slam .vg-baslik span { animation-name: vg-slam-hafif; }
-@keyframes vg-slam-hafif { from { opacity: 0; transform: scale(5) rotate(var(--rot)); } to { opacity: 1; transform: none; } }
+@keyframes vg-slam-hafif { from { opacity: 0; transform: scale(6) rotate(var(--rot)); } to { opacity: 1; transform: none; } }
 .vg.hafif.drop .vg-baslik { animation: vg-baslik-zipla .5s ease-out; }
-.vg.hafif .vg-alt { text-shadow: 0 0 12px var(--pembe); }
-/* Portal hafif modda clip-path ile açılmaz (her karede tam ekran boyar). Ekran boyunda bir disk (::before) tıklanan
-   noktadan büyür; 1,6 katında oval ekranın köşelerini de kaplar. Işınlar ve ızgara disk büyürken belirir.
-   Doku hiçbir zaman ekrandan çok büyük olmaz (300vmax'lık bir daire telefonda dev bir doku demekti). */
-.vg.hafif .vg-portal { clip-path: none; background: none; }
-.vg.hafif .vg-portal::before {
-    content: ""; position: absolute; inset: 0; border-radius: 50%;
-    background: radial-gradient(closest-side, #fff 0, #ff2df1 8%, #5800ff 30%, #09000d 75%);
-    transform-origin: var(--x) var(--y); transform: scale(0); will-change: transform;
-}
-.vg.hafif.portal .vg-portal::before { animation: vg-portal-hafif .55s cubic-bezier(.7, 0, .3, 1) forwards; }
-@keyframes vg-portal-hafif { to { transform: scale(1.6); } }
-.vg.hafif .vg-isinlar, .vg.hafif .vg-izgara { opacity: 0; }
-.vg.hafif.portal .vg-isinlar { animation: vg-donus 1.2s linear infinite, vg-belir .3s .3s forwards; }
-.vg.hafif.portal .vg-izgara { animation: vg-belir .3s .3s forwards; }
-.vg.hafif.drop .vg-isinlar { animation-duration: .4s, .3s; }
-@keyframes vg-belir { to { opacity: 1; } }
-.vg.hafif.cikis .vg-portal { transition: none; }
+.vg.hafif.drop:not(.cikis) .vg-baslik span { animation: vs-renk .4s steps(1, end) infinite; opacity: 1; }
+.vg.hafif .vg-halkalar i { box-shadow: 0 0 14px var(--c); }
