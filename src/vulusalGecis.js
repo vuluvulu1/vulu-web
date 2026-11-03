@@ -4,7 +4,7 @@
 //   ÇATLAK   (0–0,7 sn)  tıklanan noktadan şimşek gibi bir çatlak ekranı yarar; şok dalgaları, glitch, sayfa titrer
 //   YARILMA  (0,7 sn)    sayfa o çizgiden ikiye bölünür, iki yarı dönerek derin uzaya savrulur; aradan ışık ve nebula
 //   UZAY     (2 sn)      ortada bir kara delik doğar: dönen toplanma diski, olay ufku, bükülmüş ışık halkası;
-//                        yıldızlar spiral çizerek içine düşer; sinematik alt yazılar
+//                        yıldızlar spiral çizerek içine düşer
 //   ÇÖKÜŞ    (4,3 sn)    her şey kara deliğe çekilir, ekran kararır, bir an sessizlik
 //   PATLAMA  (5,1 sn)    Big Bang: kör eden flaş, şok dalgaları, yıldızlar dışarı fışkırır, VULUSAL tekillikten doğar;
 //                        arkada vulusal sayfa açılır
@@ -25,14 +25,6 @@ const rastgele = (a, b) => a + Math.random() * (b - a);
 
 /** Aşamaların başlangıçları (ms). Ses de bunlara göre kurulur. */
 const Z = { YARILMA: 700, UZAY: 2000, COKUS: 4300, PATLAMA: 5100, CIKIS: 7000, SON: 7700 };
-
-/** Sinematik alt yazılar: [ne zaman (ms), ne] */
-const ALT_YAZILAR = [
-    [1250, 'EVREN İKİYE BÖLÜNDÜ'],
-    [2500, 'KARA DELİK OLUŞUYOR'],
-    [3450, 'AURA KRİTİK SEVİYEDE'],
-    [4400, 'TEKİLLİK'],
-];
 
 let suruyor = false;
 
@@ -81,7 +73,6 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
         <svg class="vg-catlak" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${catlakSvg(x, y, d, Math.hypot(W, H))}</svg>
         <div class="vg-halkalar">${halkalar('ilk', 3)}${halkalar('son', 5)}</div>
         <div class="vg-karanlik"></div>
-        <div class="vg-yazi"></div>
         <div class="vg-baslik">${harfler}</div>
         <div class="vg-alt">+1.000.000 AURA</div>
         <canvas class="vg-canvas"></canvas>
@@ -117,12 +108,6 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
         asama('yar');
     });
     sonra(Z.UZAY + 500, () => el.querySelectorAll('.vg-yari').forEach(y => y.replaceChildren()));   // uzayın derinliklerinde kayboldular
-
-    // alt yazılar
-    const yazi = el.querySelector('.vg-yazi');
-    for (const [ms, metin] of ALT_YAZILAR) {
-        sonra(ms, () => { yazi.textContent = metin; yazi.classList.remove('goster'); void yazi.offsetWidth; yazi.classList.add('goster'); });
-    }
 
     sonra(Z.UZAY, () => asama('uzay'));
     sonra(Z.COKUS, () => asama('cokus'));

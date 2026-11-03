@@ -738,19 +738,6 @@ html.vg-bozul #root { animation: vg-titre .7s steps(10) forwards; }
 @keyframes vg-halka { 0% { opacity: 1; transform: scale(0); } 100% { opacity: 0; transform: scale(2.6); } }
 @keyframes vg-halka-buyuk { 0% { opacity: 1; transform: scale(.05); } 100% { opacity: 0; transform: scale(5.5); } }
 
-/* sinematik alt yazılar */
-.vg-yazi {
-    left: 0; right: 0; bottom: 14vh; text-align: center; padding: 0 16px;
-    font-size: clamp(14px, 2.6vw, 26px); font-weight: 700; letter-spacing: .5em; color: #fff;
-    text-shadow: 0 0 10px var(--pembe), 0 0 26px var(--mor); opacity: 0;
-}
-.vg-yazi.goster { animation: vg-yazi 1s ease-out forwards; }
-@keyframes vg-yazi {
-    0% { opacity: 0; letter-spacing: 1.2em; } 12% { opacity: 1; } 18% { opacity: .3; } 24% { opacity: 1; }
-    80% { opacity: 1; letter-spacing: .5em; } 100% { opacity: 0; letter-spacing: .45em; }
-}
-.vg.patlama .vg-yazi { display: none; }
-
 .vg-canvas { inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
 /* VULUSAL: tekillikten doğar */
@@ -853,4 +840,3 @@ html.vg-hafif.vg-bozul #root { animation: vg-titre-hafif .7s steps(10) forwards;
 .vg.hafif.patlama .vg-baslik { animation: vg-baslik-zipla .7s ease-out .1s; }
 .vg.hafif.patlama:not(.cikis) .vg-baslik span { animation: vg-dogum-hafif .75s cubic-bezier(.15, 1.5, .3, 1) both, vs-renk .4s steps(1, end) 1.1s infinite; animation-delay: calc(var(--i) * 45ms + 80ms), 1.1s; }
 .vg.hafif .vg-halkalar i { box-shadow: 0 0 14px var(--c); }
-.vg.hafif .vg-yazi { text-shadow: 0 0 12px var(--pembe); }
