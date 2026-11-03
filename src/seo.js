@@ -33,6 +33,10 @@ export const PUBLIC_PAGES = {
             description: 'Minecraft\'ı modlu ya da modsuz oynamak için bir launcher: instance\'lar, CurseForge ve Modrinth modları, mod paketleri, sunucular ve sohbet.',
         }),
     },
+    '/vulusalvululauncher': {
+        title: 'Vulusal vulu Launcher – aşırı vulu bir Minecraft launcher\'ı',
+        description: 'vulu Launcher\'ın vulusal sürümü: aynı ücretsiz Minecraft launcher\'ı, neon ışıklar, konfeti ve trap beat\'iyle. Instance\'lar, mod paketleri, sunucular ve arkadaşlar tek uygulamada.',
+    },
     '/server-panel': {
         title: 'vulu Server Panel – Minecraft sunucu kurma ve yönetim paneli',
         description: 'Minecraft sunucunu kendi bilgisayarında kur ve tarayıcıdan yönet: Paper, Fabric, Forge ve NeoForge, Modrinth modları, canlı konsol, yedekleme ve zamanlama. Ücretsiz ve açık kaynak.',

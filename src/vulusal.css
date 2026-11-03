@@ -1,0 +1,529 @@
+/*
+ * Vulusal Launcher sayfası (/vulusalvululauncher): neon synthwave, sitenin Meşale görünümünün tam tersi.
+ * Her kural .vulusal altında, her animasyon "vs-" önekli; sitenin geri kalanına dokunmaz.
+ * Arka plan katmanları position: fixed, ama sayfa main'in (z-index: 1) içinde olduğundan üst çubuk hep üstte kalır.
+ * Kök öğeye transform/filter verilmez: verilirse fixed katmanlar ekrana değil köke göre konumlanır.
+ */
+
+@font-face { font-family: "Orbitron"; src: url("/fonts/Orbitron.ttf") format("truetype"); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: "Russo One"; src: url("/fonts/RussoOne-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@property --vs-ang { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+/* Bu sayfadayken sitenin amber meşale ışığı söner */
+body:has(.vulusal) .torch { display: none; }
+/* Sayfa geçişi burada yalnızca belirerek olur: geçişin transform'u bitince de kalıyor ve fixed katmanları
+   ekrana değil sayfanın boyuna göre konumlandırıyor (modal ortada değil sayfanın ortasında açılıyordu). */
+.page-enter:has(> .vulusal) { animation-name: vs-page-in; }
+@keyframes vs-page-in { from { opacity: 0; } }
+
+/* ── Üst çubuk (ve telefondaki alt sekmeler): yalnızca bu sayfadayken vulusal ──
+   Çubuk sayfanın dışında durduğu için kurallar body:has(.vulusal) ile bu sayfaya bağlanır; renkler de oraya tanımlanır. */
+body:has(.vulusal) {
+    --pembe: #ff2df1; --mor: #5800ff; --cyan: #00d7ff; --sari: #f6dc43; --yesil: #39ff14;
+    --vs-head: "Orbitron", "Russo One", var(--font);
+}
+body:has(.vulusal) .topbar {
+    background: linear-gradient(90deg, rgba(31, 0, 38, .92), rgba(9, 0, 20, .92) 50%, rgba(0, 22, 38, .92));
+    box-shadow: 0 0 24px rgba(255, 45, 241, .35), 0 0 60px rgba(0, 215, 255, .12);
+}
+/* altta akan gökkuşağı çizgi */
+body:has(.vulusal) .topbar::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; width: auto; height: 2px; pointer-events: none; transform: none;
+    background: linear-gradient(90deg, var(--pembe), var(--cyan), var(--sari), var(--yesil), var(--mor), var(--pembe)); background-size: 200% 100%;
+    box-shadow: 0 0 12px var(--pembe), 0 0 24px var(--cyan);
+    animation: vs-gradient-btn 2s linear infinite;
+}
+/* çubuğun üstünden ara ara geçen ışık */
+body:has(.vulusal) .topbar::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -30%; width: 22%; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .14), transparent);
+    transform: skewX(-20deg); animation: vs-bar-shine 4.5s ease-in-out infinite;
+}
+@keyframes vs-bar-shine { 0%, 55% { left: -30%; } 100% { left: 130%; } }
+
+body:has(.vulusal) .brand img { animation: vs-hue 4s linear infinite; filter: drop-shadow(0 0 6px var(--pembe)); }
+body:has(.vulusal) .brand .wordmark { filter: drop-shadow(0 0 4px var(--pembe)) drop-shadow(0 0 12px var(--cyan)); }
+body:has(.vulusal) .brand .wordmark path { fill: var(--pembe); animation: vs-wordmark 3s linear infinite; }
+@keyframes vs-wordmark { 33% { fill: var(--cyan); } 66% { fill: var(--sari); } }
+body:has(.vulusal) .brand:hover .wordmark { animation: vs-jitter .12s linear infinite; }
+
+body:has(.vulusal) .topnav a { font-family: var(--vs-head); font-weight: 700; font-size: 13px; letter-spacing: 1.5px; color: #c9a6ff; transition: color .15s, text-shadow .15s; }
+body:has(.vulusal) .topnav a:hover { color: #fff; text-shadow: 0 0 8px var(--pembe), 0 0 18px var(--pembe); animation: vs-jitter .12s linear infinite; }
+body:has(.vulusal) .topnav a.active { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); background: radial-gradient(ellipse 62% 90% at 50% 100%, rgba(0, 215, 255, .2), transparent); }
+body:has(.vulusal) .topnav a.active::after { background: var(--cyan); box-shadow: 0 0 14px 2px var(--cyan); }
+
+body:has(.vulusal) .topbar .btn {
+    border-radius: 8px; font-family: var(--vs-head); font-weight: 900; letter-spacing: 1.5px;
+    transition: transform .15s, box-shadow .15s;
+}
+body:has(.vulusal) .topbar .btn-quiet { border: 1px solid var(--cyan); color: var(--cyan); box-shadow: 0 0 8px rgba(0, 215, 255, .45); }
+body:has(.vulusal) .topbar .btn-primary {
+    border-color: transparent; color: #16001c;
+    background: linear-gradient(90deg, var(--sari), #ffad2d, var(--pembe), var(--sari)); background-size: 300% 100%;
+    box-shadow: 0 0 12px rgba(246, 220, 67, .6);
+    animation: vs-gradient-btn 2.5s linear infinite;
+}
+body:has(.vulusal) .topbar .btn:hover { transform: scale(1.08) rotate(-2deg); box-shadow: 0 0 16px var(--pembe), 0 0 40px var(--pembe); }
+
+body:has(.vulusal) .num { background: var(--pembe); color: #16001c; box-shadow: 0 0 8px var(--pembe); }
+body:has(.vulusal) .menu summary { border-radius: 8px; }
+body:has(.vulusal) .menu summary:hover, body:has(.vulusal) .menu[open] summary { background: rgba(255, 45, 241, .14); }
+body:has(.vulusal) .menu summary .avatar { box-shadow: 0 0 0 1px var(--cyan), 0 0 10px var(--cyan); }
+body:has(.vulusal) .menu-name { font-family: "Russo One", var(--font); color: #fff; text-shadow: 0 0 8px var(--pembe); }
+body:has(.vulusal) .menu-panel {
+    border-radius: 12px; background: linear-gradient(160deg, #1f0026, #0b0014 60%, #001626);
+    box-shadow: 0 0 0 1px var(--pembe), 0 0 24px rgba(255, 45, 241, .45), 0 18px 44px rgba(0, 0, 0, .7);
+}
+body:has(.vulusal) .menu-panel a, body:has(.vulusal) .menu-panel button { border-radius: 8px; }
+body:has(.vulusal) .menu-panel a:hover, body:has(.vulusal) .menu-panel button:hover { background: rgba(0, 215, 255, .12); color: var(--cyan); }
+body:has(.vulusal) .menu-panel svg { color: var(--pembe); }
+body:has(.vulusal) .menu-panel hr { border-color: rgba(255, 45, 241, .3); }
+
+@media (max-width: 760px) {
+    body:has(.vulusal) .topnav a { font-size: 11px; letter-spacing: 1px; padding: 0 8px; }
+    body:has(.vulusal) .tabbar {
+        background: linear-gradient(90deg, rgba(31, 0, 38, .96), rgba(0, 22, 38, .96));
+        box-shadow: 0 -2px 0 var(--pembe), 0 -8px 24px rgba(255, 45, 241, .35);
+    }
+    body:has(.vulusal) .tabbar a { color: #c9a6ff; font-family: var(--vs-head); font-size: 10px; letter-spacing: 1px; }
+    body:has(.vulusal) .tabbar a.active { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+    body:has(.vulusal) .tabbar a.active::before { background: var(--cyan); box-shadow: 0 0 12px 2px var(--cyan); }
+}
+@media (prefers-reduced-motion: reduce) {
+    body:has(.vulusal) .topbar::before { display: none; }
+    body:has(.vulusal) :is(.topbar, .tabbar) *, body:has(.vulusal) .topbar::after { animation: none !important; }
+}
+
+.vulusal {
+    --pembe: #ff2df1;
+    --mor: #5800ff;
+    --cyan: #00d7ff;
+    --sari: #f6dc43;
+    --yesil: #39ff14;
+    --vs-bg: #09000d;
+    --hue: 0deg;
+    --vs-head: "Orbitron", "Russo One", var(--font);
+
+    position: relative; isolation: isolate;
+    margin-bottom: -88px;                       /* altbilgiyle arada boşluk kalmasın */
+    min-height: calc(100vh - var(--topbar-h));
+    font-family: "Russo One", var(--font); color: #fff;
+    background: var(--vs-bg);
+    cursor: crosshair;
+    overflow: clip;
+}
+.vulusal a, .vulusal button { cursor: pointer; }
+
+/* ── Arka plan katmanları ─────────────────────────── */
+.vs-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+.vs-sun, .vs-sahne, .vs-aura { --beat: 0; }     /* motor müzikle günceller */
+.vs-sun {
+    position: fixed; left: 50%; bottom: 34vh; width: min(46vw, 420px); aspect-ratio: 1; z-index: 1; pointer-events: none;
+    transform: translateX(-50%) scale(calc(1 + var(--beat) * .12));
+    border-radius: 50%;
+    background: linear-gradient(to bottom, var(--sari) 0%, #ff7a2d 35%, var(--pembe) 70%, var(--mor) 100%);
+    -webkit-mask: linear-gradient(to bottom, #000 0 52%, transparent 52% 56%, #000 56% 63%, transparent 63% 68%, #000 68% 74%, transparent 74% 80%, #000 80% 85%, transparent 85% 91%, #000 91%);
+    mask: linear-gradient(to bottom, #000 0 52%, transparent 52% 56%, #000 56% 63%, transparent 63% 68%, #000 68% 74%, transparent 74% 80%, #000 80% 85%, transparent 85% 91%, #000 91%);
+    filter: saturate(1.3); opacity: .5;
+    animation: vs-sun-breathe 4s ease-in-out infinite;
+}
+@keyframes vs-sun-breathe { 50% { opacity: .7; } }
+
+.vs-grid {
+    position: fixed; left: -50%; right: -50%; bottom: 0; height: 36vh; z-index: 1;
+    perspective: 260px; pointer-events: none; overflow: hidden;
+    background: linear-gradient(to bottom, transparent, rgba(88, 0, 255, .25));
+}
+.vs-grid > div {
+    position: absolute; inset: -100% 0 0 0;
+    transform: rotateX(62deg); transform-origin: bottom;
+    background-image: linear-gradient(var(--pembe) 2px, transparent 2px), linear-gradient(90deg, var(--cyan) 2px, transparent 2px);
+    background-size: 60px 60px;
+    animation: vs-grid-move .6s linear infinite;
+    -webkit-mask: linear-gradient(to bottom, transparent 0%, #000 60%);
+    mask: linear-gradient(to bottom, transparent 0%, #000 60%);
+}
+@keyframes vs-grid-move { to { background-position: 0 60px, 0 60px; } }
+.vulusal.audio-active .vs-grid > div { animation-duration: .25s; }
+
+.vs-lasers { position: fixed; left: 50%; bottom: 0; width: 0; height: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .3s; }
+.vulusal.audio-active .vs-lasers { opacity: 1; }
+.vs-lasers span {
+    position: absolute; bottom: 0; left: -2px; width: 4px; height: 160vh; transform-origin: bottom center;
+    background: linear-gradient(to top, #fff, var(--c) 20%, transparent);
+    box-shadow: 0 0 12px var(--c), 0 0 30px var(--c);
+    border-radius: 4px; opacity: .8;
+    animation: vs-laser 2.4s ease-in-out infinite alternate;
+}
+.vs-lasers span:nth-child(1) { --c: var(--pembe); --a: -55deg; --b: -15deg; }
+.vs-lasers span:nth-child(2) { --c: var(--cyan);  --a: 55deg;  --b: 15deg; animation-delay: -.4s; }
+.vs-lasers span:nth-child(3) { --c: var(--sari);  --a: -35deg; --b: 25deg; animation-delay: -.8s; }
+.vs-lasers span:nth-child(4) { --c: var(--yesil); --a: 35deg;  --b: -25deg; animation-delay: -1.2s; }
+.vs-lasers span:nth-child(5) { --c: var(--mor);   --a: -70deg; --b: 5deg;  animation-delay: -1.6s; }
+.vs-lasers span:nth-child(6) { --c: #ff3131;      --a: 70deg;  --b: -5deg; animation-delay: -2s; }
+@keyframes vs-laser { from { transform: rotate(var(--a)); } to { transform: rotate(var(--b)); } }
+
+.vs-floating { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.vs-floating span {
+    position: absolute; bottom: -60px; font-family: var(--vs-head); font-weight: 900; white-space: nowrap;
+    color: transparent; -webkit-text-stroke: 1px var(--c); opacity: .35;
+    text-shadow: 0 0 12px var(--c);
+    animation: vs-float-up var(--d) linear forwards;
+}
+@keyframes vs-float-up { to { transform: translateY(-120vh) rotate(var(--r)); } }
+
+/* ── İçerik ───────────────────────────────────────── */
+.vs-icerik { position: relative; z-index: 10; }
+.vs-icerik.shake { animation: vs-shake .4s cubic-bezier(.36, .07, .19, .97) both; }
+@keyframes vs-shake {
+    10%, 90% { transform: translate(-2px, 1px) rotate(-.3deg); }
+    20%, 80% { transform: translate(4px, -2px) rotate(.4deg); }
+    30%, 50%, 70% { transform: translate(-7px, 3px) rotate(-.6deg); }
+    40%, 60% { transform: translate(7px, -3px) rotate(.6deg); }
+}
+
+.vs-marquee {
+    position: relative; left: -5%; width: 110%; overflow: hidden; white-space: nowrap; pointer-events: none;
+    padding: 6px 0; font-family: var(--vs-head); font-weight: 900; font-size: 15px; letter-spacing: 4px;
+}
+.vs-marquee.top    { margin-top: 18px; transform: rotate(-2deg); background: var(--pembe); color: #16001c; box-shadow: 0 0 25px var(--pembe); }
+.vs-marquee.bottom { margin-top: 40px; transform: rotate(1.5deg) translateY(6px); background: var(--cyan); color: #00121a; box-shadow: 0 0 25px var(--cyan); }
+.vs-marquee-track { display: inline-block; animation: vs-marquee 18s linear infinite; }
+.vs-marquee-track.reverse { animation-direction: reverse; animation-duration: 22s; }
+@keyframes vs-marquee { to { transform: translateX(-50%); } }
+.vulusal.audio-active .vs-marquee-track { animation-duration: 5s; }
+
+.vs-sahne {
+    min-height: calc(100vh - var(--topbar-h) - 60px); padding: 48px 16px 18vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; text-align: center;
+    transform: scale(calc(1 + var(--beat) * .03));
+}
+.vulusal.ultra .vs-sahne { animation: vs-wobble .8s ease-in-out infinite; }
+@keyframes vs-wobble { 25% { rotate: -2deg; } 75% { rotate: 2deg; } }
+
+.vs-rozet {
+    font-family: var(--vs-head); font-size: 11px; letter-spacing: 3px; padding: 6px 14px; border-radius: 99px;
+    color: var(--sari); border: 1px solid var(--sari); background: rgba(246, 220, 67, .08);
+    box-shadow: 0 0 12px rgba(246, 220, 67, .5), inset 0 0 12px rgba(246, 220, 67, .25);
+    animation: vs-blink 1.2s steps(2) infinite;
+}
+@keyframes vs-blink { 50% { color: #fff; border-color: #fff; } }
+
+.vs-h1 {
+    position: relative; margin: 0; color: var(--pembe); font-family: "Russo One", var(--font); font-weight: 400;
+    font-size: clamp(30px, 6vw, 64px); line-height: 1.15;
+    text-shadow: 0 0 5px var(--pembe), 0 0 15px #a5158c, 0 0 40px var(--pembe), 0 0 80px var(--mor);
+    animation: vs-hue 6s linear infinite;
+}
+@keyframes vs-hue { to { filter: hue-rotate(360deg); } }
+.vs-wavy .vs-kelime { display: inline; white-space: nowrap; }
+.vs-wavy .vs-kelime > span { display: inline-block; animation: vs-wave 1.4s ease-in-out infinite; animation-delay: calc(var(--i) * 70ms); }
+@keyframes vs-wave { 50% { transform: translateY(-12px) rotate(-4deg); } }
+
+/* Glitch: renkli kopyalar arada bir kayar */
+.vs-glitch { position: relative; }
+.vs-glitch::before, .vs-glitch::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; opacity: .8; mix-blend-mode: screen; }
+.vs-glitch::before { color: var(--cyan); transform: translate(-3px, 0); animation: vs-glitch-a 2.2s infinite steps(1); }
+.vs-glitch::after  { color: var(--sari); transform: translate(3px, 0);  animation: vs-glitch-b 1.7s infinite steps(1); }
+@keyframes vs-glitch-a {
+    0%, 85% { clip-path: inset(0 0 100% 0); }
+    86% { clip-path: inset(10% 0 60% 0); transform: translate(-6px, -2px); }
+    90% { clip-path: inset(40% 0 30% 0); transform: translate(5px, 1px); }
+    95% { clip-path: inset(70% 0 5% 0); transform: translate(-4px, 2px); }
+}
+@keyframes vs-glitch-b {
+    0%, 80% { clip-path: inset(100% 0 0 0); }
+    82% { clip-path: inset(50% 0 20% 0); transform: translate(6px, 1px); }
+    88% { clip-path: inset(15% 0 70% 0); transform: translate(-5px, -1px); }
+    94% { clip-path: inset(80% 0 2% 0); transform: translate(3px, 2px); }
+}
+
+.vulusal p { margin: 0; }
+.vs-altyazi {
+    font-size: 18px; letter-spacing: 6px;
+    background: linear-gradient(90deg, var(--pembe), var(--cyan), var(--sari), var(--pembe)); background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 8px var(--pembe));
+    animation: vs-gradient 3s linear infinite;
+}
+@keyframes vs-gradient { to { background-position: 300% 0; } }
+.vs-lead { max-width: 560px; font-family: var(--font); font-size: 17px; color: #ffc8ff; text-shadow: 0 0 10px rgba(255, 45, 241, .6); }
+
+/* ── Oyna/indir tuşu ── */
+.vs-oyna-wrap { position: relative; z-index: 0; padding: 4px; border-radius: 14px; margin: 18px 0 6px; }
+.vs-oyna-wrap::before, .vs-oyna-wrap::after {
+    content: ""; position: absolute; pointer-events: none;
+    background: conic-gradient(from var(--vs-ang), var(--pembe), var(--cyan), var(--sari), var(--yesil), var(--mor), var(--pembe));
+    animation: vs-ang 2s linear infinite;
+}
+.vs-oyna-wrap::before { inset: -3px; border-radius: 16px; z-index: -1; filter: blur(2px); }
+.vs-oyna-wrap::after  { inset: -18px; border-radius: 26px; z-index: -2; filter: blur(28px); opacity: .7; }
+@keyframes vs-ang { to { --vs-ang: 360deg; } }
+
+.vs-oyna {
+    position: relative; overflow: hidden; display: block;
+    background: var(--mor); border: 1px solid var(--cyan); border-radius: 12px; color: var(--pembe);
+    box-shadow: 0 0 5px var(--cyan), 0 0 15px var(--cyan), 0 0 30px var(--pembe), inset 0 0 20px rgba(255, 45, 241, .5);
+    text-shadow: 0 0 15px var(--pembe);
+    padding: 20px 38px; font-family: var(--vs-head); font-weight: 900; font-size: clamp(14px, 2.4vw, 22px); letter-spacing: 3px;
+    transition: transform .15s, background .2s, box-shadow .2s, color .2s;
+    animation: vs-oyna-pulse 1s ease-in-out infinite;
+    will-change: transform;
+}
+@keyframes vs-oyna-pulse { 50% { box-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan), 0 0 60px var(--pembe), inset 0 0 30px rgba(255, 45, 241, .8); } }
+.vs-oyna:hover, .vs-oyna:focus-visible {
+    background: var(--pembe); color: var(--mor); text-shadow: 0 0 10px #fff; outline: none;
+    box-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan), 0 0 60px var(--pembe), 0 0 120px var(--pembe);
+    animation: vs-jitter .12s linear infinite;
+}
+.vs-oyna:active { transform: scale(.92) !important; }
+@keyframes vs-jitter { 25% { translate: 1px -1px; } 50% { translate: -1px 1px; } 75% { translate: 1px 1px; } }
+.vs-oyna-text { position: relative; z-index: 2; }
+.vs-oyna-shine {
+    position: absolute; top: 0; left: -60%; width: 40%; height: 100%; z-index: 1;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .85), transparent);
+    transform: skewX(-20deg); animation: vs-shine 2.2s ease-in-out infinite;
+}
+@keyframes vs-shine { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+.vs-ripple {
+    position: absolute; border-radius: 50%; pointer-events: none; z-index: 1;
+    background: radial-gradient(circle, #fff, var(--sari) 40%, transparent 70%);
+    transform: translate(-50%, -50%) scale(0); animation: vs-ripple .6s ease-out forwards;
+}
+@keyframes vs-ripple { to { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
+
+.vs-meta { font-size: 13px; letter-spacing: 1px; color: #e5b8ff; }
+.vs-meta .mono { color: var(--sari); text-shadow: 0 0 8px var(--sari); }
+.vs-live { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font); font-size: 15px; color: #fff; }
+.vs-live b { color: var(--yesil); text-shadow: 0 0 10px var(--yesil); }
+.vs-live-dot { width: 10px; height: 10px; border-radius: 50%; background: #6b4a78; }
+.vs-live-dot.on { background: var(--yesil); box-shadow: 0 0 10px var(--yesil); animation: vs-blink-dot 1s ease-in-out infinite; }
+@keyframes vs-blink-dot { 50% { box-shadow: 0 0 22px var(--yesil); } }
+.vs-small { color: #b06ad0; font-size: 11px; letter-spacing: 2px; animation: vs-flicker 3s infinite; }
+@keyframes vs-flicker { 0%, 92%, 96%, 100% { opacity: 1; } 94% { opacity: .2; } }
+
+/* ── Bölümler ── */
+.vs-bolum { width: min(1120px, 100%); margin: 0 auto; padding: 56px 16px 0; }
+.vs-bolum-baslik {
+    margin: 0 0 28px; text-align: center; font-family: var(--vs-head); font-weight: 900;
+    font-size: clamp(24px, 4.4vw, 44px); letter-spacing: 4px; color: #fff;
+    text-shadow: 0 0 6px #fff, 0 0 18px var(--cyan), 0 0 40px var(--pembe);
+}
+
+.vs-kartlar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.vs-kart {
+    --c: var(--pembe);
+    position: relative; padding: 26px 24px; border-radius: 16px;
+    background: linear-gradient(160deg, rgba(31, 0, 38, .88), rgba(11, 0, 20, .88) 60%, rgba(0, 22, 38, .88));
+    border: 1px solid var(--c);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--c) 55%, transparent), inset 0 0 26px color-mix(in srgb, var(--c) 18%, transparent);
+    transition: transform .2s, box-shadow .2s;
+    animation: vs-kart-bob 3s ease-in-out infinite; animation-delay: calc(var(--n) * -.7s);
+}
+.vs-kart.cyan  { --c: var(--cyan); }
+.vs-kart.sari  { --c: var(--sari); }
+.vs-kart.yesil { --c: var(--yesil); }
+.vs-kart:hover { transform: scale(1.03) rotate(-1deg); box-shadow: 0 0 22px var(--c), 0 0 60px color-mix(in srgb, var(--c) 45%, transparent), inset 0 0 30px color-mix(in srgb, var(--c) 25%, transparent); }
+@keyframes vs-kart-bob { 50% { translate: 0 -6px; } }
+.vs-kart-etiket { font-family: var(--vs-head); font-size: 12px; letter-spacing: 3px; color: var(--c); text-shadow: 0 0 8px var(--c); }
+.vs-kart h3 { margin: 8px 0 10px; font-family: "Russo One", var(--font); font-weight: 400; font-size: 22px; line-height: 1.25; color: #fff; text-shadow: 0 0 12px var(--c); }
+.vs-kart p:last-child { font-family: var(--font); font-size: 15px; line-height: 1.6; color: #ecdcf3; }
+
+.vs-ekstralar { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 0; }
+.vs-ekstralar > div {
+    --c: var(--cyan);
+    padding: 16px 18px; border-radius: 12px; background: rgba(9, 0, 13, .78);
+    border: 1px solid color-mix(in srgb, var(--c) 60%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--c) 35%, transparent);
+    transition: transform .15s, box-shadow .15s;
+}
+.vs-ekstralar > div:nth-child(3n+2) { --c: var(--pembe); }
+.vs-ekstralar > div:nth-child(3n)   { --c: var(--sari); }
+.vs-ekstralar > div:hover { transform: translateY(-4px) rotate(.6deg); box-shadow: 0 0 18px var(--c), 0 0 40px color-mix(in srgb, var(--c) 40%, transparent); }
+.vs-ekstralar dt { font-family: "Russo One", var(--font); font-size: 16px; color: var(--c); text-shadow: 0 0 8px var(--c); }
+.vs-ekstralar dd { margin: 6px 0 0; font-family: var(--font); font-size: 14px; line-height: 1.55; color: #e2d3ea; }
+
+.vs-basla { max-width: 760px; text-align: center; }
+.vs-not { font-family: var(--font); font-size: 14px; color: #d4b5e3; }
+.vs-adimlar { list-style: none; counter-reset: vs; margin: 22px 0; padding: 0; display: grid; gap: 12px; text-align: left; }
+.vs-adimlar li {
+    counter-increment: vs; display: flex; align-items: center; gap: 16px;
+    padding: 14px 18px; border-radius: 12px; background: rgba(9, 0, 13, .8); border: 1px solid rgba(255, 45, 241, .45);
+    font-family: var(--font); font-size: 15px;
+}
+.vs-adimlar li::before {
+    content: counter(vs); flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
+    font-family: var(--vs-head); font-weight: 900; color: #16001c; background: var(--pembe); box-shadow: 0 0 14px var(--pembe);
+}
+.vs-adimlar b { color: var(--yesil); }
+.vulusal a:not(.vs-btn) { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+.vs-indir, .vs-modal-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 22px; }
+
+.vs-btn {
+    --c: #fff;
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--c); border-radius: 9px; padding: 12px 22px;
+    background: rgba(9, 0, 13, .7); color: var(--c); text-decoration: none;
+    font-family: var(--vs-head); font-weight: 900; font-size: 14px; letter-spacing: 1.5px;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--c) 45%, transparent);
+    transition: transform .15s, box-shadow .15s, background .15s, color .15s;
+}
+.vs-btn.cyan { --c: var(--cyan); }
+.vs-btn.sari {
+    --c: var(--sari); color: #16001c; border-color: transparent;
+    background: linear-gradient(90deg, var(--sari), #ffad2d, var(--sari)); background-size: 200% 100%;
+    animation: vs-gradient-btn 2s linear infinite;
+}
+@keyframes vs-gradient-btn { to { background-position: 200% 0; } }
+.vs-btn:hover, .vs-btn:focus-visible { transform: scale(1.08) rotate(-2deg); box-shadow: 0 0 18px var(--c), 0 0 50px var(--c), 0 0 90px var(--pembe); outline: none; }
+
+/* ── VULUSAL - 2026 ── */
+.vs-aura-wrap { padding: 80px 16px 0; text-align: center; }
+.vs-aura {
+    position: relative; display: inline-block; margin: 0; cursor: pointer;
+    font-family: var(--vs-head); font-weight: 900; font-size: clamp(35px, 7vw, 90px); letter-spacing: 8px; color: #fff;
+    text-shadow: 0 0 5px #fff, 0 0 15px var(--cyan), 0 0 30px var(--cyan), 0 0 60px var(--pembe), 0 0 120px var(--pembe);
+    transform: scale(calc(1 + var(--beat) * .25)) rotate(calc(var(--beat) * -2deg));
+    animation: vs-aura-float 3s ease-in-out infinite;
+}
+@keyframes vs-aura-float { 50% { translate: 0 -8px; } }
+.vs-aura::before, .vs-aura::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0; }
+.vs-aura::before { color: var(--pembe); }
+.vs-aura::after  { color: var(--cyan); }
+.vulusal.audio-active .vs-aura { filter: hue-rotate(var(--hue)) saturate(1.6); }
+.vulusal.audio-active .vs-aura::before { opacity: .9; transform: translate(calc(var(--beat) * -14px), calc(var(--beat) * 4px)); }
+.vulusal.audio-active .vs-aura::after  { opacity: .9; transform: translate(calc(var(--beat) * 14px), calc(var(--beat) * -4px)); }
+.vs-aura-hint { font-size: 11px; letter-spacing: 3px; color: #8b5a99; margin-top: 4px; animation: vs-flicker 2s infinite; }
+.vulusal.audio-active .vs-aura-hint { opacity: 0; }
+
+/* ── HUD ── */
+.vs-combo {
+    position: fixed; left: 22px; bottom: 54px; z-index: 30; pointer-events: none;
+    font-family: var(--vs-head); font-weight: 900; font-size: 46px; color: #fff;
+    text-shadow: 0 0 10px var(--pembe), 0 0 30px var(--pembe); opacity: 0; transition: opacity .3s;
+}
+.vs-combo.goster { opacity: 1; }
+.vs-combo.pop { animation: vs-pop .18s ease-out; }
+@keyframes vs-pop { from { transform: scale(1.5); } }
+
+.vs-aura-meter { position: fixed; right: 22px; top: calc(var(--topbar-h) + 40px); z-index: 30; width: 14px; height: 180px; pointer-events: none; }
+.vs-aura-meter-label { position: absolute; top: -22px; right: -8px; font-family: var(--vs-head); font-size: 10px; letter-spacing: 2px; color: var(--sari); text-shadow: 0 0 8px var(--sari); }
+.vs-aura-meter-bar { position: absolute; inset: 0; border: 1px solid var(--sari); border-radius: 8px; overflow: hidden; background: rgba(0, 0, 0, .4); box-shadow: 0 0 12px rgba(246, 220, 67, .4); }
+.vs-aura-fill {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 0%;
+    background: linear-gradient(to top, var(--mor), var(--pembe), var(--sari), #fff);
+    box-shadow: 0 0 20px var(--pembe); transition: height .2s;
+}
+
+/* ── Ekran efektleri ── */
+.vs-scanlines {
+    position: fixed; inset: 0; z-index: 40; pointer-events: none; opacity: .18;
+    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .6) 0 1px, transparent 1px 3px);
+    animation: vs-scan 8s linear infinite;
+}
+@keyframes vs-scan { to { background-position: 0 100px; } }
+.vs-vignette { position: fixed; inset: 0; z-index: 41; pointer-events: none; background: radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, .75)); }
+.vs-flash { position: fixed; inset: 0; z-index: 45; pointer-events: none; background: #fff; opacity: 0; mix-blend-mode: overlay; }
+.vs-flash.go { animation: vs-flash .35s ease-out; }
+@keyframes vs-flash { from { opacity: .9; } to { opacity: 0; } }
+
+.vs-trail {
+    position: fixed; z-index: 60; pointer-events: none; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--c); box-shadow: 0 0 10px var(--c), 0 0 20px var(--c);
+    transform: translate(-50%, -50%); animation: vs-trail .7s ease-out forwards;
+}
+@keyframes vs-trail { to { transform: translate(-50%, -50%) scale(0); opacity: 0; } }
+.vs-click-text {
+    position: fixed; z-index: 60; pointer-events: none; font-family: var(--vs-head); font-weight: 900; font-size: 22px; white-space: nowrap;
+    color: var(--c); text-shadow: 0 0 12px var(--c); transform: translate(-50%, -50%);
+    animation: vs-click-text .9s ease-out forwards;
+}
+@keyframes vs-click-text { to { transform: translate(-50%, -180%) scale(1.4) rotate(var(--r)); opacity: 0; } }
+
+/* ── ULTRA mod ── */
+.vs-ultra-banner {
+    position: fixed; left: 50%; top: 50%; z-index: 70; pointer-events: none; white-space: nowrap;
+    font-family: var(--vs-head); font-weight: 900; font-size: clamp(20px, 6vw, 70px); color: #fff;
+    text-shadow: 0 0 10px var(--sari), 0 0 40px var(--pembe), 0 0 80px var(--cyan);
+    transform: translate(-50%, -50%) scale(0); opacity: 0;
+}
+.vs-ultra-banner.go { animation: vs-ultra-in 2.2s cubic-bezier(.2, 1.6, .4, 1) forwards; }
+@keyframes vs-ultra-in {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(-20deg); opacity: 0; }
+    20% { transform: translate(-50%, -50%) scale(1.15) rotate(3deg); opacity: 1; }
+    80% { transform: translate(-50%, -50%) scale(1) rotate(0); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+.vulusal.ultra :is(.vs-canvas, .vs-sun, .vs-grid, .vs-icerik) { animation: vs-hue 1.5s linear infinite; }
+.vulusal.ultra .vs-icerik.shake { animation: vs-shake .4s cubic-bezier(.36, .07, .19, .97) both, vs-hue 1.5s linear infinite; }
+
+/* ── Modal ── */
+.vs-modal {
+    position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle, rgba(88, 0, 255, .35), rgba(0, 0, 0, .85) 70%);
+    backdrop-filter: blur(8px) saturate(1.8); -webkit-backdrop-filter: blur(8px) saturate(1.8);
+    animation: vs-fade-in .3s ease-out;
+}
+@keyframes vs-fade-in { from { opacity: 0; } }
+.vs-modal-content {
+    position: relative; overflow: hidden;
+    width: min(460px, calc(100vw - 32px)); padding: 32px 26px; border-radius: 18px;
+    background: linear-gradient(160deg, #1f0026, #0b0014 60%, #001626);
+    box-shadow: 0 0 15px var(--pembe), 0 0 40px rgba(0, 215, 255, .45), 0 0 120px rgba(255, 45, 241, .35), inset 0 0 40px rgba(255, 45, 241, .2);
+    text-align: center; cursor: auto;
+    animation: vs-modal-in .65s cubic-bezier(.2, 1.8, .4, 1);
+}
+.vs-modal-content::before {   /* dönen gökkuşağı kenarlık */
+    content: ""; position: absolute; inset: 0; border-radius: 18px; padding: 2px; z-index: 0; pointer-events: none;
+    background: conic-gradient(from var(--vs-ang), var(--pembe), var(--cyan), var(--sari), var(--yesil), var(--mor), var(--pembe));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: vs-ang 1.5s linear infinite;
+}
+.vs-modal-content > * { position: relative; z-index: 2; }
+@keyframes vs-modal-in {
+    0%   { transform: scale(0) rotate(-540deg); opacity: 0; filter: blur(20px) hue-rotate(180deg); }
+    60%  { transform: scale(1.15) rotate(8deg); opacity: 1; filter: blur(0) hue-rotate(0); }
+    80%  { transform: scale(.95) rotate(-3deg); }
+}
+.vs-modal.kapaniyor { animation: vs-fade-out .35s ease-in forwards; }
+.vs-modal.kapaniyor .vs-modal-content { animation: vs-modal-out .35s ease-in forwards; }
+@keyframes vs-fade-out { to { opacity: 0; } }
+@keyframes vs-modal-out { to { transform: scale(0) rotate(360deg); opacity: 0; filter: blur(10px); } }
+.vs-modal-rays {
+    position: absolute !important; left: 50%; top: 50%; width: 900px; height: 900px; z-index: 1 !important;
+    transform: translate(-50%, -50%); pointer-events: none; opacity: .25;
+    background: repeating-conic-gradient(from 0deg, rgba(255, 45, 241, .8) 0 8deg, transparent 8deg 20deg);
+    animation: vs-rays 8s linear infinite;
+    -webkit-mask: radial-gradient(circle, #000 0, transparent 60%);
+    mask: radial-gradient(circle, #000 0, transparent 60%);
+}
+@keyframes vs-rays { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.vs-modal-content h2 {
+    margin: 0; font-family: var(--vs-head); font-weight: 900; font-size: 24px; letter-spacing: 3px;
+    color: var(--pembe); text-shadow: 0 0 12px var(--pembe), 0 0 30px var(--pembe), 0 0 60px var(--mor);
+}
+.vs-modal-content p { margin: 22px 0 4px; font-size: 18px; color: #fff; text-shadow: 0 0 10px var(--cyan); }
+.vs-modal-content .harf { display: inline-block; opacity: 0; animation: vs-harf .35s cubic-bezier(.2, 1.8, .4, 1) forwards; animation-delay: calc(var(--i) * 35ms + .4s); }
+@keyframes vs-harf { from { opacity: 0; transform: translateY(-20px) scale(2.5) rotate(-30deg); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* ── Telefon ── */
+@media (max-width: 760px) {
+    .vulusal { margin-bottom: -56px; }
+    .vs-kartlar { grid-template-columns: 1fr; }
+    .vs-aura-meter { display: none; }
+    .vs-combo { font-size: 32px; left: 16px; bottom: calc(var(--tabbar-h) + 24px); }
+    .vs-marquee { font-size: 12px; }
+    .vs-aura { letter-spacing: 3px; }
+    .vs-oyna { padding: 18px 24px; }
+    .vs-sahne { padding-bottom: 12vh; }
+}
+
+/* ── Hareketi azalt: her şey durur, renkler kalır ── */
+@media (prefers-reduced-motion: reduce) {
+    .vulusal *, .vulusal *::before, .vulusal *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    .vs-modal-content .harf { opacity: 1; animation: none; }
+    .vs-glitch::before, .vs-glitch::after { display: none; }
+    .vs-oyna { transition: none; }
+}
