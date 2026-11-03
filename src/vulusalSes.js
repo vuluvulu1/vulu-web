@@ -7,8 +7,8 @@ let ses = null;
 
 const rastgele = (a, b) => a + Math.random() * (b - a);
 
-/** Paylaşılan ses bağlamı; açılamazsa null. */
-function hazirla() {
+/** Paylaşılan ses bağlamı; açılamazsa null. (İkinci konseptin sesleri de, src/vulusalSes2.js, bunu kullanır.) */
+export function hazirla() {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     if (!ses) {
@@ -27,6 +27,10 @@ function hazirla() {
             const yanki = ac.createConvolver();
             yanki.buffer = yankiTamponu(ac, 4.2);
             yanki.connect(ana);
+            // kısa ve yoğun, aniden kesilen yankı: 80'lerin "gated reverb" snare'i için
+            const kisaYanki = ac.createConvolver();
+            kisaYanki.buffer = kesikYankiTamponu(ac, 0.32);
+            kisaYanki.connect(ana);
 
             const gurultu = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
             const g = gurultu.getChannelData(0);
@@ -35,7 +39,7 @@ function hazirla() {
             const egri = new Float32Array(1024);   // yumuşak doyum (tüp gibi)
             for (let i = 0; i < egri.length; i++) { const x = i / 512 - 1; egri[i] = Math.tanh(x * 2.6); }
 
-            ses = { ac, ana, yanki, gurultu, egri };
+            ses = { ac, ana, yanki, kisaYanki, gurultu, egri };
         } catch { return null; }
     }
     if (ses.ac.state === 'suspended') ses.ac.resume().catch(() => {});
@@ -59,8 +63,19 @@ function yankiTamponu(ac, sure) {
     return b;
 }
 
+/** Kapı gibi kesilen yankı: süre boyunca neredeyse hiç sönmez, sonunda birden biter. */
+function kesikYankiTamponu(ac, sure) {
+    const n = Math.floor(ac.sampleRate * sure);
+    const b = ac.createBuffer(2, n, ac.sampleRate);
+    for (let k = 0; k < 2; k++) {
+        const d = b.getChannelData(k);
+        for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - 0.35 * i / n) * (i > n - 300 ? (n - i) / 300 : 1) * 0.5;
+    }
+    return b;
+}
+
 /** Bir ses grubu: kuru ve yankılı çıkışı olan bir giriş. */
-function grup(s, kuru, islak) {
+export function grup(s, kuru, islak) {
     const g = s.ac.createGain();
     const k = s.ac.createGain(); k.gain.value = kuru;
     const w = s.ac.createGain(); w.gain.value = islak;
@@ -70,7 +85,7 @@ function grup(s, kuru, islak) {
 }
 
 /** Zarf: atak süresinde g0'a çıkar, sonra sure sonunda söner. yukselt: sürenin sonunda zirve yapıp aniden kesilir. */
-function zarf(param, t, sure, g0, { atak = 0.005, yukselt = false } = {}) {
+export function zarf(param, t, sure, g0, { atak = 0.005, yukselt = false } = {}) {
     param.setValueAtTime(0.0001, t);
     if (yukselt) {
         param.exponentialRampToValueAtTime(g0, t + sure);
@@ -81,7 +96,7 @@ function zarf(param, t, sure, g0, { atak = 0.005, yukselt = false } = {}) {
     }
 }
 
-function ton(s, hedef, t, sure, tip, f0, f1, g0, secenek = {}) {
+export function ton(s, hedef, t, sure, tip, f0, f1, g0, secenek = {}) {
     const o = s.ac.createOscillator(), g = s.ac.createGain();
     o.type = tip;
     o.frequency.setValueAtTime(f0, t);
@@ -93,7 +108,7 @@ function ton(s, hedef, t, sure, tip, f0, f1, g0, secenek = {}) {
     return o;
 }
 
-function gurultu(s, hedef, t, sure, tip, f0, f1, g0, secenek = {}) {
+export function gurultu(s, hedef, t, sure, tip, f0, f1, g0, secenek = {}) {
     const k = s.ac.createBufferSource(), f = s.ac.createBiquadFilter(), g = s.ac.createGain();
     k.buffer = s.gurultu; k.loop = true;
     k.playbackRate.value = secenek.hiz || 1;
@@ -106,7 +121,7 @@ function gurultu(s, hedef, t, sure, tip, f0, f1, g0, secenek = {}) {
 }
 
 /** Kick / gümleme: inen sinüs + üstüne orta frekanslı bir "gövde" (telefonda da duyulsun) + doyum. */
-function gumle(s, hedef, t, f0, f1, sure, g0) {
+export function gumle(s, hedef, t, f0, f1, sure, g0) {
     const o = s.ac.createOscillator(), dist = s.ac.createWaveShaper(), g = s.ac.createGain();
     o.frequency.setValueAtTime(f0, t);
     o.frequency.exponentialRampToValueAtTime(f1, t + Math.min(0.5, sure * 0.4));
@@ -121,7 +136,7 @@ function gumle(s, hedef, t, f0, f1, sure, g0) {
  * BRAAAM: her nota için üç hafif akort dışı testere, birlikte açılıp kapanan alçak geçiren filtre ve doyum.
  * Sinematik, ağır, bakır gibi; bir oktav altında sinüs alt bas.
  */
-function braam(s, hedef, t, notalar, sure, g0) {
+export function braam(s, hedef, t, notalar, sure, g0) {
     const f = s.ac.createBiquadFilter(), dist = s.ac.createWaveShaper(), g = s.ac.createGain();
     f.type = 'lowpass'; f.Q.value = 1.6;
     f.frequency.setValueAtTime(140, t);

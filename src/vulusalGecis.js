@@ -330,12 +330,20 @@ const TIK_ESIK = 5;          // kaç tıklamada geçilir
 const TIK_ARALIK = 900;      // tıklamalar arası en çok bu kadar ms
 
 /**
- * Launcher sayfası için gizli kapı. Klavyeden "vulu" yazmayı dinler; döndürdüğü fonksiyon başlığın onClick'ine verilir.
- * Her hızlı tıklamada başlıktan kıvılcım çıkar, bir enerji çınlaması duyulur ve başlık (data-vulu ile) biraz daha
- * vululaşır; 5.'de geçiş başlar.
+ * Launcher sayfası için gizli kapı; iki ayrı geçiş:
+ *   başlığa hızlı hızlı 5 tıklama → "OLAY UFKU" (gerçekçi, WebGL; src/vulusalGecis3d.js)
+ *   klavyeden "vulu"               → "EVREN İKİYE BÖLÜNÜR" (bu dosyadaki vulusalGecis)
+ * Her tıklamada başlıktan kıvılcım çıkar, bir enerji çınlaması duyulur ve başlık (data-vulu ile) biraz daha vululaşır.
+ * Ağır hazırlık tıklamalar sırasında yapılır: 1. tıkta 3D paket indirilmeye başlar, 4. tıkta sayfanın anlık görüntüsü
+ * alınır. WebGL açılamazsa ya da görüntü alınamazsa 5. tık da "EVREN İKİYE BÖLÜNÜR"e düşer.
+ * Anlık görüntü alınırken sayfa bir an donar (ana iş parçacığı meşgul): o sırada yapılan tıklamalar sıraya girip geç
+ * işlenir. Bu yüzden tıklamalar arası süre tıklamanın yapıldığı anla (e.timeStamp) ölçülür ve görüntü alınırken ve hemen
+ * ardından sayaç sıfırlanmaz.
  */
 export function useVulusalKapi(navigate) {
-    const tik = useRef({ n: 0, t: 0, sifirla: 0 });
+    const tik = useRef({ n: 0, t: -1e9, sifirla: 0, modul: null, goruntu: null, goruntuT: -1e9, bekliyor: false });
+    // görüntü alınırken ve hemen ardından tıklamalar arasında daha uzun beklenebilir
+    const aralik = s => (performance.now() - s.goruntuT < 4000 ? 3000 : TIK_ARALIK);
 
     useEffect(() => {
         let yazilan = '';
@@ -352,19 +360,46 @@ export function useVulusalKapi(navigate) {
     return useCallback(e => {
         const s = tik.current;
         const el = e.currentTarget;
-        const simdi = performance.now();
-        s.n = simdi - s.t < TIK_ARALIK ? s.n + 1 : 1;
+        const simdi = e.timeStamp || performance.now();
+        s.n = simdi - s.t < aralik(s) ? s.n + 1 : 1;
         s.t = simdi;
         clearTimeout(s.sifirla);
+        if (s.bekliyor) return;
+        const hafif = hafifMi();
+
+        if (s.n === 1 && !s.modul && !reducedMotion()) s.modul = import('./vulusalGecis3d.js').catch(() => null);
+        if (s.n === TIK_ESIK - 1 && s.modul) {
+            s.goruntuT = performance.now();
+            s.goruntu = s.modul.then(m => {
+                if (!m) return null;
+                s.goruntuT = performance.now();
+                return m.anlikGoruntu(hafif);
+            }).then(g => { s.goruntuT = performance.now(); return g; }).catch(() => null);
+        }
+
         if (s.n >= TIK_ESIK) {
             s.n = 0;
-            vulusalGecis({ navigate, x: e.clientX, y: e.clientY });
-            setTimeout(() => delete el.dataset.vulu, Z.YARILMA + 50);   // yarılan kopyada başlık hâlâ kızgın görünsün
+            const { clientX: x, clientY: y } = e;
+            const eskiye = () => vulusalGecis({ navigate, x, y });
+            const birak = () => setTimeout(() => delete el.dataset.vulu, 900);
+            if (reducedMotion() || !s.modul || !s.goruntu) { eskiye(); birak(); return; }
+            s.bekliyor = true;
+            const zamanAsimi = new Promise(r => setTimeout(() => r(null), 1800));
+            Promise.all([s.modul, Promise.race([s.goruntu, zamanAsimi])])
+                .then(async ([m, goruntu]) => (m && goruntu ? m.olayUfku({ navigate, x, y, goruntu, hafif }) : false))
+                .catch(() => false)
+                .then(oldu => { if (!oldu) eskiye(); })
+                .finally(() => { s.bekliyor = false; s.goruntu = null; birak(); });
             return;
         }
         el.dataset.vulu = s.n;
         tikSesi(s.n);
         sparkBurst(el.querySelector('.hero-title-box') || el, 6 + s.n * 8);
-        s.sifirla = setTimeout(() => { s.n = 0; delete el.dataset.vulu; }, TIK_ARALIK + 300);
+        const bitir = () => {
+            // sıraya girmiş bir tıklama hâlâ bekliyor olabilir: süre gerçekten dolmadıysa bir daha bak
+            if (performance.now() - s.t < aralik(s) + 300) { s.sifirla = setTimeout(bitir, 250); return; }
+            s.n = 0; s.goruntu = null; delete el.dataset.vulu;
+        };
+        s.sifirla = setTimeout(bitir, aralik(s) + 300);
     }, [navigate]);
 }
