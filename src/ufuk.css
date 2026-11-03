@@ -1,0 +1,231 @@
+/*
+ * /vulusalufuk ("Olay Ufku"ndan sonra açılan sayfa): gerçekçi neon synthwave. Arkada canlı WebGL dünyası (src/ufukSahne.js),
+ * önde buzlu cam paneller, krom başlık. Her kural .uf altında ya da sayfa açıkken <html>'e eklenen ufuk-acik sınıfına bağlı.
+ * WebGL yoksa ya da yüklenirken .uf-arka (CSS gökyüzü ve ızgara) görünür.
+ * Hafif mod (html.uf-hafif): canlı arka plan bulanıklığı (backdrop-filter) ve sürekli boyanan parıltılar kapanır.
+ */
+
+html.ufuk-acik .torch { display: none; }
+/* sayfa geçişi yalnızca belirerek: transform, sabit (fixed) arka planı sayfanın boyuna göre konumlandırırdı */
+html.ufuk-acik .page-enter { animation-name: uf-page-in; }
+@keyframes uf-page-in { from { opacity: 0; } }
+
+/* ── üst çubuk: cam ── */
+html.ufuk-acik .topbar {
+    background: rgba(8, 0, 22, .42); backdrop-filter: blur(16px) saturate(1.5); -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    box-shadow: 0 1px 0 rgba(255, 45, 241, .22), 0 10px 40px rgba(88, 0, 255, .12);
+}
+html.ufuk-acik .topbar::after {
+    left: 0; right: 0; width: auto; height: 1px; transform: none; animation: none;
+    background: linear-gradient(90deg, transparent, rgba(255, 45, 241, .7), rgba(0, 215, 255, .7), transparent);
+}
+html.ufuk-acik .brand .wordmark { filter: drop-shadow(0 0 8px rgba(255, 45, 241, .7)); }
+html.ufuk-acik .brand .wordmark path { fill: #ff8cf0; }
+html.ufuk-acik .topnav a { font-family: "Orbitron", var(--font); font-size: 13px; letter-spacing: .06em; color: rgba(226, 210, 255, .78); }
+html.ufuk-acik .topnav a:hover { color: #fff; text-shadow: 0 0 12px rgba(255, 45, 241, .9); }
+html.ufuk-acik .topnav a.active { color: #9ff4ff; background: radial-gradient(ellipse 62% 90% at 50% 100%, rgba(0, 215, 255, .16), transparent); }
+html.ufuk-acik .topnav a.active::after { background: #00d7ff; box-shadow: 0 0 14px 2px rgba(0, 215, 255, .7); }
+html.ufuk-acik .topbar .btn { border-radius: 10px; font-family: "Orbitron", var(--font); letter-spacing: .05em; }
+html.ufuk-acik .topbar .btn-quiet { border: 1px solid rgba(0, 215, 255, .5); color: #c9f6ff; }
+html.ufuk-acik .topbar .btn-primary { background: linear-gradient(135deg, #ff2df1, #5800ff); color: #fff; border-color: transparent; box-shadow: 0 0 18px rgba(255, 45, 241, .5); }
+html.ufuk-acik .menu-panel { border-radius: 14px; background: rgba(16, 0, 34, .92); box-shadow: 0 0 0 1px rgba(255, 45, 241, .35), 0 18px 44px rgba(0, 0, 0, .7); }
+html.ufuk-acik .tabbar { background: rgba(10, 0, 26, .9); box-shadow: 0 -1px 0 rgba(255, 45, 241, .3); }
+html.ufuk-acik .tabbar a.active { color: #9ff4ff; }
+html.ufuk-acik .tabbar a.active::before { background: #00d7ff; box-shadow: 0 0 12px 2px rgba(0, 215, 255, .6); }
+
+/* ── sayfa ── */
+.uf {
+    position: relative; isolation: isolate; overflow: clip;
+    margin-bottom: -88px; min-height: calc(100vh - var(--topbar-h));
+    color: #f1e8ff; font-family: var(--font);
+}
+.uf a:not(.uf-btn) { color: #9ff4ff; text-decoration: underline; text-decoration-color: rgba(0, 215, 255, .4); text-underline-offset: 3px; }
+
+/* yedek arka plan (WebGL yoksa ya da yüklenirken) */
+.uf-arka {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg, #000 0%, #0b0020 35%, #3a0a5a 62%, #a3206f 74%, #12002a 74.2%, #07000f 100%);
+}
+.uf-arka-izgara { position: absolute; left: -50%; right: -50%; bottom: 0; height: 26%; perspective: 300px; overflow: hidden; }
+.uf-arka-izgara::before {
+    content: ""; position: absolute; inset: -100% 0 0; transform: rotateX(62deg); transform-origin: bottom;
+    background-image: linear-gradient(rgba(255, 45, 241, .7) 2px, transparent 2px), linear-gradient(90deg, rgba(0, 215, 255, .7) 2px, transparent 2px);
+    background-size: 60px 60px;
+    -webkit-mask: linear-gradient(to bottom, transparent, #000 60%); mask: linear-gradient(to bottom, transparent, #000 60%);
+}
+.uf-sahne { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.uf-sahne canvas { display: block; opacity: 0; transition: opacity 1s ease; }
+.uf-sahne canvas.gorunur { opacity: 1; }
+.uf-gecisten .uf-sahne canvas { transition: none; opacity: 1; }   /* geçişten gelince dünya zaten ekranda: kesintisiz */
+
+.uf > section { position: relative; z-index: 2; }
+
+/* ── giriş ── */
+.uf-hero {
+    min-height: calc(100vh - var(--topbar-h)); padding: 60px 16px 120px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px;
+}
+.uf-ust {
+    margin: 0; font-family: "Orbitron", var(--font); font-size: 12px; font-weight: 700; letter-spacing: .5em; color: #9ff4ff;
+    text-shadow: 0 0 14px rgba(0, 215, 255, .8);
+}
+.uf-baslik { margin: 0; display: flex; flex-direction: column; align-items: center; line-height: .95; }
+.uf-krom {
+    position: relative; display: inline-block;
+    font-family: "Orbitron", var(--font); font-weight: 900; font-size: clamp(54px, 13vw, 176px); letter-spacing: .02em;
+    background: linear-gradient(180deg, #0a0638 0%, #3d7bff 30%, #eaf8ff 47%, #2a0b2e 50.5%, #ff3ec8 72%, #ffd77a 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, .55);
+}
+/* pembe neon dış hat (arkada, bulanık) ve üstünden süzülen ışık */
+.uf-krom::before, .uf-krom::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; }
+.uf-krom::before { z-index: -1; color: transparent; -webkit-text-stroke: 7px #ff2df1; filter: blur(6px); opacity: .85; }
+.uf-krom::after {
+    background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%) no-repeat;
+    background-size: 300% 100%; background-position: 150% 0;
+    -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 0;
+    animation: uf-parilti 5s ease-in-out 1.2s infinite;
+}
+@keyframes uf-parilti { 0% { background-position: 150% 0; } 35%, 100% { background-position: -50% 0; } }
+.uf-alt-baslik {
+    margin-top: .35em; font-family: "Orbitron", var(--font); font-weight: 700; font-size: clamp(15px, 2.6vw, 28px);
+    letter-spacing: .7em; padding-left: .7em; color: #b9f8ff; text-shadow: 0 0 18px rgba(0, 215, 255, .9), 0 0 40px rgba(0, 215, 255, .5);
+}
+.uf-lead { max-width: 620px; margin: 6px 0 0; font-size: 18px; line-height: 1.6; color: rgba(242, 232, 255, .92); text-shadow: 0 2px 14px rgba(0, 0, 0, .7); }
+.uf-eylem { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
+.uf-meta { margin: 0; font-size: 13px; letter-spacing: .04em; color: rgba(220, 205, 245, .8); text-shadow: 0 1px 8px rgba(0, 0, 0, .8); }
+.uf-meta .mono { color: #ffd77a; }
+.uf-canli { margin: 0; display: inline-flex; align-items: center; gap: 10px; font-size: 15px; color: #fff; text-shadow: 0 1px 8px rgba(0, 0, 0, .8); }
+.uf-canli b { color: #7dffb0; }
+.uf-nokta { width: 9px; height: 9px; border-radius: 50%; background: #6d5a80; }
+.uf-nokta.acik { background: #39ff8e; box-shadow: 0 0 12px #39ff8e; animation: uf-nabiz 1.6s ease-in-out infinite; }
+@keyframes uf-nabiz { 50% { opacity: .45; } }
+.uf-kaydir { position: absolute; bottom: 34px; left: 50%; width: 1px; height: 54px; background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, .5)); }
+.uf-kaydir i { position: absolute; left: -2px; top: 0; width: 5px; height: 5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #ff2df1; animation: uf-kaydir 2s ease-in-out infinite; }
+@keyframes uf-kaydir { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(50px); opacity: 0; } }
+
+/* ── düğmeler ── */
+.uf-btn {
+    position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 24px; border-radius: 12px; border: 1px solid rgba(0, 215, 255, .5);
+    background: rgba(18, 0, 40, .45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    color: #dcf9ff; text-decoration: none; font-family: "Orbitron", var(--font); font-weight: 700; font-size: 14px; letter-spacing: .06em;
+    box-shadow: 0 0 22px rgba(0, 215, 255, .2), inset 0 0 14px rgba(0, 215, 255, .12);
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.uf-btn:hover, .uf-btn:focus-visible { transform: translateY(-2px); border-color: rgba(0, 215, 255, .9); box-shadow: 0 0 34px rgba(0, 215, 255, .45), inset 0 0 18px rgba(0, 215, 255, .2); outline: none; text-decoration: none; }
+.uf-btn.birincil {
+    border-color: rgba(255, 170, 250, .75); color: #fff;
+    background: linear-gradient(135deg, rgba(255, 45, 241, .88), rgba(88, 0, 255, .88));
+    box-shadow: 0 0 34px rgba(255, 45, 241, .5), inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+.uf-btn.birincil:hover, .uf-btn.birincil:focus-visible { box-shadow: 0 0 50px rgba(255, 45, 241, .75), inset 0 1px 0 rgba(255, 255, 255, .4); }
+.uf-btn::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .35), transparent);
+    transform: translateX(-130%) skewX(-20deg); transition: transform .6s ease;
+}
+.uf-btn:hover::after { transform: translateX(320%) skewX(-20deg); }
+
+/* ── bölümler ── */
+.uf-bolum { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding-top: 110px; }
+.uf-bolum-baslik {
+    margin: 0 0 40px; text-align: center; font-family: "Orbitron", var(--font); font-weight: 900; font-size: clamp(26px, 4.6vw, 50px);
+    letter-spacing: .06em; color: #fff; text-shadow: 0 0 20px rgba(255, 45, 241, .7), 0 0 60px rgba(88, 0, 255, .6);
+}
+.uf-bolum-baslik::after { content: ""; display: block; width: 90px; height: 2px; margin: 18px auto 0; background: linear-gradient(90deg, #ff2df1, #00d7ff); box-shadow: 0 0 12px #ff2df1; }
+
+/* buzlu cam panel: neon kenar, üstte ince ışık, üzerine gelince ışık süzülür */
+.uf-cam {
+    position: relative; overflow: hidden; border-radius: 18px;
+    background: linear-gradient(160deg, rgba(42, 0, 74, .4), rgba(6, 0, 22, .55));
+    backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .12);
+}
+.uf-cam::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+    background: linear-gradient(135deg, rgba(255, 45, 241, .7), rgba(255, 255, 255, .08) 40%, rgba(0, 215, 255, .6));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.uf-cam::after {
+    content: ""; position: absolute; top: -50%; bottom: -50%; left: 0; width: 30%; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .1), transparent);
+    transform: translateX(-160%) rotate(12deg); transition: transform .9s ease;
+}
+.uf-cam:hover::after { transform: translateX(460%) rotate(12deg); }
+
+.uf-kartlar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.uf-kart { padding: 32px 30px 30px; transition: transform .3s ease, box-shadow .3s ease; }
+.uf-kart:hover { transform: translateY(-4px); box-shadow: 0 30px 70px rgba(0, 0, 0, .5), 0 0 40px rgba(255, 45, 241, .18), inset 0 1px 0 rgba(255, 255, 255, .14); }
+.uf-no {
+    position: absolute; top: 14px; right: 22px; font-family: "Orbitron", var(--font); font-weight: 900; font-size: 64px; line-height: 1;
+    color: transparent; -webkit-text-stroke: 1px rgba(255, 45, 241, .55); opacity: .8;
+}
+.uf-etiket { margin: 0; font-family: "Orbitron", var(--font); font-size: 12px; font-weight: 700; letter-spacing: .3em; color: #8ff0ff; }
+.uf-kart h3 { margin: 10px 0 12px; font-family: "Orbitron", var(--font); font-weight: 700; font-size: 22px; line-height: 1.3; color: #fff; padding-right: 70px; }
+.uf-kart p:last-child { margin: 0; font-size: 15px; line-height: 1.7; color: rgba(236, 226, 252, .86); }
+
+.uf-ekstralar { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 0; }
+.uf-ekstralar > div { padding: 20px; border-radius: 14px; }
+.uf-ekstralar dt { font-family: "Orbitron", var(--font); font-weight: 700; font-size: 15px; color: #ffa8f5; text-shadow: 0 0 12px rgba(255, 45, 241, .5); }
+.uf-ekstralar dd { margin: 8px 0 0; font-size: 14px; line-height: 1.6; color: rgba(232, 222, 250, .82); }
+
+.uf-basla { max-width: 760px; }
+.uf-adim-kutu { padding: 30px 30px 26px; }
+.uf-not { margin: 0; font-size: 14px; line-height: 1.6; color: rgba(222, 205, 245, .8); }
+.uf-adimlar { list-style: none; counter-reset: uf; margin: 24px 0; padding: 0; position: relative; display: grid; gap: 22px; }
+.uf-adimlar::before { content: ""; position: absolute; left: 19px; top: 20px; bottom: 20px; width: 1px; background: linear-gradient(#ff2df1, #00d7ff); box-shadow: 0 0 10px #ff2df1; }
+.uf-adimlar li { counter-increment: uf; position: relative; display: flex; align-items: center; gap: 18px; font-size: 16px; line-height: 1.5; }
+.uf-adimlar li::before {
+    content: counter(uf); position: relative; flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+    font-family: "Orbitron", var(--font); font-weight: 900; color: #fff; background: #12002a;
+    border: 1px solid #ff2df1; box-shadow: 0 0 16px rgba(255, 45, 241, .7), inset 0 0 10px rgba(255, 45, 241, .4);
+}
+
+.uf-son { padding: 150px 16px 130px; text-align: center; }
+.uf-son-baslik {
+    margin: 0 0 20px; font-family: "Orbitron", var(--font); font-weight: 900; font-size: clamp(26px, 5vw, 58px); line-height: 1.15;
+    background: linear-gradient(180deg, #eaf8ff 0%, #9ccfff 45%, #ff7ad9 60%, #ffd77a 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 22px rgba(255, 45, 241, .55));
+}
+
+/* ── müzik düğmesi ── */
+.uf-muzik {
+    position: fixed; right: 22px; bottom: 22px; z-index: 30; display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 16px 10px 14px; border-radius: 999px; border: 1px solid rgba(255, 45, 241, .5);
+    background: rgba(14, 0, 32, .6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    color: #f5e9ff; font: 700 12px/1 "Orbitron", var(--font); letter-spacing: .08em; cursor: pointer;
+    box-shadow: 0 0 22px rgba(255, 45, 241, .3);
+    transition: box-shadow .2s, border-color .2s;
+}
+.uf-muzik:hover, .uf-muzik:focus-visible { border-color: #ff2df1; box-shadow: 0 0 34px rgba(255, 45, 241, .55); outline: none; }
+.uf-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.uf-eq i { width: 3px; height: 100%; border-radius: 2px; background: linear-gradient(#00d7ff, #ff2df1); transform-origin: bottom; transform: scaleY(.25); }
+.uf-muzik.caliyor .uf-eq i { animation: uf-eq .9s ease-in-out infinite alternate; }
+.uf-muzik.caliyor .uf-eq i:nth-child(2) { animation-duration: .6s; animation-delay: -.2s; }
+.uf-muzik.caliyor .uf-eq i:nth-child(3) { animation-duration: .75s; animation-delay: -.5s; }
+.uf-muzik.caliyor .uf-eq i:nth-child(4) { animation-duration: .5s; animation-delay: -.1s; }
+@keyframes uf-eq { from { transform: scaleY(.2); } to { transform: scaleY(1); } }
+
+@media (max-width: 760px) {
+    .uf { margin-bottom: -56px; }
+    .uf-kartlar { grid-template-columns: 1fr; }
+    .uf-hero { padding-bottom: 100px; }
+    .uf-lead { font-size: 16px; }
+    .uf-muzik { bottom: calc(var(--tabbar-h) + 16px); right: 16px; }
+    body:not(:has(.tabbar)) .uf-muzik { bottom: 16px; }
+    .uf-kart { padding: 26px 22px 24px; }
+}
+
+/* hafif mod: canlı arka plan bulanıklığı yok (koyu cam), süzülen parıltılar ve dış hat bulanıklığı yok */
+html.uf-hafif :is(.uf-cam, .uf-btn, .uf-muzik), html.uf-hafif.ufuk-acik .topbar { backdrop-filter: none; -webkit-backdrop-filter: none; }
+html.uf-hafif .uf-cam { background: linear-gradient(160deg, rgba(30, 0, 56, .78), rgba(6, 0, 20, .86)); }
+html.uf-hafif .uf-btn:not(.birincil), html.uf-hafif .uf-muzik { background: rgba(14, 0, 32, .82); }
+html.uf-hafif.ufuk-acik .topbar { background: rgba(8, 0, 22, .97); }
+html.uf-hafif .uf-krom::after { animation: none; display: none; }
+html.uf-hafif .uf-krom::before { filter: none; -webkit-text-stroke: 3px rgba(255, 45, 241, .8); }
+
+@media (prefers-reduced-motion: reduce) {
+    .uf *, .uf *::before, .uf *::after { animation: none !important; transition: none !important; }
+}

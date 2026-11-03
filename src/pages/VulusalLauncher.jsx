@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ANDROID_URL, DOWNLOAD_URL, androidRelease, api, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 import { reducedMotion } from '../motion.jsx';
-import { vulusalBaslat } from '../vulusalEngine.js';
+import { hafifMi, vulusalBaslat } from '../vulusalEngine.js';
 import { EXTRAS } from './Launcher.jsx';
 import '../vulusal.css';
 
@@ -62,10 +62,24 @@ export default function VulusalLauncher() {
         return () => { iptal = true; clearInterval(id); };
     }, []);
 
+    const gecisle = !!useLocation().state?.gecis;   // launcher'daki gizli kapıdan mı gelindi
+    // Hafif mod (telefon ya da zayıf cihaz): CSS pahalı efektleri kapatır, motor daha az çizer. Sunucudaki ön çizimde
+    // bilinemediği için tarayıcıda, ilk efektte belirlenir. Üst çubuk ve sayfa geçişi <html>'deki sınıfla vululaşır
+    // (body:has(.vulusal) her DOM değişikliğinde stilleri yeniden hesaplatıyordu).
+    const [hafif, setHafif] = useState(false);
     useEffect(() => {
-        motor.current = vulusalBaslat(root.current, { sakin: reducedMotion() });
-        return () => { motor.current?.durdur(); motor.current = null; };
-    }, []);
+        const h = hafifMi();
+        setHafif(h);
+        const sinif = ['vulusal-acik', 'pikseller-kapali', ...(h ? ['vs-hafif'] : [])];
+        document.documentElement.classList.add(...sinif);
+        const m = vulusalBaslat(root.current, { sakin: reducedMotion(), hafif: h });
+        motor.current = m;
+        if (gecisle) {
+            m.auraEkle(55);
+            setTimeout(() => { m.patlat(innerWidth / 2, innerHeight * 0.45, 160, 1.4); m.sars(); }, 950);
+        }
+        return () => { m.durdur(); motor.current = null; document.documentElement.classList.remove(...sinif); };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (!mesaj) return;
@@ -97,7 +111,7 @@ export default function VulusalLauncher() {
     const surum = release?.tag || 'BETA';
 
     return (
-        <div className="vulusal" ref={root}>
+        <div className={'vulusal' + (hafif ? ' vs-hafif' : '')} ref={root}>
             {/* arka plan katmanları */}
             <canvas className="vs-canvas" aria-hidden="true" />
             <div className="vs-grid" aria-hidden="true"><div /></div>

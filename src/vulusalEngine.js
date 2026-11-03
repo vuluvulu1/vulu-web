@@ -9,14 +9,24 @@ const TIK_YAZILARI = ['+VULU', '+AURA', '300', 'VULUSAL!', '+1000', 'brom', 'GG'
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
 const rastgele = (a, b) => a + Math.random() * (b - a);
+
+/**
+ * Telefonlar ve zayıf cihazlar için hafif mod: canvas 1x çözünürlükte ve saniyede ~30 karede çizilir, daha az yıldız,
+ * parçacık ve uçuşan yazı olur; CSS'te (.vs-hafif) bulanıklık, renk döndürme ve karışım efektleri kapanır.
+ */
+export const hafifMi = () => typeof window !== 'undefined' && (
+    window.matchMedia?.('(max-width: 760px), (pointer: coarse)').matches
+    || (navigator.hardwareConcurrency || 8) <= 4
+    || (navigator.deviceMemory || 8) <= 4);
 const sec = arr => arr[(Math.random() * arr.length) | 0];
 
 /**
  * @param {HTMLElement} root  .vulusal öğesi
- * @param {{ sakin: boolean }} ayar  sakin: "hareketi azalt" açık
+ * @param {{ sakin: boolean, hafif: boolean }} ayar  sakin: "hareketi azalt" açık; hafif: telefon ya da zayıf cihaz
  * @returns {{ patlat, flash, sars, auraEkle, caldir, durdur }}
  */
-export function vulusalBaslat(root, { sakin = false } = {}) {
+export function vulusalBaslat(root, { sakin = false, hafif = false } = {}) {
+    const PARCACIK_SINIR = hafif ? 250 : 900;
     const $ = sel => root.querySelector(sel);
     const temizlik = [];
     const dinle = (hedef, olay, fn, opt) => { hedef.addEventListener(olay, fn, opt); temizlik.push(() => hedef.removeEventListener(olay, fn, opt)); };
@@ -30,7 +40,7 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
     const ctx = canvas.getContext('2d');
     let W = 0, H = 0;
     function boyutla() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = hafif ? 1 : Math.min(window.devicePixelRatio || 1, 2);
         W = window.innerWidth; H = window.innerHeight;
         canvas.width = W * dpr; canvas.height = H * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -40,10 +50,11 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
     dinle(window, 'resize', boyutla);
 
     const yeniYildiz = ilk => ({ x: rastgele(-1, 1), y: rastgele(-1, 1), z: ilk ? rastgele(0.05, 1) : 1, pz: 1, c: sec(RENKLER) });
-    const yildizlar = Array.from({ length: W < 600 ? 140 : 260 }, () => yeniYildiz(true));
+    const yildizlar = Array.from({ length: hafif ? 70 : 260 }, () => yeniYildiz(true));
 
     const patlat = (x, y, n = 60, guc = 1) => {
         if (sakin) n = Math.min(n, 12);
+        else if (hafif) n = Math.ceil(n * 0.4);
         for (let i = 0; i < n; i++) {
             const aci = Math.random() * Math.PI * 2;
             const hiz = rastgele(2, 11) * guc;
@@ -54,7 +65,7 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
                 konfeti: Math.random() < 0.55,
             });
         }
-        if (durum.partikuller.length > 900) durum.partikuller.splice(0, durum.partikuller.length - 900);
+        if (durum.partikuller.length > PARCACIK_SINIR) durum.partikuller.splice(0, durum.partikuller.length - PARCACIK_SINIR);
     };
 
     /* ── Ekran efektleri ── */
@@ -209,6 +220,9 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
     const beatElemanlari = ['.vs-sun', '.vs-sahne', '.vs-aura'].map($).filter(Boolean);
     let sonZaman = performance.now(), sonBeat = '', raf = 0;
     function ciz(t) {
+        raf = requestAnimationFrame(ciz);
+        if (document.hidden) { sonZaman = t; return; }
+        if (hafif && t - sonZaman < 30) return;          // hafif modda ~30 kare/sn
         const dt = Math.min((t - sonZaman) / 16.67, 3);
         sonZaman = t;
 
@@ -232,7 +246,7 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
         }
         ctx.globalAlpha = 1;
 
-        ctx.globalCompositeOperation = 'lighter';
+        if (!hafif) ctx.globalCompositeOperation = 'lighter';
         for (let i = durum.partikuller.length - 1; i >= 0; i--) {
             const p = durum.partikuller[i];
             p.vx *= 0.985; p.vy = p.vy * 0.985 + 0.18 * dt;
@@ -246,6 +260,8 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
                 ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.donus);
                 ctx.fillRect(-p.boyut / 2, -p.boyut / 4, p.boyut, p.boyut / 2);
                 ctx.restore();
+            } else if (hafif) {
+                ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
             } else {
                 const r = p.boyut * 0.4 * p.omur + 0.5;
                 ctx.globalAlpha = p.omur * 0.35;
@@ -264,8 +280,6 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
 
         durum.aura = Math.max(0, durum.aura - 0.04 * dt);
         auraFill.style.height = durum.aura + '%';
-
-        raf = requestAnimationFrame(ciz);
     }
     raf = requestAnimationFrame(ciz);
 
@@ -284,9 +298,9 @@ export function vulusalBaslat(root, { sakin = false } = {}) {
         ucan.appendChild(s);
     }
     if (!sakin) {
-        const id = setInterval(vuluUcur, 650);
+        const id = setInterval(vuluUcur, hafif ? 1600 : 650);
         temizlik.push(() => clearInterval(id));
-        for (let i = 0; i < 6; i++) sonra(vuluUcur, i * 120);
+        for (let i = 0; i < (hafif ? 2 : 6); i++) sonra(vuluUcur, i * 120);
     }
 
     /* ── İmleç izi (yalnızca fare) ── */
