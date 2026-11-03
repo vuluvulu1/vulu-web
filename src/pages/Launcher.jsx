@@ -7,7 +7,7 @@ import { HeroTitle } from '../TitleEmbers.jsx';
 import { ReleaseNotes, formatDate } from '../components.jsx';
 import { Reveal, reducedMotion, useTicker } from '../motion.jsx';
 
-const EXTRAS = [
+export const EXTRAS = [
     ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları okur ve sorunun kaynağını sade bir dille anlatır.'],
     ['Dünya yedekleri', 'Dünyanın yedeğini tek tıkla al, gerektiğinde aynı kolaylıkla geri yükle.'],
     ['Oynama süresi', 'Hangi instance\'ta ne kadar oynadığın kaydedilir; istersen profilinde görünür.'],
