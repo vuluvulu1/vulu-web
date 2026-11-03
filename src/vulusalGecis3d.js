@@ -6,7 +6,11 @@
 //              çekimi merceğiyle bükülür, çerçeve sürüklenmesiyle girdap olur, deliğe çekilip uzar; Einstein halkası,
 //              foton halkası, Doppler'le bir yanı parlayan, akan plazmalı bir toplanma diski ve ufkun üstünden bükülen
 //              arka disk görünür. Delik büyür, ekranı yutar: ufkun içine düşeriz.
-//   2,7 sn     UFKUN ÖBÜR YANI: beyaz flaş, ışık hızında hiperuzay çizgileri
+//              Sayfa yutulurken altından neon bir uzay-zaman ızgarası çıkar; mercek onu da bükerek huniye çevirir.
+//   2,7 sn     UFKUN İÇİ: karanlıktan, duvarları neon ızgaradan bir solucan deliği tüneline açılır; hiperuzay çizgileri
+//              akar, tünelin sonunda bembeyaz bir ışık (beyaz delik) vardır
+//   3,9–5,1 sn AÇILIŞ: tünelin duvarları açılıp kaybolur, zemin ızgarası belirir, simsiyah uzay synthwave moruna döner,
+//              beyaz delik soğuyup şeritli güneşe dönüşerek ufkun üstüne yükselir, dağlar siluet olarak çıkar
 //   2,7–7,6 sn SYNTHWAVE EVRENİ (3D): ufka uzanan neon ızgara, şeritli dev güneş ve zemindeki yansıması, iki yanda wireframe
 //              dağlar, yıldızlar, sis. Krom VULUSAL logosu uzaktan uçup iner (şok dalgası, kıvılcımlar, üstünden ışık
 //              süzülür); sonunda güneşe doğru hızlanma ve beyaz ekran
@@ -73,7 +77,7 @@ float fbm(vec2 p) {
 const KARA_DELIK_FRAG = /* glsl */`
 uniform sampler2D tSayfa;
 uniform vec2 uCoz, uMerkez;
-uniform float uRs, uDon, uCek, uZaman, uDisk, uHalka;
+uniform float uRs, uDon, uCek, uZaman, uDisk, uHalka, uIzgara;
 varying vec2 vUv;
 ${GURULTU}
 vec3 palet(float t) {
@@ -111,11 +115,20 @@ void main() {
     // renk kırılması: deliğe yaklaştıkça kırmızı ve mavi ayrışır
     float kirilma = 18.0 * rs * rs / (r * r + rs * rs) + uCek * 5.0;
     vec3 renk = vec3(sayfa(k + n * kirilma).r, sayfa(k).g, sayfa(k - n * kirilma).b);
-    renk *= mix(1.0, 0.6, uCek * smoothstep(rs * 6.0, rs, r));
+    renk *= mix(1.0, 0.6, uCek * (1.0 - smoothstep(rs, rs * 6.0, r)));
 
     // Einstein halkası ve foton halkası
     renk += exp(-pow((r - E) / (rs * 0.13), 2.0)) * vec3(1.0, 0.3, 0.95) * 0.55 * uHalka;
     renk += exp(-pow((r - rs * 1.07) / (rs * 0.035), 2.0)) * vec3(0.6, 0.95, 1.0) * 1.6 * uHalka;
+    // uzay-zaman ızgarası: kaynak koordinatlarda çizildiği için mercekle birlikte bükülür, deliğe doğru huni olur
+    vec2 gk = (k - uMerkez) / 46.0;
+    vec2 gw = max(fwidth(gk), vec2(0.001));
+    vec2 gd = abs(fract(gk - 0.5) - 0.5) / gw;
+    float agCizgi = 1.0 - min(min(gd.x, gd.y), 1.0);
+    // çizgilerin birbirine girdiği yerde (deliğin dibi) ızgara söner, yoksa beyaz bir lekeye döner
+    agCizgi *= (1.0 - smoothstep(0.15, 0.45, max(gw.x, gw.y))) * smoothstep(rs * 1.4, rs * 3.2, r);
+    vec3 agRenk = mix(vec3(0.0, 0.85, 1.0), vec3(1.0, 0.16, 0.92), smoothstep(rs * 2.0, rs * 9.0, r));
+    renk = mix(renk, renk * 0.3, uIzgara * 0.75) + agRenk * agCizgi * uIzgara * 1.2;
     // olay ufku
     renk *= smoothstep(rs * 0.98, rs * 1.03, r);
 
@@ -184,6 +197,44 @@ async function logoDokusu() {
     return t;
 }
 
+/** Solucan deliği: kameranın çevresinde, duvarları neon ızgaradan bir tünel; açılırken duvarları dışarı kaçıp söner. */
+export function tunelOlustur() {
+    const tunelMat = new THREE.ShaderMaterial({
+        uniforms: { uKay: { value: 0 }, uAcil: { value: 0 }, uOpak: { value: 1 } },
+        vertexShader: /* glsl */`
+            uniform float uAcil;
+            varying vec2 vUv; varying float vZ;
+            void main() {
+                vUv = uv;
+                vec3 p = position;
+                p.xy *= 1.0 + uAcil * uAcil * 45.0;
+                vec4 mv = modelViewMatrix * vec4(p, 1.0);
+                vZ = -mv.z;
+                gl_Position = projectionMatrix * mv;
+            }`,
+        fragmentShader: /* glsl */`
+            uniform float uKay, uAcil, uOpak;
+            varying vec2 vUv; varying float vZ;
+            void main() {
+                vec2 g = vec2(vUv.x * 28.0, vUv.y * 120.0 + uKay);
+                vec2 d = abs(fract(g - 0.5) - 0.5) / max(fwidth(g), vec2(0.001));
+                float halka = 1.0 - min(d.y, 1.0), uzun = 1.0 - min(d.x, 1.0);
+                float uzak = (1.0 - smoothstep(40.0, 390.0, vZ)) * smoothstep(0.5, 6.0, vZ);
+                vec3 c = (vec3(0.0, 0.85, 1.0) * halka + vec3(1.0, 0.2, 0.95) * uzun) * 2.0 * uzak;
+                gl_FragColor = vec4(c * uOpak * (1.0 - uAcil), 1.0);
+            }`,
+        transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, side: THREE.DoubleSide, fog: false,
+    });
+    const tunelGeo = new THREE.CylinderGeometry(7, 7, 400, 56, 40, true);
+    tunelGeo.rotateX(Math.PI / 2);
+    const tunel = new THREE.Mesh(tunelGeo, tunelMat);
+    // ön ucu kameranın biraz önünde başlar: tam kamera düzlemindeki köşelerde perspektif bölmesi sıfıra gidip
+    // doku koordinatlarını bozuyordu (tünel hiç görünmüyordu)
+    tunel.position.z = -203;
+    tunel.frustumCulled = false;
+    return { tunel, tunelMat };
+}
+
 /**
  * Geçişi başlatır. goruntu: anlikGoruntu() tuvali. WebGL açılamazsa false döner (çağıran eski geçişe düşer).
  * x, y: tıklanan nokta (CSS pikseli).
@@ -214,7 +265,7 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
         defines: tanim,
         uniforms: {
             tSayfa: { value: sayfaDokusu }, uCoz: { value: new THREE.Vector2(W, H) }, uMerkez: { value: tik.clone() },
-            uRs: { value: 0 }, uDon: { value: 0 }, uCek: { value: 0 }, uZaman: { value: 0 }, uDisk: { value: 0 }, uHalka: { value: 0 },
+            uRs: { value: 0 }, uDon: { value: 0 }, uCek: { value: 0 }, uZaman: { value: 0 }, uDisk: { value: 0 }, uHalka: { value: 0 }, uIzgara: { value: 0 },
         },
         vertexShader: TAM_EKRAN_VERT, fragmentShader: KARA_DELIK_FRAG, depthTest: false, depthWrite: false,
     });
@@ -225,6 +276,9 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
     /* ── B sahnesi: synthwave evreni (ortak dünya, src/synthDunya.js) ── */
     const dunya = synthDunyasi({ hafif, W, H });
     const sahneB = dunya.sahne, kamera = dunya.kamera;
+
+    const { tunel, tunelMat } = tunelOlustur();
+    kamera.add(tunel);
 
     // hiperuzay çizgileri: kameranın önünde, ona doğru akan ışık çizgileri
     const cizgiSayi = hafif ? 260 : 600;
@@ -307,6 +361,7 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
             kd.uniforms.uCek.value = yumusak(0.5, 2.4, t) * 0.95;
             kd.uniforms.uDisk.value = yumusak(0.3, 1.2, t);
             kd.uniforms.uHalka.value = yumusak(0.0, 0.4, t);
+            kd.uniforms.uIzgara.value = yumusak(0.8, 2.2, t);
             bloom.strength = yumusak(0.05, 0.7, t) * 0.6;
             L.uMerkez.value.set(kd.uniforms.uMerkez.value.x / W, kd.uniforms.uMerkez.value.y / H);
             L.uKirilma.value = yumusak(0.3, 2.6, t) * 0.012;
@@ -332,7 +387,21 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
             kamera.position.z -= hiz * dt;
             kamera.position.y = 2.2 + Math.sin(tb * 1.3) * 0.18;
             kamera.rotation.z = Math.sin(tb * 0.7) * 0.025;
-            dunya.guncelle({ t, gunesY: -30 + disaHizli((tb - 0.2) / 2.6) * 66, parla: yumusak(0.1, 0.9, tb) });   // güneş ufkun üstüne doğrulur
+            // tünel → açılış: duvarlar açılırken zemin belirir, uzay synthwave'e döner, beyaz delik güneşe soğuyup yükselir
+            const acil = yumusak(1.2, 2.4, tb);
+            tunelMat.uniforms.uAcil.value = acil;
+            tunelMat.uniforms.uKay.value += hiz * dt / 3.33;
+            tunelMat.uniforms.uOpak.value = yumusak(0.05, 0.5, tb);
+            tunel.visible = acil < 0.999;
+            dunya.guncelle({
+                t,
+                uzay: 1 - yumusak(1.3, 2.7, tb),
+                parla: yumusak(1.4, 2.5, tb),
+                gunesY: 2.2 + yumusak(1.5, 3.0, tb) * 33.8,
+                gunesBeyaz: 1 - yumusak(1.6, 2.9, tb),
+                gunesOlcek: 0.22 + yumusak(0.2, 2.6, tb) * 0.78,
+                gunesUstte: tb < 2.2,
+            });
 
             // hiperuzay çizgileri: hız arttıkça uzar, yavaşlarken söner
             const uzunluk = Math.min(120, hiz * 0.08);
@@ -380,7 +449,8 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
             L.uBulanik.value = Math.max(1.1 * Math.exp(-tb * 2.6), yumusak(3.8, 4.85, tb) * 1.4);
             L.uKirilma.value = 0.014 * Math.exp(-tb * 2) + 0.002 + (dalgaT >= 0 ? 0.012 * Math.exp(-(tb - dalgaT) * 6) : 0);
             L.uVinyet.value = 0.75;
-            L.uBeyaz.value = Math.max(0.85 * Math.exp(-tb * 4.5), dalgaT >= 0 ? 0.3 * Math.exp(-(tb - dalgaT) * 8) : 0, yumusak(4.35, SON - KESME, tb));
+            L.uBeyaz.value = Math.max(dalgaT >= 0 ? 0.3 * Math.exp(-(tb - dalgaT) * 8) : 0, yumusak(4.35, SON - KESME, tb));
+            L.uSiyah.value = 1 - yumusak(0.0, 0.5, tb);   // ufkun karanlığından tünele açılış (beyaz flaş yok)
         }
 
         besteci.render(dt);

@@ -32,7 +32,7 @@ export const LENS = {
             c.b += texture2D(tDiffuse, uMerkez + d * k * (1.0 - uKirilma)).b;
         }
         c /= float(ADIM);
-        c *= mix(1.0, smoothstep(1.25, 0.25, length(d * vec2(1.0, 0.85)) * 1.45), uVinyet);
+        c *= mix(1.0, 1.0 - smoothstep(0.25, 1.25, length(d * vec2(1.0, 0.85)) * 1.45), uVinyet);
         c += (h(vUv * 1000.0 + uZaman) - 0.5) * uGren;
         c = mix(c, vec3(1.0), uBeyaz);
         c = mix(c, vec3(0.0), uSiyah);
@@ -47,7 +47,7 @@ void main() { vec4 w = modelMatrix * vec4(position, 1.0); vDunya = w.xyz; gl_Pos
 /** Neon ızgara zemin: kenarı yumuşatılmış çizgiler, yakında cyan uzakta pembe, ortada güneşin yansıması, sis. */
 const ZEMIN_FRAG = /* glsl */`
 uniform vec3 uKamera;
-uniform float uParla;
+uniform float uParla, uUzay;
 varying vec3 vDunya;
 void main() {
     vec2 k = vDunya.xz / 4.0;
@@ -60,34 +60,36 @@ void main() {
     float yans = exp(-pow((vDunya.x - uKamera.x) / 7.0, 2.0)) * smoothstep(15.0, 170.0, uzak);
     c += vec3(1.0, 0.35, 0.55) * yans * 0.7;
     c = mix(vec3(0.09, 0.0, 0.16), c, sis * 0.85 + 0.15);
-    gl_FragColor = vec4(c, 1.0);
+    gl_FragColor = vec4(c * (1.0 - uUzay * 0.95), 1.0);
 }`;
 
 /** Retro güneş: üstte sarı altta pembe, alt yarıda aşağı kayan ve aşağı doğru kalınlaşan boşluklar. */
 const GUNES_FRAG = /* glsl */`
-uniform float uZaman;
+uniform float uZaman, uBeyaz;
 varying vec2 vUv;
 void main() {
     vec2 p = vUv * 2.0 - 1.0;
     float r = length(p);
     if (r > 1.0) discard;
     vec3 c = mix(vec3(1.0, 0.08, 0.6), vec3(1.0, 0.82, 0.25), smoothstep(-0.9, 0.85, p.y)) * 0.95;
+    c = mix(c, vec3(1.5, 1.4, 1.6), uBeyaz);                       // beyaz delik: soğudukça rengi gelir
     if (p.y < 0.2) {
         float f = fract((p.y + uZaman * 0.07) * 9.0);
-        float kalin = mix(0.04, 0.6, smoothstep(0.2, -1.0, p.y));
+        float kalin = mix(0.04, 0.6, smoothstep(0.2, -1.0, p.y)) * (1.0 - uBeyaz);   // şeritler de soğurken açılır
         if (f < kalin) discard;
     }
     gl_FragColor = vec4(c, 1.0);
 }`;
 
 const GOK_FRAG = /* glsl */`
-uniform float uKizil;
+uniform float uKizil, uUzay;
 varying vec3 vYon;
 void main() {
     float y = normalize(vYon).y;
     vec3 ufuk = mix(vec3(0.55, 0.05, 0.45), vec3(0.75, 0.12, 0.3), uKizil), orta = vec3(0.12, 0.0, 0.24), tepe = vec3(0.0, 0.0, 0.02);
     vec3 c = y < 0.0 ? ufuk * 0.5 : mix(mix(ufuk, orta, smoothstep(0.0, 0.18, y)), tepe, smoothstep(0.18, 0.7, y));
-    gl_FragColor = vec4(c, 1.0);
+    vec3 uzay = vec3(0.01, 0.0, 0.03) + vec3(0.08, 0.0, 0.12) * exp(-abs(y) * 6.0);   // derin uzay: neredeyse siyah
+    gl_FragColor = vec4(mix(c, uzay, uUzay), 1.0);
 }`;
 
 const DAG_BOY = 900;                 // bir dağ parçasının boyu; gürültü bu boyda kendini tekrar eder
@@ -117,7 +119,7 @@ export function synthDunyasi({ hafif, W, H }) {
     sahne.add(kamera);
 
     const gokMat = new THREE.ShaderMaterial({
-        uniforms: { uKizil: { value: 0 } },
+        uniforms: { uKizil: { value: 0 }, uUzay: { value: 0 } },
         vertexShader: `varying vec3 vYon; void main() { vYon = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
         fragmentShader: GOK_FRAG, side: THREE.BackSide, depthWrite: false, fog: false,
     });
@@ -125,22 +127,24 @@ export function synthDunyasi({ hafif, W, H }) {
     sahne.add(gok);
 
     const zeminMat = new THREE.ShaderMaterial({
-        uniforms: { uKamera: { value: kamera.position }, uParla: { value: 1 } },
+        uniforms: { uKamera: { value: kamera.position }, uParla: { value: 1 }, uUzay: { value: 0 } },
         vertexShader: ZEMIN_VERT, fragmentShader: ZEMIN_FRAG,
     });
     const zemin = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), zeminMat);
     zemin.rotation.x = -Math.PI / 2;
     sahne.add(zemin);
 
-    const gunesMat = new THREE.ShaderMaterial({ uniforms: { uZaman: { value: 0 } }, vertexShader: UV_VERT, fragmentShader: GUNES_FRAG, fog: false });
+    const gunesMat = new THREE.ShaderMaterial({ uniforms: { uZaman: { value: 0 }, uBeyaz: { value: 0 } }, vertexShader: UV_VERT, fragmentShader: GUNES_FRAG, fog: false });
     const gunes = new THREE.Mesh(new THREE.PlaneGeometry(150, 150), gunesMat);
     sahne.add(gunes);
-    const hale = new THREE.Mesh(new THREE.PlaneGeometry(420, 420), new THREE.ShaderMaterial({
+    const haleMat = new THREE.ShaderMaterial({
         vertexShader: UV_VERT,
         fragmentShader: `varying vec2 vUv; void main() { float r = length(vUv * 2.0 - 1.0); gl_FragColor = vec4(vec3(1.0, 0.2, 0.7), pow(max(0.0, 1.0 - r), 2.6) * 0.28); }`,
         transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false,
-    }));
+    });
+    const hale = new THREE.Mesh(new THREE.PlaneGeometry(420, 420), haleMat);
     sahne.add(hale);
+    const SIS_SYNTH = new THREE.Color(0x16002e), SIS_UZAY = new THREE.Color(0x020006);
 
     // dağlar: iki parça, kamera ilerledikçe arkada kalan öne atlar
     const dagGeo = new THREE.PlaneGeometry(700, DAG_BOY, hafif ? 70 : 120, hafif ? 60 : 100);
@@ -172,16 +176,30 @@ export function synthDunyasi({ hafif, W, H }) {
 
     return {
         sahne, kamera, zeminMat,
-        guncelle({ t, gunesY = 36, parla = 1, kizil = 0 }) {
+        /**
+         * uzay (0–1): dünyanın ne kadar derin uzay gibi göründüğü (Olay Ufku'nda tünelden çıkarken 1'den 0'a iner):
+         * gökyüzü kararır, zemin ve sis söner, dağ telleri görünmez. gunesBeyaz / gunesOlcek: güneşin beyaz delik hâli.
+         * gunesUstte: güneş zeminin arkasında kalmasın (tünelin sonundaki ışık bütün bir daire görünsün).
+         */
+        guncelle({ t, gunesY = 36, parla = 1, kizil = 0, uzay = 0, gunesBeyaz = 0, gunesOlcek = 1, gunesUstte = false }) {
             const k = kamera.position;
             zemin.position.set(k.x, 0, k.z);
             gok.position.copy(k);
             yildizlar.position.copy(k);
             gunes.position.set(0, gunesY, k.z - 420);
             hale.position.set(0, gunesY, k.z - 430);
+            gunes.scale.setScalar(gunesOlcek);
+            hale.scale.setScalar(0.6 + gunesOlcek * 0.4);
             gunesMat.uniforms.uZaman.value = t;
+            gunesMat.uniforms.uBeyaz.value = gunesBeyaz;
+            gunesMat.depthTest = haleMat.depthTest = !gunesUstte;
+            gunes.renderOrder = hale.renderOrder = gunesUstte ? 10 : 0;
             zeminMat.uniforms.uParla.value = parla;
+            zeminMat.uniforms.uUzay.value = uzay;
             gokMat.uniforms.uKizil.value = kizil;
+            gokMat.uniforms.uUzay.value = uzay;
+            sahne.fog.color.copy(SIS_SYNTH).lerp(SIS_UZAY, uzay);
+            telMat.opacity = 0.55 * (1 - uzay);
             for (const d of daglar) {
                 if (d.position.z - DAG_BOY / 2 > k.z + 60) d.position.z -= DAG_BOY * 2;
             }
