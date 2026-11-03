@@ -1,19 +1,21 @@
-// Launcher sayfasından vulusal sayfaya gizli geçiş (easter egg): EVREN İKİYE BÖLÜNÜR.
-// Tetik: "vulu Launcher" başlığına hızlı hızlı 5 kez tıkla (her tıklamada başlık biraz daha vululaşır) ya da klavyeden "vulu" yaz.
-// Geçiş, sayfa değişse de sürsün diye React'in dışında, doğrudan body'ye eklenir:
-//   1. çatlak (0–0,65 sn): tıklanan noktadan iki yana şimşek gibi parlayan bir çatlak ekranı yarar; şok dalgaları,
-//      glitch şeritleri, sayfa titrer; ses yükselir, cızırdar
-//   2. yarılma (0,65 sn): sayfa o çizgiden ikiye bölünür, iki yarı birbirinden uzağa savrulur; aradaki yarıktan kör edici
-//      bir ışık hüzmesi ve dönen gökkuşağı kozmos fışkırır; yırtılma sesi ve gümleme
-//   3. VULUSAL (1,35 sn): harfler ışığın içinden çarpar
-//   4. drop (1,65 sn): beyaz flaş, şok dalgaları, konfeti, bas; arkada vulusal sayfa açılır
-//   5. çıkış (2,55–3,25 sn): harfler dört yana saçılır, perde kalkar
-// "Hareketi azalt" açıksa efekt yoktur, doğrudan geçilir.
+// Launcher sayfasından vulusal sayfaya gizli geçiş (easter egg): EVREN İKİYE BÖLÜNÜR, KARA DELİK HER ŞEYİ YUTAR, BIG BANG.
+// Tetik: "vulu Launcher" başlığına hızlı hızlı 5 kez tıkla (her tıklamada başlık kızışır ve bir enerji çınlaması duyulur)
+// ya da klavyeden "vulu" yaz. Geçiş, sayfa değişse de sürsün diye React'in dışında, doğrudan body'ye eklenir; atlanamaz.
+//   ÇATLAK   (0–0,7 sn)  tıklanan noktadan şimşek gibi bir çatlak ekranı yarar; şok dalgaları, glitch, sayfa titrer
+//   YARILMA  (0,7 sn)    sayfa o çizgiden ikiye bölünür, iki yarı dönerek derin uzaya savrulur; aradan ışık ve nebula
+//   UZAY     (2 sn)      ortada bir kara delik doğar: dönen toplanma diski, olay ufku, bükülmüş ışık halkası;
+//                        yıldızlar spiral çizerek içine düşer; sinematik alt yazılar
+//   ÇÖKÜŞ    (4,3 sn)    her şey kara deliğe çekilir, ekran kararır, bir an sessizlik
+//   PATLAMA  (5,1 sn)    Big Bang: kör eden flaş, şok dalgaları, yıldızlar dışarı fışkırır, VULUSAL tekillikten doğar;
+//                        arkada vulusal sayfa açılır
+//   ÇIKIŞ    (7–7,7 sn)  harfler saçılır, perde kalkar
+// Sesler src/vulusalSes.js'te. "Hareketi azalt" açıksa efekt yoktur, doğrudan geçilir.
 
 import { useCallback, useEffect, useRef } from 'react';
 import { sparkBurst } from './effects.jsx';
 import { reducedMotion } from './motion.jsx';
 import { hafifMi } from './vulusalEngine.js';
+import { gecisSesi, tikSesi } from './vulusalSes.js';
 
 export const VULUSAL_YOL = '/vulusalvululauncher';
 
@@ -21,11 +23,20 @@ const RENKLER = ['#ff2df1', '#00d7ff', '#f6dc43', '#39ff14', '#5800ff', '#ffffff
 const sec = arr => arr[(Math.random() * arr.length) | 0];
 const rastgele = (a, b) => a + Math.random() * (b - a);
 
-const YARILMA = 650, SLAM = 1350, DROP = 1650, CIKIS = 2550, SON = 3250;
+/** Aşamaların başlangıçları (ms). Ses de bunlara göre kurulur. */
+const Z = { YARILMA: 700, UZAY: 2000, COKUS: 4300, PATLAMA: 5100, CIKIS: 7000, SON: 7700 };
+
+/** Sinematik alt yazılar: [ne zaman (ms), ne] */
+const ALT_YAZILAR = [
+    [1250, 'EVREN İKİYE BÖLÜNDÜ'],
+    [2500, 'KARA DELİK OLUŞUYOR'],
+    [3450, 'AURA KRİTİK SEVİYEDE'],
+    [4400, 'TEKİLLİK'],
+];
 
 let suruyor = false;
 
-/** Geçişi oynatır ve drop anında navigate(VULUSAL_YOL) çağırır. x, y: çatlağın başladığı nokta (yoksa ekranın ortası). */
+/** Geçişi oynatır ve Big Bang anında navigate(VULUSAL_YOL) çağırır. x, y: çatlağın başladığı nokta (yoksa ekranın ortası). */
 export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2 }) {
     if (suruyor) return;
     if (reducedMotion()) { navigate(VULUSAL_YOL, { state: { gecis: true } }); return; }
@@ -56,17 +67,24 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
         `<i style="top:${rastgele(0, 96).toFixed(1)}%;height:${rastgele(1, 7).toFixed(1)}%;--c:${sec(RENKLER)};--d:${rastgele(80, 260).toFixed(0)}ms;--g:${rastgele(-30, 30).toFixed(0)}vw"></i>`).join('');
     const halkalar = (sinif, sayi) => Array.from({ length: sayi }, (_, i) =>
         `<i class="${sinif}" style="--i:${i};--c:${RENKLER[i % 4]}"></i>`).join('');
+    const disk = sinif => `<div class="vg-kd-disk ${sinif}"><i></i></div>`;
 
     el.innerHTML = `
-        <div class="vg-portal"><div class="vg-isinlar"></div><div class="vg-izgara"></div><div class="vg-cekirdek"></div></div>
+        <div class="vg-uzay"></div>
+        <div class="vg-nebula"><i></i><i></i><i></i></div>
+        <canvas class="vg-yildiz"></canvas>
+        <div class="vg-kd"><div class="vg-kd-hale"></div>${disk('arka')}<div class="vg-kd-ufuk"></div><div class="vg-kd-lens"></div>${disk('on')}</div>
+        <div class="vg-kozmos"><div class="vg-isinlar"></div><div class="vg-izgara"></div></div>
         <div class="vg-yari a"></div><div class="vg-yari b"></div>
         <div class="vg-seritler">${seritler}</div>
         <div class="vg-huzme"></div>
         <svg class="vg-catlak" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${catlakSvg(x, y, d, Math.hypot(W, H))}</svg>
-        <div class="vg-halkalar">${halkalar('ilk', 3)}${halkalar('drop', 4)}</div>
-        <canvas class="vg-canvas"></canvas>
+        <div class="vg-halkalar">${halkalar('ilk', 3)}${halkalar('son', 5)}</div>
+        <div class="vg-karanlik"></div>
+        <div class="vg-yazi"></div>
         <div class="vg-baslik">${harfler}</div>
         <div class="vg-alt">+1.000.000 AURA</div>
+        <canvas class="vg-canvas"></canvas>
         <div class="vg-flash"></div>`;
     document.body.appendChild(el);
     html.classList.add('vg-bozul');
@@ -81,10 +99,12 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
 
     const zaman = [];
     const sonra = (ms, fn) => zaman.push(setTimeout(fn, ms));
-    const ses = gecisSesi();
+    gecisSesi(Z);
+    const evren = kozmos(el.querySelector('.vg-yildiz'), hafif);
+    const asama = ad => { el.classList.add(ad); evren.asama(ad); };
 
-    // 2. yarılma: sayfanın iki kopyası çizginin iki yanından kırpılıp zıt yönlere savrulur; asıl sayfa arkada gizlenir
-    sonra(YARILMA, () => {
+    // YARILMA: sayfanın iki kopyası çizginin iki yanından kırpılıp zıt yönlere savrulur; asıl sayfa arkada gizlenir
+    sonra(Z.YARILMA, () => {
         const yarim = (kutu, isaret) => {
             const P = (a, b) => `${(x + d[0] * a + n[0] * b).toFixed(1)}px ${(y + d[1] * a + n[1] * b).toFixed(1)}px`;
             kutu.style.clipPath = `polygon(${P(-L, 0)}, ${P(L, 0)}, ${P(L, isaret * L)}, ${P(-L, isaret * L)})`;
@@ -94,37 +114,121 @@ export function vulusalGecis({ navigate, x = innerWidth / 2, y = innerHeight / 2
         yarim(el.querySelector('.vg-yari.b'), 1);
         html.classList.remove('vg-bozul');
         kok.style.visibility = 'hidden';
-        el.classList.add('yar');
+        asama('yar');
     });
+    sonra(Z.UZAY + 500, () => el.querySelectorAll('.vg-yari').forEach(y => y.replaceChildren()));   // uzayın derinliklerinde kayboldular
 
-    // 3. harfler
-    sonra(SLAM, () => el.classList.add('slam'));
+    // alt yazılar
+    const yazi = el.querySelector('.vg-yazi');
+    for (const [ms, metin] of ALT_YAZILAR) {
+        sonra(ms, () => { yazi.textContent = metin; yazi.classList.remove('goster'); void yazi.offsetWidth; yazi.classList.add('goster'); });
+    }
 
-    // 4. drop
-    sonra(DROP, () => {
-        el.classList.add('drop');
-        konfeti(el.querySelector('.vg-canvas'), 3000, hafif);
+    sonra(Z.UZAY, () => asama('uzay'));
+    sonra(Z.COKUS, () => asama('cokus'));
+
+    // PATLAMA: Big Bang
+    sonra(Z.PATLAMA, () => {
+        asama('patlama');
+        konfeti(el.querySelector('.vg-canvas'), 3200, hafif);
         // Yeni sayfanın açılması bir an takılabilir: flaşın ilk (bembeyaz) karesi çizildikten sonra geç ki görünmesin
         requestAnimationFrame(() => requestAnimationFrame(() => {
             navigate(VULUSAL_YOL, { state: { gecis: true } });
             kok.style.visibility = '';
-            el.querySelectorAll('.vg-yari').forEach(y => y.replaceChildren());   // ekrandan çıktılar, kopyaları at
         }));
     });
 
-    // 5. çıkış
-    sonra(CIKIS, () => el.classList.add('cikis'));
-    sonra(SON, bitir);
+    sonra(Z.CIKIS, () => el.classList.add('cikis'));
+    sonra(Z.SON, bitir);
 
     function bitir() {
         zaman.forEach(clearTimeout);
         el.remove();
         html.classList.remove('vg-bozul', 'vg-hafif');
         kok.style.visibility = '';
-        ses?.close().catch(() => {});
         suruyor = false;
     }
     return bitir;
+}
+
+/**
+ * Yıldızlar ve kara deliğe düşen madde (canvas). Aşamalar:
+ *   başta / yar: yıldızlar ekranın ortasından dışarı doğru süzülür (derin uzayda ilerliyormuş gibi)
+ *   uzay: yıldızlar kara deliğin çevresinde dönerek, yaklaştıkça hızlanarak içine düşer; düşenin yerine yenisi gelir
+ *   cokus: çekim katlanır, hepsi içeri çekilir, yenisi gelmez
+ *   patlama: hepsi merkezden ışık hızında dışarı fışkırır
+ * Kara deliğin boyutu CSS'teki .vg-kd ile aynı hesaplanır.
+ */
+function kozmos(canvas, hafif) {
+    const ctx = canvas.getContext('2d');
+    const dpr = hafif ? 1 : Math.min(devicePixelRatio || 1, 2);
+    const W = innerWidth, H = innerHeight, cx = W / 2, cy = H / 2;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const kd = Math.min(Math.min(W, H) * 0.72, 560);
+    const ufuk = kd * 0.13, dis = Math.hypot(W, H) * 0.62;
+    const egim = -12 * Math.PI / 180, ce = Math.cos(egim), se = Math.sin(egim);
+    let asama = 'yildiz';
+
+    const yeni = (r = rastgele(ufuk * 2, dis)) => ({
+        a: Math.random() * Math.PI * 2, r, v: 0,
+        duz: Math.random() < 0.6,                       // diskin düzleminde mi (basık yörünge)
+        c: sec(RENKLER), b: rastgele(0.8, 2.4), px: null, py: null, olu: false,
+    });
+    const parcaciklar = Array.from({ length: hafif ? 240 : 560 }, () => yeni());
+
+    const konum = p => {
+        const ox = Math.cos(p.a) * p.r, oy = Math.sin(p.a) * p.r * (p.duz ? 0.3 : 1);
+        return p.duz ? [cx + ox * ce - oy * se, cy + ox * se + oy * ce] : [cx + ox, cy + oy];
+    };
+
+    let son = performance.now();
+    (function ciz(t) {
+        if (!canvas.isConnected) return;
+        requestAnimationFrame(ciz);
+        const dt = Math.min(0.05, (t - son) / 1000);
+        son = t;
+        ctx.clearRect(0, 0, W, H);
+        ctx.lineCap = 'round';
+        for (const p of parcaciklar) {
+            if (p.olu) continue;
+            if (asama === 'yildiz') {
+                p.r += (20 + p.r * 0.5) * dt;
+                if (p.r > dis) Object.assign(p, yeni(rastgele(10, 80)), { px: null });
+            } else if (asama === 'uzay' || asama === 'cokus') {
+                const cek = asama === 'cokus' ? 7 : 1;
+                p.a += dt * 1.6 * Math.pow(kd * 0.5 / Math.max(p.r, ufuk), 1.5) * (asama === 'cokus' ? 2.5 : 1);
+                p.r -= dt * cek * (25 + 9000 / Math.max(p.r, ufuk * 0.5));
+                if (p.r < ufuk * 0.9) {
+                    if (asama === 'uzay') Object.assign(p, yeni(dis * rastgele(0.7, 1)), { px: null });
+                    else { p.olu = true; continue; }
+                }
+            } else if (asama === 'patlama') {
+                p.v *= 1 - 1.4 * dt;
+                p.r += p.v * dt;
+            }
+            const [x, y] = konum(p);
+            if (p.px !== null) {
+                const yakin = asama === 'uzay' || asama === 'cokus' ? Math.min(1, (kd * 0.9) / p.r) : 1;
+                ctx.globalAlpha = asama === 'patlama' ? Math.min(1, p.v / 400 + 0.15) : 0.35 + 0.65 * yakin;
+                ctx.strokeStyle = p.c;
+                ctx.lineWidth = p.b * (asama === 'patlama' ? 1.6 : 1);
+                ctx.beginPath(); ctx.moveTo(p.px, p.py); ctx.lineTo(x, y); ctx.stroke();
+            }
+            p.px = x; p.py = y;
+        }
+        ctx.globalAlpha = 1;
+    })(son);
+
+    return {
+        asama(ad) {
+            if (ad === 'uzay' || ad === 'cokus') asama = ad;
+            if (ad === 'patlama') {
+                asama = 'patlama';
+                for (const p of parcaciklar) Object.assign(p, { olu: false, r: rastgele(2, ufuk * 0.4), a: Math.random() * Math.PI * 2, v: rastgele(500, 2200), px: null, duz: Math.random() < 0.35 });
+            }
+        },
+    };
 }
 
 /**
@@ -237,84 +341,13 @@ function konfeti(canvas, sure, hafif) {
     })(performance.now());
 }
 
-/**
- * Ses: yükselen riser, çatlarken elektrik cızırtıları, yarılmada yırtılma + gümleme, drop'ta kick, 808, crash ve akor.
- * Ses açılamazsa sessiz geçer.
- */
-function gecisSesi() {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return null;
-    let ac;
-    try { ac = new AC(); } catch { return null; }
-    const now = ac.currentTime + 0.02;
-    const yar = now + YARILMA / 1000, drop = now + DROP / 1000;
-    const out = ac.createDynamicsCompressor();
-    const master = ac.createGain();
-    master.gain.value = 0.5;
-    master.connect(out); out.connect(ac.destination);
-
-    const gurultu = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);   // 1 sn, kaynaklar döngüde çalar
-    const gd = gurultu.getChannelData(0);
-    for (let i = 0; i < gd.length; i++) gd[i] = Math.random() * 2 - 1;
-    const noise = (bas, sure, tip, f0, f1, g0, q = 1) => {
-        const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
-        s.buffer = gurultu; s.loop = true; f.type = tip; f.Q.value = q;
-        f.frequency.setValueAtTime(f0, bas); f.frequency.exponentialRampToValueAtTime(f1, bas + sure);
-        g.gain.setValueAtTime(g0, bas); g.gain.exponentialRampToValueAtTime(0.0001, bas + sure);
-        s.connect(f); f.connect(g); g.connect(master);
-        s.start(bas); s.stop(bas + sure + 0.05);
-    };
-    const osc = (bas, sure, tip, f0, f1, g0) => {
-        const o = ac.createOscillator(), g = ac.createGain();
-        o.type = tip;
-        o.frequency.setValueAtTime(f0, bas); o.frequency.exponentialRampToValueAtTime(f1, bas + sure);
-        g.gain.setValueAtTime(g0, bas); g.gain.exponentialRampToValueAtTime(0.0001, bas + sure);
-        o.connect(g); g.connect(master);
-        o.start(bas); o.stop(bas + sure + 0.05);
-    };
-
-    // riser: yükselen testere + açılan filtre, drop'a kadar
-    const o = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain();
-    o.type = 'sawtooth';
-    o.frequency.setValueAtTime(110, now); o.frequency.exponentialRampToValueAtTime(1760, drop);
-    f.type = 'lowpass'; f.Q.value = 8;
-    f.frequency.setValueAtTime(300, now); f.frequency.exponentialRampToValueAtTime(9000, drop);
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.22, drop - 0.05);
-    g.gain.exponentialRampToValueAtTime(0.0001, drop);
-    o.connect(f); f.connect(g); g.connect(master);
-    o.start(now); o.stop(drop + 0.05);
-
-    // çatlarken elektrik cızırtıları
-    for (let i = 0; i < 9; i++) noise(now + rastgele(0, 0.6), rastgele(0.03, 0.08), 'bandpass', rastgele(2500, 7000), rastgele(1500, 4000), 0.5, 4);
-    osc(now, 0.6, 'square', 60, 55, 0.08);   // uğultu
-
-    // yarılma: yırtılma (aşağı süpürülen gürültü) + gümleme
-    noise(yar, 0.55, 'bandpass', 6000, 180, 0.9, 2);
-    osc(yar, 0.9, 'sine', 120, 30, 0.9);
-
-    // drop: kick + 808, crash, akor
-    osc(drop, 1.6, 'sine', 180, 38, 1);
-    noise(drop, 1.5, 'highpass', 3000, 3000, 0.5);
-    for (const hz of [261.6, 311.1, 392, 523.3]) {
-        const a = ac.createOscillator(), a2 = ac.createOscillator(), af = ac.createBiquadFilter(), ag = ac.createGain();
-        a.type = 'sawtooth'; a2.type = 'square';
-        a.frequency.value = hz; a2.frequency.value = hz * 1.006;
-        af.type = 'lowpass'; af.frequency.setValueAtTime(5000, drop); af.frequency.exponentialRampToValueAtTime(600, drop + 1.2);
-        ag.gain.setValueAtTime(0.07, drop);
-        ag.gain.exponentialRampToValueAtTime(0.0001, drop + 1.3);
-        a.connect(af); a2.connect(af); af.connect(ag); ag.connect(master);
-        a.start(drop); a2.start(drop); a.stop(drop + 1.35); a2.stop(drop + 1.35);
-    }
-    return ac;
-}
-
 const TIK_ESIK = 5;          // kaç tıklamada geçilir
 const TIK_ARALIK = 900;      // tıklamalar arası en çok bu kadar ms
 
 /**
  * Launcher sayfası için gizli kapı. Klavyeden "vulu" yazmayı dinler; döndürdüğü fonksiyon başlığın onClick'ine verilir.
- * Her hızlı tıklamada başlıktan kıvılcım çıkar ve başlık (data-vulu ile) biraz daha vululaşır; 5.'de geçiş başlar.
+ * Her hızlı tıklamada başlıktan kıvılcım çıkar, bir enerji çınlaması duyulur ve başlık (data-vulu ile) biraz daha
+ * vululaşır; 5.'de geçiş başlar.
  */
 export function useVulusalKapi(navigate) {
     const tik = useRef({ n: 0, t: 0, sifirla: 0 });
@@ -341,10 +374,11 @@ export function useVulusalKapi(navigate) {
         if (s.n >= TIK_ESIK) {
             s.n = 0;
             vulusalGecis({ navigate, x: e.clientX, y: e.clientY });
-            setTimeout(() => delete el.dataset.vulu, YARILMA + 50);   // yarılan kopyada başlık hâlâ kızgın görünsün
+            setTimeout(() => delete el.dataset.vulu, Z.YARILMA + 50);   // yarılan kopyada başlık hâlâ kızgın görünsün
             return;
         }
         el.dataset.vulu = s.n;
+        tikSesi(s.n);
         sparkBurst(el.querySelector('.hero-title-box') || el, 6 + s.n * 8);
         s.sifirla = setTimeout(() => { s.n = 0; delete el.dataset.vulu; }, TIK_ARALIK + 300);
     }, [navigate]);
