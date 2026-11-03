@@ -131,3 +131,102 @@ export function gecisSesi2() {
     braam(s, uzak, T(S2.SON), [55, 82.4, 110, 130.8, 164.8], 4.5, 0.5);
     for (const [f, g] of [[880, 0.03], [1318.5, 0.022], [1760, 0.016]]) ton(s, uzak, T(S2.SON + 0.1), 3.4, 'sine', f, f, g, { atak: 0.6 });
 }
+
+/**
+ * /vulusalufuk sayfasının arka plan müziği: geçişteki synthwave'in sonsuz, yumuşak bir döngüsü (120 BPM; La minör → Fa →
+ * Do → Sol). Notalar küçük bir ileriye bakışla, her 80 ms'de bir sonraki çeyrek saniye için kurulur. Açılıp kapanırken
+ * yumuşakça girer ve çıkar. baslat() ses açılamazsa false döner.
+ */
+export function ufukMuzigi() {
+    const AKORLAR = [[110, 130.8, 164.8], [87.3, 110, 130.8], [130.8, 164.8, 196], [98, 123.5, 146.8]];
+    const on6 = 0.125;
+    let s = null, saat = 0, zaman = 0, adim = 0, caliyor = false, kanallar = [];
+
+    function kanal(kuru, islak, yanki) {
+        const g = s.ac.createGain(), sol = s.ac.createGain();
+        const k = s.ac.createGain(); k.gain.value = kuru;
+        const w = s.ac.createGain(); w.gain.value = islak;
+        const t = s.ac.currentTime;
+        sol.gain.setValueAtTime(0.0001, t); sol.gain.exponentialRampToValueAtTime(1, t + 1.5);
+        g.connect(sol); sol.connect(k); k.connect(s.ana); sol.connect(w); w.connect(yanki);
+        kanallar.push(sol);
+        return g;
+    }
+
+    let yakin, uzak, kapi, lead;
+    function kur() {
+        kanallar = [];
+        yakin = kanal(0.55, 0.15, s.yanki);
+        uzak = kanal(0.25, 0.6, s.yanki);
+        kapi = kanal(0.45, 0.6, s.kisaYanki);
+        lead = s.ac.createGain();
+        const gecik = s.ac.createDelay(1); gecik.delayTime.value = 0.375;
+        const geri = s.ac.createGain(); geri.gain.value = 0.35;
+        const gecikF = s.ac.createBiquadFilter(); gecikF.type = 'lowpass'; gecikF.frequency.value = 2400;
+        lead.connect(uzak); lead.connect(gecik); gecik.connect(gecikF); gecikF.connect(geri); geri.connect(gecik); gecikF.connect(uzak);
+    }
+
+    function olay(i, t) {
+        const k = i % 16, bar = Math.floor(i / 16) % 4, tur = Math.floor(i / 64);
+        const [r, ter, bes] = AKORLAR[bar];
+        if (k % 4 === 0) gumle(s, yakin, t, 140, 45, 0.38, 0.5);
+        if (k === 4 || k === 12) { gurultu(s, kapi, t, 0.18, 'bandpass', 1900, 1500, 0.4, { q: 0.7 }); ton(s, kapi, t, 0.12, 'triangle', 200, 160, 0.2); }
+        if (k % 4 === 2) gurultu(s, yakin, t, 0.04, 'highpass', 8000, 8000, 0.06);
+        // 16'lık arpej bas
+        const f = [r / 2, r, bes, r, ter, r, bes, r][k % 8];
+        const o = s.ac.createOscillator(), fl = s.ac.createBiquadFilter(), g = s.ac.createGain();
+        o.type = 'sawtooth'; o.frequency.value = f;
+        fl.type = 'lowpass'; fl.Q.value = 6;
+        fl.frequency.setValueAtTime(1800, t); fl.frequency.exponentialRampToValueAtTime(240, t + 0.11);
+        zarf(g.gain, t, 0.12, 0.1, { atak: 0.003 });
+        o.connect(fl); fl.connect(g); g.connect(yakin);
+        o.start(t); o.stop(t + 0.15);
+        // pad: her barın başında akor, bir oktav yukarıda
+        if (k === 0) {
+            const pf = s.ac.createBiquadFilter(), pg = s.ac.createGain();
+            pf.type = 'lowpass'; pf.frequency.value = 1700;
+            pg.gain.setValueAtTime(0.0001, t); pg.gain.linearRampToValueAtTime(0.03, t + 0.3);
+            pg.gain.setValueAtTime(0.03, t + 1.85); pg.gain.linearRampToValueAtTime(0.0001, t + 2.05);
+            pf.connect(pg); pg.connect(uzak);
+            for (const n of [r * 2, ter * 2, bes * 2]) for (const sapma of [-10, 10]) {
+                const p = s.ac.createOscillator();
+                p.type = 'sawtooth'; p.frequency.value = n; p.detune.value = sapma;
+                p.connect(pf); p.start(t); p.stop(t + 2.1);
+            }
+        }
+        // lead: her iki turdan birinde
+        if (tur % 2 === 1) {
+            const nota = { 0: [bes * 4, 5], 6: [ter * 4, 3], 10: [r * 4, 6] }[k];
+            if (nota) {
+                ton(s, lead, t, nota[1] * on6, 'square', nota[0], nota[0], 0.03, { atak: 0.01 });
+                ton(s, lead, t, nota[1] * on6, 'sawtooth', nota[0] * 1.003, nota[0] * 1.003, 0.025, { atak: 0.01 });
+            }
+        }
+    }
+
+    function planla() {
+        while (zaman < s.ac.currentTime + 0.3) { olay(adim, zaman); zaman += on6; adim++; }
+    }
+
+    return {
+        get caliyor() { return caliyor; },
+        baslat() {
+            if (caliyor) return true;
+            s = hazirla();
+            if (!s) return false;
+            kur();
+            zaman = s.ac.currentTime + 0.08; adim = 0;
+            planla();
+            saat = setInterval(planla, 80);
+            caliyor = true;
+            return true;
+        },
+        durdur() {
+            if (!caliyor) return;
+            caliyor = false;
+            clearInterval(saat);
+            const t = s.ac.currentTime;
+            for (const g of kanallar) { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.6); }
+        },
+    };
+}

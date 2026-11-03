@@ -10,7 +10,7 @@
 //   2,7–7,6 sn SYNTHWAVE EVRENİ (3D): ufka uzanan neon ızgara, şeritli dev güneş ve zemindeki yansıması, iki yanda wireframe
 //              dağlar, yıldızlar, sis. Krom VULUSAL logosu uzaktan uçup iner (şok dalgası, kıvılcımlar, üstünden ışık
 //              süzülür); sonunda güneşe doğru hızlanma ve beyaz ekran
-//   7,6 sn     vulusal sayfa açılır, tuval kaybolur
+//   7,6 sn     aynı dünyada /vulusalufuk sayfası açılır, tuval kaybolur
 // Son işleme: bloom, radyal hız bulanıklığı, renk kırılması, vinyet, film greni.
 
 import * as THREE from 'three';
@@ -21,8 +21,9 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import html2canvas from 'html2canvas';
 import { gecisSesi2, S2 } from './vulusalSes2.js';
+import { LENS, UV_VERT, birak, synthDunyasi } from './synthDunya.js';
 
-const YOL = '/vulusalvululauncher';
+const YOL = '/vulusalufuk';   // synthwave evreninde açılan sayfa (src/pages/VulusalUfuk.jsx)
 const KESME = S2.CUT, SON = S2.SON, BITIS = SON + 0.85;
 
 const sinirla = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -143,85 +144,6 @@ void main() {
 }`;
 
 /** Son işleme: radyal hız bulanıklığı + renk kırılması, vinyet, film greni, beyaz / siyah perde. */
-const LENS = {
-    uniforms: {
-        tDiffuse: { value: null }, uMerkez: { value: new THREE.Vector2(0.5, 0.5) },
-        uKirilma: { value: 0 }, uBulanik: { value: 0 }, uGren: { value: 0 }, uVinyet: { value: 0 },
-        uBeyaz: { value: 0 }, uSiyah: { value: 0 }, uZaman: { value: 0 },
-    },
-    vertexShader: `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-    fragmentShader: /* glsl */`
-    uniform sampler2D tDiffuse; uniform vec2 uMerkez;
-    uniform float uKirilma, uBulanik, uGren, uVinyet, uBeyaz, uSiyah, uZaman;
-    varying vec2 vUv;
-    float h(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-    void main() {
-        vec2 d = vUv - uMerkez;
-        vec3 c = vec3(0.0);
-        for (int i = 0; i < ADIM; i++) {
-            float k = 1.0 - uBulanik * 0.22 * float(i) / float(ADIM);
-            c.r += texture2D(tDiffuse, uMerkez + d * k * (1.0 + uKirilma)).r;
-            c.g += texture2D(tDiffuse, uMerkez + d * k).g;
-            c.b += texture2D(tDiffuse, uMerkez + d * k * (1.0 - uKirilma)).b;
-        }
-        c /= float(ADIM);
-        c *= mix(1.0, smoothstep(1.25, 0.25, length(d * vec2(1.0, 0.85)) * 1.45), uVinyet);
-        c += (h(vUv * 1000.0 + uZaman) - 0.5) * uGren;
-        c = mix(c, vec3(1.0), uBeyaz);
-        c = mix(c, vec3(0.0), uSiyah);
-        gl_FragColor = vec4(c, 1.0);
-    }`,
-};
-
-const ZEMIN_VERT = /* glsl */`
-varying vec3 vDunya;
-void main() { vec4 w = modelMatrix * vec4(position, 1.0); vDunya = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`;
-
-/** Neon ızgara zemin: kenarı yumuşatılmış çizgiler, yakında cyan uzakta pembe, ortada güneşin yansıması, sis. */
-const ZEMIN_FRAG = /* glsl */`
-uniform vec3 uKamera;
-uniform float uParla;
-varying vec3 vDunya;
-void main() {
-    vec2 k = vDunya.xz / 4.0;
-    vec2 g = abs(fract(k - 0.5) - 0.5) / fwidth(k);
-    float cizgi = 1.0 - min(min(g.x, g.y), 1.0);
-    float uzak = length(vDunya.xz - uKamera.xz);
-    float sis = exp(-uzak * 0.011);
-    vec3 renk = mix(vec3(0.0, 0.85, 1.0), vec3(1.0, 0.16, 0.92), smoothstep(10.0, 150.0, uzak));
-    vec3 c = vec3(0.02, 0.0, 0.05) + renk * cizgi * 1.8 * uParla * (0.3 + 0.7 * sis);
-    float yans = exp(-pow(vDunya.x / 7.0, 2.0)) * smoothstep(15.0, 170.0, uzak);
-    c += vec3(1.0, 0.35, 0.55) * yans * 0.7;
-    c = mix(vec3(0.09, 0.0, 0.16), c, sis * 0.85 + 0.15);
-    gl_FragColor = vec4(c, 1.0);
-}`;
-
-/** Retro güneş: üstte sarı altta pembe, alt yarıda aşağı kayan ve aşağı doğru kalınlaşan boşluklar. */
-const GUNES_FRAG = /* glsl */`
-uniform float uZaman;
-varying vec2 vUv;
-void main() {
-    vec2 p = vUv * 2.0 - 1.0;
-    float r = length(p);
-    if (r > 1.0) discard;
-    vec3 c = mix(vec3(1.0, 0.08, 0.6), vec3(1.0, 0.82, 0.25), smoothstep(-0.9, 0.85, p.y)) * 0.95;
-    if (p.y < 0.2) {
-        float f = fract((p.y + uZaman * 0.07) * 9.0);
-        float kalin = mix(0.04, 0.6, smoothstep(0.2, -1.0, p.y));
-        if (f < kalin) discard;
-    }
-    gl_FragColor = vec4(c, 1.0);
-}`;
-
-const GOK_FRAG = /* glsl */`
-varying vec3 vYon;
-void main() {
-    float y = normalize(vYon).y;
-    vec3 ufuk = vec3(0.55, 0.05, 0.45), orta = vec3(0.12, 0.0, 0.24), tepe = vec3(0.0, 0.0, 0.02);
-    vec3 c = y < 0.0 ? ufuk * 0.5 : mix(mix(ufuk, orta, smoothstep(0.0, 0.18, y)), tepe, smoothstep(0.18, 0.7, y));
-    gl_FragColor = vec4(c, 1.0);
-}`;
-
 /** Krom logo: yazı dokusu + üstünden süzülen ışık şeridi. */
 const LOGO_FRAG = /* glsl */`
 uniform sampler2D tLogo;
@@ -233,8 +155,6 @@ void main() {
     vec3 c = t.rgb * uGuc + serit * t.a * vec3(1.0, 0.95, 1.0) * 4.0;
     gl_FragColor = vec4(c, t.a * uOpak);
 }`;
-
-const UV_VERT = `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
 
 /** 80'ler kromu: VULUSAL ve altında LAUNCHER, pembe ışımalı (2D tuval → doku). */
 async function logoDokusu() {
@@ -262,17 +182,6 @@ async function logoDokusu() {
     t.colorSpace = THREE.SRGBColorSpace;
     t.anisotropy = 4;
     return t;
-}
-
-/** Basit değer gürültüsü (dağlar için, JS tarafı). */
-function dagYuksekligi(x, z) {
-    const h = (a, b) => { const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return s - Math.floor(s); };
-    const n = (a, b) => {
-        const i = Math.floor(a), j = Math.floor(b), f = a - i, g = b - j, u = f * f * (3 - 2 * f), v = g * g * (3 - 2 * g);
-        return (h(i, j) * (1 - u) + h(i + 1, j) * u) * (1 - v) + (h(i, j + 1) * (1 - u) + h(i + 1, j + 1) * u) * v;
-    };
-    const vadi = Math.min(1, Math.max(0, (Math.abs(x) - 22) / 50));
-    return (n(x * 0.04, z * 0.04) * 0.65 + n(x * 0.1, z * 0.1) * 0.35) * 42 * vadi * vadi;
 }
 
 /**
@@ -313,59 +222,9 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
     const kameraA = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     sahneA.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), kd));
 
-    /* ── B sahnesi: synthwave evreni ── */
-    const sahneB = new THREE.Scene();
-    sahneB.fog = new THREE.FogExp2(0x16002e, 0.0065);
-    const kamera = new THREE.PerspectiveCamera(72, W / H, 0.1, 3000);
-    kamera.position.set(0, 2.2, 0);
-    kamera.rotation.x = -0.035;
-
-    const gok = new THREE.Mesh(new THREE.SphereGeometry(1500, 32, 16), new THREE.ShaderMaterial({
-        vertexShader: `varying vec3 vYon; void main() { vYon = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-        fragmentShader: GOK_FRAG, side: THREE.BackSide, depthWrite: false, fog: false,
-    }));
-    sahneB.add(gok);
-
-    const zeminMat = new THREE.ShaderMaterial({
-        uniforms: { uKamera: { value: kamera.position }, uParla: { value: 1 } },
-        vertexShader: ZEMIN_VERT, fragmentShader: ZEMIN_FRAG,
-    });
-    const zemin = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), zeminMat);
-    zemin.rotation.x = -Math.PI / 2;
-    sahneB.add(zemin);
-
-    const gunesMat = new THREE.ShaderMaterial({ uniforms: { uZaman: { value: 0 } }, vertexShader: UV_VERT, fragmentShader: GUNES_FRAG, fog: false });
-    const gunes = new THREE.Mesh(new THREE.PlaneGeometry(150, 150), gunesMat);
-    sahneB.add(gunes);
-    const haleMat = new THREE.ShaderMaterial({
-        vertexShader: UV_VERT,
-        fragmentShader: `varying vec2 vUv; void main() { float r = length(vUv * 2.0 - 1.0); gl_FragColor = vec4(vec3(1.0, 0.2, 0.7), pow(max(0.0, 1.0 - r), 2.6) * 0.28); }`,
-        transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false,
-    });
-    const hale = new THREE.Mesh(new THREE.PlaneGeometry(420, 420), haleMat);
-    sahneB.add(hale);
-
-    // dağlar: ortada vadi, iki yanda neon tel kafes
-    const dagGeo = new THREE.PlaneGeometry(700, 1800, hafif ? 70 : 120, hafif ? 120 : 200);
-    dagGeo.rotateX(-Math.PI / 2);
-    const konum = dagGeo.attributes.position;
-    for (let i = 0; i < konum.count; i++) konum.setY(i, dagYuksekligi(konum.getX(i), konum.getZ(i)));
-    dagGeo.translate(0, -0.05, -850);
-    const dag = new THREE.Mesh(dagGeo, new THREE.MeshBasicMaterial({ color: 0x07000f, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
-    const tel = new THREE.LineSegments(new THREE.WireframeGeometry(dagGeo), new THREE.LineBasicMaterial({ color: new THREE.Color(0.0, 0.9, 1.6), transparent: true, opacity: 0.55 }));
-    sahneB.add(dag, tel);
-
-    // yıldızlar
-    const yildizSayi = hafif ? 700 : 1600;
-    const yp = new Float32Array(yildizSayi * 3);
-    for (let i = 0; i < yildizSayi; i++) {
-        const a = Math.random() * Math.PI * 2, e = Math.acos(rastgele(0.05, 1)), r = 1200;
-        yp.set([Math.cos(a) * Math.sin(e) * r, Math.cos(e) * r, Math.sin(a) * Math.sin(e) * r], i * 3);
-    }
-    const yildizGeo = new THREE.BufferGeometry();
-    yildizGeo.setAttribute('position', new THREE.BufferAttribute(yp, 3));
-    const yildizlar = new THREE.Points(yildizGeo, new THREE.PointsMaterial({ color: 0xffffff, size: hafif ? 1.6 : 2, sizeAttenuation: false, fog: false, transparent: true, opacity: 0.9 }));
-    sahneB.add(yildizlar);
+    /* ── B sahnesi: synthwave evreni (ortak dünya, src/synthDunya.js) ── */
+    const dunya = synthDunyasi({ hafif, W, H });
+    const sahneB = dunya.sahne, kamera = dunya.kamera;
 
     // hiperuzay çizgileri: kameranın önünde, ona doğru akan ışık çizgileri
     const cizgiSayi = hafif ? 260 : 600;
@@ -385,7 +244,6 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
     const hiperuzay = new THREE.LineSegments(cizgiGeo, cizgiMat);
     hiperuzay.frustumCulled = false;
     kamera.add(hiperuzay);
-    sahneB.add(kamera);
 
     // krom logo, şok dalgası, kıvılcımlar
     const logoMat = new THREE.ShaderMaterial({
@@ -474,14 +332,7 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
             kamera.position.z -= hiz * dt;
             kamera.position.y = 2.2 + Math.sin(tb * 1.3) * 0.18;
             kamera.rotation.z = Math.sin(tb * 0.7) * 0.025;
-            zemin.position.set(kamera.position.x, 0, kamera.position.z);
-            gok.position.copy(kamera.position);
-            yildizlar.position.copy(kamera.position);
-            const gunesY = -30 + disaHizli((tb - 0.2) / 2.6) * 66;   // merkez ufkun epey üstünde: şeritli alt yarı görünsün
-            gunes.position.set(0, gunesY, kamera.position.z - 420);
-            hale.position.set(0, gunesY, kamera.position.z - 430);
-            gunesMat.uniforms.uZaman.value = t;
-            zeminMat.uniforms.uParla.value = yumusak(0.1, 0.9, tb);
+            dunya.guncelle({ t, gunesY: -30 + disaHizli((tb - 0.2) / 2.6) * 66, parla: yumusak(0.1, 0.9, tb) });   // güneş ufkun üstüne doğrulur
 
             // hiperuzay çizgileri: hız arttıkça uzar, yavaşlarken söner
             const uzunluk = Math.min(120, hiz * 0.08);
@@ -536,7 +387,7 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
 
         if (t >= SON && !gidildi) {
             gidildi = true;
-            navigate(YOL, { state: { gecis: true } });
+            navigate(YOL, { state: { gecis3d: true } });
             tuval.style.opacity = '0';
         }
         if (t >= BITIS) temizle();
@@ -547,8 +398,8 @@ export async function olayUfku({ navigate, x, y, goruntu, hafif }) {
         cancelAnimationFrame(raf);
         tuval.remove();
         besteci.dispose?.();
-        sahneA.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); });
-        sahneB.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); });
+        birak(sahneA);
+        birak(sahneB);
         logo.dispose();
         renderer.dispose();
         renderer.forceContextLoss();
