@@ -27,6 +27,7 @@ import Verify from './pages/Verify.jsx';
 import VulusalLauncher from './pages/VulusalLauncher.jsx';
 import VulusalUfuk from './pages/VulusalUfuk.jsx';
 import { pageMeta } from './seo.js';
+import { useKuantumKapi } from './kuantumKapi.js';
 
 export default function App() {
     const { pathname } = useLocation();
@@ -78,9 +79,12 @@ export default function App() {
     );
 }
 
+/** Logo. Launcher sayfasında basılı tutulursa Vulu Kuantum açılır (gizli kapı, src/kuantumKapi.js). */
 function Brand() {
+    const { pathname } = useLocation();
+    const kuantum = useKuantumKapi(pathname === '/launcher');
     return (
-        <Link to="/" className="brand" aria-label="vulu ana sayfa">
+        <Link to="/" className="brand" aria-label="vulu ana sayfa" {...kuantum}>
             <img src={asset('img/logo.svg')} alt="" width="26" height="26" />
             <Wordmark />
         </Link>

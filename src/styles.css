@@ -203,6 +203,16 @@ main, .footer { position: relative; z-index: 1; }
 .wordmark { display: block; height: auto; overflow: visible; }
 .footer-brand .wordmark { width: 48px; margin-top: -7px; }
 .brand:hover { text-decoration: none; }
+/* Vulu Kuantum'un gizli kapısı: logoya basılı tutulurken çevresinde dolan halka (src/kuantumKapi.js) */
+.brand { position: relative; -webkit-touch-callout: none; }
+.brand img { -webkit-user-drag: none; user-select: none; }
+.brand.kq-yukleniyor::before {
+    content: ""; position: absolute; left: -6px; top: 50%; width: 38px; height: 38px; margin-top: -19px; border-radius: 50%; pointer-events: none;
+    background: conic-gradient(#ff2df1 calc(var(--kq, 0) * 360deg), rgba(255, 255, 255, .08) 0);
+    -webkit-mask: radial-gradient(circle, transparent 15px, #000 16px); mask: radial-gradient(circle, transparent 15px, #000 16px);
+    filter: drop-shadow(0 0 6px #ff2df1);
+}
+.brand.kq-yukleniyor img { transform: scale(calc(1 + var(--kq, 0) * .12)); filter: drop-shadow(0 0 calc(var(--kq, 0) * 10px) #ff2df1); }
 .topnav { display: flex; align-items: stretch; align-self: stretch; gap: 2px; min-width: 0; }
 .topnav a {
     position: relative; display: flex; align-items: center; gap: 6px; padding: 0 12px;
