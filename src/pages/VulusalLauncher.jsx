@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ANDROID_URL, DOWNLOAD_URL, androidRelease, api, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
@@ -62,10 +62,17 @@ export default function VulusalLauncher() {
         return () => { iptal = true; clearInterval(id); };
     }, []);
 
+    const gecisle = !!useLocation().state?.gecis;   // launcher'daki gizli kapıdan mı gelindi
     useEffect(() => {
-        motor.current = vulusalBaslat(root.current, { sakin: reducedMotion() });
-        return () => { motor.current?.durdur(); motor.current = null; };
-    }, []);
+        const m = vulusalBaslat(root.current, { sakin: reducedMotion() });
+        motor.current = m;
+        // Gizli geçişten gelene hoş geldin: aura yarıya kadar dolu, ekran bir kez daha patlar
+        if (gecisle) {
+            m.auraEkle(55);
+            setTimeout(() => { m.patlat(innerWidth / 2, innerHeight * 0.45, 160, 1.4); m.sars(); }, 950);
+        }
+        return () => { m.durdur(); motor.current = null; };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (!mesaj) return;

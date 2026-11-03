@@ -527,3 +527,135 @@ body:has(.vulusal) .menu-panel hr { border-color: rgba(255, 45, 241, .3); }
     .vs-glitch::before, .vs-glitch::after { display: none; }
     .vs-oyna { transition: none; }
 }
+
+/* ══ Gizli geçiş: launcher → vulusal (src/vulusalGecis.js) ══════════════════════════════════
+   Başlık her hızlı tıklamada biraz daha vululaşır (data-vulu = 1…4); 5.'de geçiş perdesi (.vg) body'ye eklenir. */
+.vulu-kapi { --v: 0; }
+.vulu-kapi[data-vulu="1"] { --v: 1; } .vulu-kapi[data-vulu="2"] { --v: 2; }
+.vulu-kapi[data-vulu="3"] { --v: 3; } .vulu-kapi[data-vulu="4"] { --v: 4; }
+.vulu-kapi[data-vulu] .hero-title .wordmark {
+    filter: hue-rotate(calc(var(--v) * -45deg)) saturate(calc(1 + var(--v) * .6))
+            drop-shadow(0 0 calc(var(--v) * 6px) #ff2df1) drop-shadow(0 0 calc(var(--v) * 10px) #00d7ff);
+    animation: vg-kapi-titre calc(260ms - var(--v) * 40ms) linear infinite;
+}
+@keyframes vg-kapi-titre {
+    25% { transform: translate(calc(var(--v) * 1px), calc(var(--v) * -1px)) rotate(calc(var(--v) * -.4deg)); }
+    75% { transform: translate(calc(var(--v) * -1px), calc(var(--v) * 1px)) rotate(calc(var(--v) * .4deg)); }
+}
+
+/* 1. bozulma: site titrer, renkleri kayar */
+html.vg-bozul #root { animation: vg-bozul .85s steps(12) forwards; }
+@keyframes vg-bozul {
+    0%   { filter: none; transform: none; }
+    15%  { filter: hue-rotate(40deg) contrast(1.4); transform: translate(-6px, 2px) skewX(-2deg); }
+    30%  { filter: hue-rotate(-90deg) saturate(3); transform: translate(8px, -3px) skewX(3deg); }
+    45%  { filter: invert(1) hue-rotate(180deg); transform: translate(-4px, 4px) scale(1.01); }
+    60%  { filter: hue-rotate(200deg) saturate(4) contrast(1.6); transform: translate(10px, 0) skewX(-5deg); }
+    75%  { filter: hue-rotate(280deg) saturate(5) blur(1px); transform: translate(-12px, -4px) scale(1.03); }
+    100% { filter: hue-rotate(300deg) saturate(6) blur(3px) brightness(1.6); transform: scale(1.08); }
+}
+
+.vg {
+    --pembe: #ff2df1; --cyan: #00d7ff; --sari: #f6dc43; --mor: #5800ff;
+    position: fixed; inset: 0; z-index: 9999; pointer-events: all; overflow: hidden; cursor: wait;
+    font-family: "Orbitron", "Russo One", sans-serif;
+}
+.vg.cikis { animation: vg-perde-cik .7s ease-in forwards; pointer-events: none; }
+@keyframes vg-perde-cik { to { opacity: 0; } }
+
+/* glitch şeritleri */
+.vg-seritler i {
+    position: absolute; left: -10%; width: 120%; background: var(--c); mix-blend-mode: difference; opacity: 0;
+    animation: vg-serit var(--d) steps(2) infinite;
+}
+@keyframes vg-serit {
+    0%   { opacity: .9; transform: translateX(var(--g)); }
+    50%  { opacity: 0; transform: translateX(calc(var(--g) * -1)); }
+    100% { opacity: .7; transform: translateX(0); }
+}
+.vg.portal .vg-seritler { opacity: 0; transition: opacity .3s .2s; }
+
+.vg-terminal {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(420px, calc(100vw - 32px));
+    padding: 18px 20px; background: rgba(9, 0, 13, .85); border: 1px solid var(--pembe);
+    box-shadow: 0 0 20px var(--pembe), inset 0 0 20px rgba(255, 45, 241, .3);
+    color: #fff; text-align: center; animation: vg-terminal-titre .12s steps(2) infinite;
+}
+.vg-terminal b { display: block; font-size: 15px; letter-spacing: 3px; color: var(--pembe); text-shadow: 0 0 10px var(--pembe); }
+.vg-yuzde { display: block; margin: 8px 0; font-size: 38px; font-weight: 900; color: var(--sari); text-shadow: 0 0 14px var(--sari); }
+.vg-bar { height: 8px; border: 1px solid var(--cyan); }
+.vg-bar > div { width: 0; height: 100%; background: linear-gradient(90deg, var(--pembe), var(--cyan), var(--sari)); box-shadow: 0 0 10px var(--cyan); }
+@keyframes vg-terminal-titre { 50% { transform: translate(calc(-50% + 2px), calc(-50% - 1px)); } }
+.vg.portal .vg-terminal { animation: vg-terminal-git .35s ease-in forwards; }
+@keyframes vg-terminal-git { to { transform: translate(-50%, -50%) scale(0) rotate(180deg); opacity: 0; } }
+
+/* 2. portal: tıklanan noktadan açılan dönen gökkuşağı */
+.vg-portal {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--x) var(--y), #fff 0, #ff2df1 6%, #5800ff 22%, #09000d 60%);
+    clip-path: circle(0 at var(--x) var(--y));
+}
+.vg.portal .vg-portal { animation: vg-portal-ac .55s cubic-bezier(.7, 0, .3, 1) forwards; }
+@keyframes vg-portal-ac { to { clip-path: circle(150vmax at var(--x) var(--y)); } }
+.vg-isinlar {
+    position: absolute; left: var(--x); top: var(--y); width: 300vmax; height: 300vmax; transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(from 0deg, rgba(255, 45, 241, .55) 0 6deg, transparent 6deg 12deg, rgba(0, 215, 255, .5) 12deg 18deg, transparent 18deg 24deg, rgba(246, 220, 67, .45) 24deg 30deg, transparent 30deg 36deg);
+    animation: vg-donus 1.2s linear infinite;
+    -webkit-mask: radial-gradient(circle, transparent 0, #000 8%, #000 40%, transparent 70%);
+    mask: radial-gradient(circle, transparent 0, #000 8%, #000 40%, transparent 70%);
+}
+@keyframes vg-donus { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.vg.drop .vg-isinlar { animation-duration: .4s; }
+.vg-izgara {
+    position: absolute; left: -50%; right: -50%; bottom: 0; height: 45vh; perspective: 260px; overflow: hidden;
+}
+.vg-izgara::before {
+    content: ""; position: absolute; inset: -100% 0 0 0; transform: rotateX(62deg); transform-origin: bottom;
+    background-image: linear-gradient(var(--pembe) 2px, transparent 2px), linear-gradient(90deg, var(--cyan) 2px, transparent 2px);
+    background-size: 60px 60px; animation: vg-izgara .25s linear infinite;
+    -webkit-mask: linear-gradient(to bottom, transparent, #000 60%); mask: linear-gradient(to bottom, transparent, #000 60%);
+}
+@keyframes vg-izgara { to { background-position: 0 60px, 0 60px; } }
+
+.vg-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* VULUSAL harfleri */
+.vg-baslik {
+    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-58%);
+    display: flex; justify-content: center; gap: .04em; padding: 0 12px;
+    font-size: clamp(46px, 13vw, 190px); font-weight: 900; line-height: 1;
+}
+.vg-baslik span {
+    display: inline-block; color: #fff; opacity: 0;
+    text-shadow: 0 0 6px #fff, 0 0 20px var(--c), 0 0 50px var(--c), 0 0 100px var(--pembe), 4px 0 0 var(--cyan), -4px 0 0 var(--pembe);
+}
+.vg.slam .vg-baslik span { animation: vg-slam .32s cubic-bezier(.2, 1.8, .4, 1) forwards; animation-delay: calc(var(--i) * 28ms); }
+@keyframes vg-slam {
+    from { opacity: 0; transform: scale(7) rotate(var(--rot)); filter: blur(12px); }
+    to   { opacity: 1; transform: none; filter: none; }
+}
+.vg.drop .vg-baslik { animation: vg-baslik-zipla .5s ease-out, vg-hue .6s linear infinite; }
+@keyframes vg-baslik-zipla { 0% { transform: translateY(-58%) scale(1.25); } 100% { transform: translateY(-58%) scale(1); } }
+@keyframes vg-hue { to { filter: hue-rotate(360deg); } }
+.vg.cikis .vg-baslik span { animation: vg-sacil .7s cubic-bezier(.5, 0, .9, .4) forwards; opacity: 1; }
+@keyframes vg-sacil { to { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(2.5); opacity: 0; } }
+
+.vg-alt {
+    position: absolute; left: 0; right: 0; top: calc(50% + clamp(40px, 8vw, 110px)); text-align: center;
+    font-size: clamp(16px, 3vw, 30px); font-weight: 900; letter-spacing: 4px; color: var(--sari);
+    text-shadow: 0 0 12px var(--sari), 0 0 30px var(--pembe); opacity: 0;
+}
+.vg.drop .vg-alt { animation: vg-alt .5s cubic-bezier(.2, 1.8, .4, 1) .1s forwards; }
+@keyframes vg-alt { from { opacity: 0; transform: scale(0) rotate(-10deg); } to { opacity: 1; transform: none; } }
+.vg.cikis .vg-alt { opacity: 1; animation: vg-perde-cik .3s forwards; }
+
+/* 3. drop: flaş ve sarsıntı */
+.vg-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+.vg.drop .vg-flash { animation: vg-flash .5s ease-out; }
+@keyframes vg-flash { from { opacity: 1; } to { opacity: 0; } }
+.vg.drop:not(.cikis) { animation: vg-sars .45s cubic-bezier(.36, .07, .19, .97); }
+@keyframes vg-sars {
+    10%, 90% { transform: translate(-3px, 2px); } 20%, 80% { transform: translate(6px, -3px); }
+    30%, 50%, 70% { transform: translate(-12px, 5px) rotate(-.5deg); } 40%, 60% { transform: translate(12px, -5px) rotate(.5deg); }
+}
+.vg.cikis .vg-portal { transition: transform .7s ease-in; transform: scale(1.6); }
