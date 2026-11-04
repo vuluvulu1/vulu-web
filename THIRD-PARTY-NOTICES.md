@@ -4,10 +4,9 @@ Bu bileşenler kendi yazarlarına aittir ve kendi lisanslarıyla dağıtılır; 
 
 | Bileşen | Lisans |
 |---|---|
-| react, react-dom, react-router-dom, three, html2canvas, vite, @vitejs/plugin-react (npm paketleri, repoda değil) | MIT |
+| react, react-dom, react-router-dom, vite, @vitejs/plugin-react (npm paketleri, repoda değil) | MIT |
 | IBM Plex Sans ve IBM Plex Mono yazı tipleri (`public/fonts`) | SIL Open Font License 1.1 ([metin](public/fonts/OFL-IBMPlex.txt)) |
 | Silkscreen yazı tipi (`public/fonts`) | SIL Open Font License 1.1 ([metin](public/fonts/OFL-Silkscreen.txt)) |
-| Orbitron ve Russo One yazı tipleri (`public/fonts`, yalnızca vulusal launcher sayfasında) | SIL Open Font License 1.1 ([Orbitron](public/fonts/OFL-Orbitron.txt), [Russo One](public/fonts/OFL-RussoOne.txt)) |
 | Great Vibes yazı tipi: `src/Wordmark.jsx` içindeki "vulu Launcher" yazısı bu yazı tipinin harflerinin SVG yola çevrilmiş hâlidir | SIL Open Font License 1.1 |
 
 Minecraft, Mojang AB / Microsoft'un ticari markasıdır. vulu, Mojang ya da Microsoft ile bağlantılı değildir ve onlar tarafından desteklenmez.

@@ -44,8 +44,6 @@ export default function PixelField() {
         }
 
         function frame(now) {
-            // Kendi arka planını çizen bir sayfa açıkken (<html class="pikseller-kapali">, ör. vulusal sayfa) tuval gizlidir: çizme, bekle
-            if (document.documentElement.classList.contains('pikseller-kapali')) { last = now; raf = requestAnimationFrame(frame); return; }
             const dt = Math.min(0.05, (now - last) / 1000);   // sekmeye dönünce zıplamasın
             last = now;
             g.clearRect(0, 0, w, h);
