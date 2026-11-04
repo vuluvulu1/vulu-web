@@ -24,8 +24,6 @@ import Admin from './pages/account/Admin.jsx';
 import UserProfile from './pages/UserProfile.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Verify from './pages/Verify.jsx';
-import VulusalLauncher from './pages/VulusalLauncher.jsx';
-import VulusalUfuk from './pages/VulusalUfuk.jsx';
 import { pageMeta } from './seo.js';
 
 export default function App() {
@@ -50,8 +48,6 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Hub />} />
                     <Route path="/launcher" element={<Launcher />} />
-                    <Route path="/vulusalvululauncher" element={<VulusalLauncher />} />
-                    <Route path="/vulusalufuk" element={<VulusalUfuk />} />
                     <Route path="/server-panel" element={<Product product={productBySlug('server-panel')} />} />
                     <Route path="/ftbquests-editor" element={<Product product={productBySlug('ftbquests-editor')} />} />
                     <Route path="/giris" element={<Login />} />

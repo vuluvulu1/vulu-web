@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ANDROID_URL, DOWNLOAD_URL, androidRelease, api, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 import { HeroTitle } from '../TitleEmbers.jsx';
 import { ReleaseNotes, formatDate } from '../components.jsx';
 import { Reveal, reducedMotion, useTicker } from '../motion.jsx';
-import { useVulusalKapi } from '../vulusalGecis.js';
 
-export const EXTRAS = [
+const EXTRAS = [
     ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları okur ve sorunun kaynağını sade bir dille anlatır.'],
     ['Dünya yedekleri', 'Dünyanın yedeğini tek tıkla al, gerektiğinde aynı kolaylıkla geri yükle.'],
     ['Oynama süresi', 'Hangi instance\'ta ne kadar oynadığın kaydedilir; istersen profilinde görünür.'],
@@ -30,15 +29,13 @@ export default function Launcher() {
     const [android, setAndroid] = useState(null);
     useEffect(() => { latestRelease().then(setRelease); androidRelease().then(setAndroid); }, []);
     const androidFirst = ON_ANDROID && !!android;
-    // Gizli kapı: başlığa hızlı hızlı 5 tıklama ya da klavyeden "vulu" → vulusal sayfa
-    const vulusalKapi = useVulusalKapi(useNavigate());
 
     return (
         <>
             <section className="hero">
                 <div className="wrap hero-grid">
                 <div className="hero-text">
-                    <div className="vulu-kapi" onClick={vulusalKapi}><HeroTitle /></div>
+                    <HeroTitle />
                     <p className="lead">
                         Minecraft'ı kurmak, modlamak ve oynamak için tek uygulama. Java'yı, mod yükleyicileri ve
                         güncellemeleri launcher kendisi indirir.
