@@ -14,7 +14,7 @@ export default function Verify() {
         sent.current = true;
         if (!token) { setState({ status: 'error', message: 'Bağlantı eksik görünüyor. E-postadaki bağlantıyı tam olarak açtığından emin ol.' }); return; }
         api.verifyEmail(token)
-            .then(r => setState({ status: 'ok', username: r.username, kind: r.kind, email: r.email }))
+            .then(r => setState({ status: 'ok', username: r.username, kind: r.kind, email: r.email, approved: !!r.approved }))
             .catch(err => setState({ status: 'error', message: err.message }));
     }, [token]);
 
@@ -29,7 +29,14 @@ export default function Verify() {
                         <Link className="btn btn-primary" to="/">Ana sayfaya dön</Link>
                     </>
                 )}
-                {state.status === 'ok' && state.kind !== 'email-change' && (
+                {state.status === 'ok' && state.kind !== 'email-change' && state.approved && (
+                    <>
+                        <h1>Hesabın açıldı</h1>
+                        <p>Hoş geldin, <b>{state.username}</b>. Launcher'a bu kullanıcı adı ve şifrenle giriş yapabilirsin.</p>
+                        <Link className="btn btn-primary" to="/launcher">Launcher'ı indir</Link>
+                    </>
+                )}
+                {state.status === 'ok' && state.kind !== 'email-change' && !state.approved && (
                     <>
                         <h1>E-postan doğrulandı</h1>
                         <p>Teşekkürler, <b>{state.username}</b>. Admin onayından sonra hesabın açılacak; başka bir şey yapmana gerek yok.</p>
