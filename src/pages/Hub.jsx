@@ -67,7 +67,7 @@ export default function Hub() {
                         <h2>Ücretsiz hesap</h2>
                         <p>
                             Hesapla arkadaş ekleyebilir, mesajlaşabilir, ekran görüntüsü paylaşabilir ve hazır paketleri
-                            kurabilirsin. E-posta adresini doğrulayınca hesabın hemen açılır.
+                            kurabilirsin. Hesaplar şimdilik admin onayıyla açılıyor.
                         </p>
                         <div className="row">
                             <Link className="btn btn-primary" to="/kayit">Katılma isteği gönder</Link>

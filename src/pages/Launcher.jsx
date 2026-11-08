@@ -165,10 +165,10 @@ export default function Launcher() {
 
             <Reveal as="section" className="wrap section start">
                 <h2 className="section-title">Başlamak için</h2>
-                <p className="muted">Hesap ücretsiz; birkaç dakikada açılır.</p>
+                <p className="muted">Hesaplar şimdilik admin onayıyla açılıyor.</p>
                 <ol className="steps">
-                    <li><span><Link to="/kayit">Kayıt formunu</Link> doldur.</span></li>
-                    <li><span>E-postana gelen bağlantıyı aç; hesabın hemen açılır.</span></li>
+                    <li><span><Link to="/kayit">Kayıt formunu</Link> doldur ve e-postana gelen bağlantıyı aç.</span></li>
+                    <li><span>Bir admin onayladığında hesabın açılır.</span></li>
                     <li><span>Kurulum dosyasını indirip çalıştır ve aynı kullanıcı adı ve şifreyle giriş yap.</span></li>
                 </ol>
                 <p className="note">

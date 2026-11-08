@@ -63,7 +63,7 @@ export default function Register() {
             <form className="auth-card" onSubmit={submit} noValidate>
                 <RisingEmbers rate={10} />
                 <h1>Katılma isteği</h1>
-                <p className="muted">Hesap ücretsiz. Formu doldur ve e-postana gelen bağlantıyı aç; hesabın hemen açılır.</p>
+                <p className="muted">Hesaplar şimdilik admin onayıyla açılıyor. Formu doldur ve e-postana gelen bağlantıyı aç; bir admin onaylayınca hesabın açılır.</p>
                 <label>
                     Kullanıcı adı
                     <input value={form.username} onChange={set('username')} autoComplete="username" maxLength={16} autoFocus />
