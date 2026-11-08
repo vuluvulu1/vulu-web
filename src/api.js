@@ -71,6 +71,7 @@ export const api = {
     register: (username, email, password, opts) => request('/auth/register', { method: 'POST', body: { username, email, password }, ...opts }),
     verifyEmail: token => request('/auth/verify-email', { method: 'POST', body: { token } }),
     resendVerification: email => request('/auth/resend-verification', { method: 'POST', body: { email } }),
+    fixRegistrationEmail: (username, password, email) => request('/auth/registration/email', { method: 'POST', body: { username, password, email } }),
     me: () => request('/users/me', { auth: true }),
     /** Herkese açık sayılar: üye, paket, ekran görüntüsü, çevrimiçi ve oyunda olanlar. */
     stats: () => request('/stats'),

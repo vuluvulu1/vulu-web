@@ -45,7 +45,8 @@ export default function Register() {
             const result = await api.register(username, email, form.password, {
                 onSlow: () => setMsg({ text: 'Sunucu biraz geç yanıt veriyor, birkaç saniye bekle…' }),
             });
-            setDone({ username, email, verifyEmail: !!result?.verifyEmail });
+            // Şifre yalnızca bu ekran açıkken bellekte durur: e-posta yanlış yazıldıysa adresi düzeltmek için
+            setDone({ username, email, password: form.password, verifyEmail: !!result?.verifyEmail });
             setForm({ username: '', email: '', password: '', password2: '' });
             setMsg(null);
         } catch (err) {
@@ -89,9 +90,32 @@ export default function Register() {
 }
 
 /** İstek gönderildikten sonra: e-posta doğrulaması varsa bağlantıyı açmasını söyler ve yeniden gönderme sunar. */
-function Sent({ username, email, verifyEmail }) {
+function Sent({ username, email: firstEmail, password, verifyEmail }) {
     const [msg, setMsg] = useState(null);
     const [busy, setBusy] = useState(false);
+    const [email, setEmail] = useState(firstEmail);
+    const [fixing, setFixing] = useState(false);
+    const [newEmail, setNewEmail] = useState('');
+
+    /** Kayıt formunda e-posta yanlış yazıldıysa: adres düzeltilir, yeni adrese bağlantı gider. */
+    async function fix(event) {
+        event.preventDefault();
+        const next = newEmail.trim();
+        if (!EMAIL.test(next)) { setMsg({ text: 'Geçerli bir e-posta adresi gir.', error: true }); return; }
+        setBusy(true);
+        setMsg({ text: 'Gönderiliyor…' });
+        try {
+            const r = await api.fixRegistrationEmail(username, password, next);
+            setEmail(next.toLowerCase());
+            setFixing(false);
+            setNewEmail('');
+            setMsg({ text: r.message || 'Adres düzeltildi.' });
+        } catch (err) {
+            setMsg({ text: err.message, error: true });
+        } finally {
+            setBusy(false);
+        }
+    }
 
     async function resend() {
         setBusy(true);
@@ -128,8 +152,22 @@ function Sent({ username, email, verifyEmail }) {
                     Bağlantı 48 saat geçerli. Birkaç dakika içinde gelmezse spam klasörünü de kontrol et.
                 </p>
                 <Status msg={msg} />
-                <button className="btn" onClick={resend} disabled={busy}>Bağlantıyı tekrar gönder</button>
-                <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
+                {fixing ? (
+                    <form onSubmit={fix} noValidate>
+                        <label>
+                            Doğru e-posta adresi
+                            <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} autoComplete="email" maxLength={254} autoFocus />
+                        </label>
+                        <button className="btn btn-primary" disabled={busy}>Düzelt ve bağlantıyı gönder</button>
+                        <button type="button" className="btn" onClick={() => setFixing(false)} disabled={busy}>Vazgeç</button>
+                    </form>
+                ) : (
+                    <>
+                        <button className="btn" onClick={resend} disabled={busy}>Bağlantıyı tekrar gönder</button>
+                        <button className="btn" onClick={() => { setFixing(true); setMsg(null); }} disabled={busy}>Adresi yanlış mı yazdın? Düzelt</button>
+                        <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
+                    </>
+                )}
             </div>
         </section>
     );

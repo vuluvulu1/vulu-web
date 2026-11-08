@@ -14,7 +14,7 @@ export default function Verify() {
         sent.current = true;
         if (!token) { setState({ status: 'error', message: 'Bağlantı eksik görünüyor. E-postadaki bağlantıyı tam olarak açtığından emin ol.' }); return; }
         api.verifyEmail(token)
-            .then(r => setState({ status: 'ok', username: r.username }))
+            .then(r => setState({ status: 'ok', username: r.username, kind: r.kind, email: r.email }))
             .catch(err => setState({ status: 'error', message: err.message }));
     }, [token]);
 
@@ -22,7 +22,14 @@ export default function Verify() {
         <section className="wrap auth">
             <div className="auth-card">
                 {state.status === 'working' && <><h1>Doğrulanıyor…</h1><p className="muted">Bir saniye.</p></>}
-                {state.status === 'ok' && (
+                {state.status === 'ok' && state.kind === 'email-change' && (
+                    <>
+                        <h1>E-posta adresin değişti</h1>
+                        <p>Teşekkürler, <b>{state.username}</b>. Hesabının adresi artık <b>{state.email}</b>.</p>
+                        <Link className="btn btn-primary" to="/">Ana sayfaya dön</Link>
+                    </>
+                )}
+                {state.status === 'ok' && state.kind !== 'email-change' && (
                     <>
                         <h1>E-postan doğrulandı</h1>
                         <p>Teşekkürler, <b>{state.username}</b>. Admin onayından sonra hesabın açılacak; başka bir şey yapmana gerek yok.</p>
