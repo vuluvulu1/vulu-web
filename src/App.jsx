@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { api, asset } from './api.js';
 import { useAuth } from './auth.jsx';
@@ -206,10 +206,28 @@ function Footer() {
                 <nav className="footer-links" aria-label="Alt menü">
                     {PRODUCTS.map(p => <Link key={p.slug} to={'/' + p.slug}>{p.name}</Link>)}
                     <a href="https://github.com/vuluvulu1" target="_blank" rel="noreferrer">GitHub</a>
+                    <DiscordContact />
                 </nav>
                 <p className="footer-note">Mojang ya da Microsoft ile bağlantılı değildir.</p>
             </div>
         </footer>
+    );
+}
+
+/** Bana ulaşmak için Discord kullanıcı adı; Discord'da adla açılan bir profil bağlantısı olmadığı için tıklayınca kopyalanır. */
+const DISCORD_NAME = 'vuluvulu';
+
+function DiscordContact() {
+    const [copied, setCopied] = useState(false);
+    async function copy() {
+        try { await navigator.clipboard.writeText(DISCORD_NAME); setCopied(true); setTimeout(() => setCopied(false), 1600); } catch { /* izin yok */ }
+    }
+    return (
+        <button type="button" className="footer-contact" onClick={copy} title="Discord kullanıcı adını kopyala">
+            Discord: <b>{DISCORD_NAME}</b>
+            <Icon name={copied ? 'check' : 'copy'} size={13} />
+            {copied && <span className="footer-copied">Kopyalandı</span>}
+        </button>
     );
 }
 
