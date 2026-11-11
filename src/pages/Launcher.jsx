@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ANDROID_URL, DOWNLOAD_URL, androidRelease, api, asset, latestRelease } from '../api.js';
+import { ANDROID_URL, DOWNLOAD_URL, GITHUB_DOWNLOAD_URL, androidRelease, api, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
 import { HeroTitle } from '../TitleEmbers.jsx';
@@ -178,6 +178,10 @@ export default function Launcher() {
                 <a className={'btn btn-lg' + (androidFirst ? '' : ' btn-primary')} href={DOWNLOAD_URL}>
                     <Icon name="download" size={18} /> {androidFirst ? 'Windows kurulum dosyası' : 'Kurulum dosyasını indir'}
                 </a>
+                <p className="note">
+                    İndirme başlamıyor ya da yarım kalıyorsa <a href={GITHUB_DOWNLOAD_URL}>GitHub'dan indir</a>; aynı dosya.
+                    Kurulum programı da vulu sunucusuna ulaşamazsa launcher'ı kendiliğinden GitHub'dan indirir.
+                </p>
             </Reveal>
         </>
     );

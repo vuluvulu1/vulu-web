@@ -10,6 +10,8 @@ export const asset = path => import.meta.env.BASE_URL + path;
 // İndirme düğmeleri API'nin sayacından geçer: sayaç artar, sonra /releases/ altındaki dosyaya yönlendirilir.
 // (Launcher ve Android uygulaması kendi güncellemelerini doğrudan /releases/'ten alır; onlar sayılmaz.)
 export const DOWNLOAD_URL = `${API_URL}/download/windows`;
+// Yedek: her sürüm GitHub'a da yüklenir; vulu sunucusundan indirme takılırsa oradan indirilir
+export const GITHUB_DOWNLOAD_URL = 'https://github.com/vuluvulu1/vulu-launcher/releases/latest/download/vulu-launcher-setup.exe';
 export const ANDROID_URL = `${API_URL}/download/android`;
 
 
