@@ -1009,3 +1009,63 @@ main, .footer { position: relative; z-index: 1; }
     .wordmark.molten { -webkit-mask-image: none; mask-image: none; }
     .hub-title .hero-title-box::after { display: none; }
 }
+
+/* ── 3B skin, seviye, sezon, pelerinler, rozetler, dolap (Progress.jsx) ───────────── */
+.skin3d { display: block; width: 100%; max-width: 240px; cursor: grab; touch-action: pan-y; }
+.skin3d:active { cursor: grabbing; }
+.pf-skin-stage { position: relative; }
+.pf-skin-default { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; }
+.pg-level .pf-bar, .pg-quests .pf-bar, .pg-season .pf-bar { margin-left: 0; }
+.pg-level-row { display: flex; gap: 16px; align-items: center; }
+.pg-level-row p { margin: 6px 0 0; }
+.pg-level-badge { flex: none; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; font-size: 26px; font-weight: 700;
+    color: var(--accent-hi); background: var(--accent-soft); box-shadow: inset 0 0 0 3px var(--accent); }
+.pg-season { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.pg-season h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font-size: 16px; }
+.pg-season > p { margin: 6px 0 12px; }
+.pg-quests { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.pg-quests li { display: flex; gap: 10px; padding: 10px 12px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--line); }
+.pg-quests li.done { box-shadow: inset 0 0 0 1px var(--accent); }
+.pg-quests li .grow { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pg-quest-icon { font-size: 20px; line-height: 1.2; }
+.pg-capes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pg-cape { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 92px; padding: 10px 6px; border: 0; font: inherit; color: var(--text);
+    background: var(--raised); box-shadow: inset 0 0 0 1px var(--line); cursor: pointer; }
+.pg-cape:disabled { cursor: default; }
+.pg-cape.worn { box-shadow: inset 0 0 0 2px var(--accent); }
+.pg-cape.locked { opacity: .45; }
+.pg-cape b { font-size: 12px; font-weight: 500; text-align: center; }
+.pg-cape small { font-size: 11px; color: var(--muted); }
+.pg-cape.worn small { color: var(--accent-hi); }
+/* Dokunun dış yüzü (1,1)–(11,17): 64×32 doku 6 kat büyütülüp yalnızca o bölge gösterilir */
+.pg-cape-art { width: 60px; height: 96px; background-size: 384px 192px; background-position: -6px -6px; image-rendering: pixelated; }
+.pg-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.pg-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 13px; color: var(--accent-hi); background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px rgba(242, 163, 58, .45); }
+.pg-wardrobe { margin-top: 14px; }
+.pg-wardrobe p { margin: 0 0 6px; }
+.pg-wardrobe-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.pg-wardrobe-item { position: relative; }
+.pg-wardrobe-item > button:first-child { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 68px; padding: 8px 4px; border: 0; font: inherit;
+    color: var(--text); background: var(--raised); box-shadow: inset 0 0 0 1px var(--line); cursor: pointer; }
+.pg-wardrobe-item.worn > button:first-child { box-shadow: inset 0 0 0 2px var(--accent); }
+.pg-wardrobe-item small { max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+/* Skinin yüzü (8,8)–(16,16): 64×64 doku 5 kat büyütülüp yalnızca yüz gösterilir */
+.pg-skin-face { width: 40px; height: 40px; background-size: 320px auto; background-position: -40px -40px; image-rendering: pixelated; }
+.pg-wardrobe-x { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border: 0; border-radius: 50%; font-size: 14px; line-height: 1;
+    color: var(--muted); background: var(--panel); box-shadow: inset 0 0 0 1px var(--line-strong); cursor: pointer; opacity: 0; }
+.pg-wardrobe-item:hover .pg-wardrobe-x, .pg-wardrobe-x:focus-visible { opacity: 1; }
+
+/* ── Liderlik (Leaderboard.jsx) ─────────────────────────────────────────────── */
+.lb-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; }
+.lb-head h1 { margin: 0 0 6px; }
+.lb-head p { margin: 0; max-width: 640px; }
+.lb-champions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; padding: 12px 14px; background: var(--panel); box-shadow: var(--edge); }
+.lb-champions .tag { display: inline-block; height: auto; padding: 4px 8px; }
+.lb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-top: 12px; }
+.lb-rows { list-style: none; margin: 0; padding: 0; }
+.lb-rows li { display: flex; align-items: center; gap: 10px; padding: 7px 4px; border-top: 1px solid var(--line); }
+.lb-rows li:first-child { border-top: 0; }
+.lb-rows li.top .mono { color: var(--accent-hi); }
+.lb-rank { width: 26px; text-align: center; font-weight: 600; color: var(--muted); }
+@media (max-width: 560px) { .lb-grid { grid-template-columns: 1fr; } }

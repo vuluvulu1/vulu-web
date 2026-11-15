@@ -128,6 +128,13 @@ export const api = {
     setSkin: (file, model) => request(`/users/me/skin?model=${model}`, { method: 'PUT', raw: file, auth: true }),
     setSkinModel: model => request('/users/me/skin/model', { method: 'PUT', body: { model }, auth: true }),
     removeSkin: () => request('/users/me/skin', { method: 'DELETE', auth: true }),
+    // Dolap (kayıtlı skinler), seviye/sezon, vulu Pelerinleri ve liderlik tablosu (herkese açık)
+    wardrobe: () => request('/users/me/wardrobe', { auth: true }),
+    wearSkin: hash => request(`/users/me/wardrobe/${hash}`, { method: 'PUT', body: { apply: true }, auth: true }),
+    removeFromWardrobe: hash => request(`/users/me/wardrobe/${hash}`, { method: 'DELETE', auth: true }),
+    progress: username => request(username ? `/progress/user/${encodeURIComponent(username)}` : '/progress/me', { auth: true }),
+    setCape: key => request('/progress/me/cape', { method: 'PUT', body: { key }, auth: true }),
+    leaderboard: period => request(`/progress/leaderboard?period=${period}`),
 
     // Geri bildirim: pack = paket kimliği ya da 'general'
     feedback: pack => request(`/feedback?pack=${encodeURIComponent(pack)}`, { auth: true }),

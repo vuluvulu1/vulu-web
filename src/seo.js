@@ -100,6 +100,7 @@ const PRIVATE_TITLES = [
     [/^\/hesap\/?$/, 'Akış – vulu'],
     [/^\/hesap/, 'Hesabım – vulu'],
     [/^\/u\/([^/]+)$/, m => `${decodeURIComponent(m[1])} – vulu`],
+    [/^\/liderlik\/?$/, 'Liderlik – vulu'],
 ];
 
 /** Bir adresin başlığı, açıklaması ve dizine eklenip eklenmeyeceği. */

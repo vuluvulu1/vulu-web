@@ -1,9 +1,10 @@
+import { Skin3D, Wardrobe } from '../Progress.jsx';
 import { useRef, useState } from 'react';
 import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { Avatar } from '../../components.jsx';
 import Icon from '../../icons.jsx';
-import { SkinPreview, shrinkImage } from '../../images.jsx';
+import { shrinkImage } from '../../images.jsx';
 
 // Kendi profiline bakarken yerinde düzenleme: banner, avatar, hakkında ve skin.
 
@@ -111,15 +112,15 @@ export function BioEditor() {
 }
 
 /** Skin önizlemesi ve (kendi profilindeyse) yükleme, model ve sıfırlama. */
-export function SkinStage({ profile, own }) {
+export function SkinStage({ profile, own, capeHash }) {
     return (
         <>
             <div className="pf-skin-stage">
-                {profile.skinHash
-                    ? <SkinPreview hash={profile.skinHash} model={profile.skinModel} scale={8} />
-                    : <span className="muted small">Varsayılan skin</span>}
+                <Skin3D skinHash={profile.skinHash} model={profile.skinModel} capeHash={capeHash ?? profile.capeHash} />
+                {!profile.skinHash && <span className="muted small pf-skin-default">Varsayılan skin</span>}
             </div>
             {own && <SkinControls />}
+            {own && <Wardrobe />}
         </>
     );
 }

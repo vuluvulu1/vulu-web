@@ -9,6 +9,7 @@ import { CountUp } from '../motion.jsx';
 import { describePresence, friendAction, relationTo, useFriends, usePresence } from '../social.js';
 import { AccountShell } from './account/Layout.jsx';
 import { AvatarControl, BannerControls, BioEditor, SkinStage } from './account/ProfileEdit.jsx';
+import { ProgressSections } from './Progress.jsx';
 import { ShotDialog, useShotPages, useShotViewer } from './account/ShotDialog.jsx';
 
 /** Bir üyenin profili. API profilleri yalnızca giriş yapmış üyelere gösterir. */
@@ -43,6 +44,7 @@ function ProfileView({ username, isMe }) {
     const { data, error, loading } = useLoad(() => api.profile(username), [username]);
     const shots = useShotPages(username);
     const online = usePresence();
+    const [capeHash, setCapeHash] = useState(null);   // pelerin değişince 3B görünüm hemen yenilensin
 
     if (loading) return <div className="skeleton" style={{ height: 360 }} aria-label="Yükleniyor" />;
     if (error) return <Empty icon="user" title="Profil açılamadı">{error}</Empty>;
@@ -92,6 +94,8 @@ function ProfileView({ username, isMe }) {
                         {isMe ? <BioEditor /> : <p className={'pf-bio' + (p.bio ? '' : ' empty')}>{p.bio || 'Henüz bir şey yazmamış.'}</p>}
                     </section>
 
+                    <ProgressSections username={p.username} isMe={isMe} onCape={setCapeHash} />
+
                     <ProfileShots list={shots} isMe={isMe} />
 
                     {p.packs.length > 0 && (
@@ -108,7 +112,7 @@ function ProfileView({ username, isMe }) {
                     <TopPlayed playtime={p.playtime} isMe={isMe} />
                     <section className="pf-section pf-skin">
                         <h2>Skin</h2>
-                        <SkinStage profile={p} own={isMe} />
+                        <SkinStage profile={p} own={isMe} capeHash={capeHash} />
                     </section>
                     {isMe && <AccountBox createdAt={p.createdAt} />}
                 </aside>

@@ -22,6 +22,7 @@ import PackDetail from './pages/account/PackDetail.jsx';
 import Feedback from './pages/account/Feedback.jsx';
 import Admin from './pages/account/Admin.jsx';
 import UserProfile from './pages/UserProfile.jsx';
+import Leaderboard from './pages/Leaderboard.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Verify from './pages/Verify.jsx';
 import VulusalLauncher from './pages/VulusalLauncher.jsx';
@@ -69,6 +70,7 @@ export default function App() {
                         <Route path="admin" element={<Admin />} />
                     </Route>
                     <Route path="/u/:username" element={<UserProfile />} />
+                    <Route path="/liderlik" element={<Leaderboard />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
                 </div>
@@ -100,6 +102,7 @@ function GuestHeader() {
                 <Brand />
                 <nav className="topnav" aria-label="Ürünler">
                     {PRODUCTS.map(p => <NavLink key={p.slug} to={'/' + p.slug}>{p.short || p.name}</NavLink>)}
+                    <NavLink to="/liderlik">Liderlik</NavLink>
                 </nav>
                 <div className="topbar-end">
                     {status === 'loading' ? <span className="topbar-wait" aria-hidden="true" /> : <>
@@ -124,6 +127,7 @@ function MemberHeader() {
                     <NavLink to="/hesap" end>Akış</NavLink>
                     <NavLink to="/hesap/arkadaslar">Arkadaşlar{incoming > 0 && <span className="num" aria-label={`${incoming} yeni istek`}>{incoming}</span>}</NavLink>
                     <NavLink to="/hesap/paketler">Paketler</NavLink>
+                    <NavLink to="/liderlik">Liderlik</NavLink>
                     <NavLink to="/launcher">Launcher</NavLink>
                 </nav>
                 <div className="topbar-end">
