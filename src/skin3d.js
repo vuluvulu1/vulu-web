@@ -1,5 +1,5 @@
 // Profildeki dönen 3B karakter (three.js). Skin ve (varsa) vulu Pelerini dokusundan Minecraft modelini kurar:
-// baş, gövde, kollar, bacaklar, ikinci katman ve pelerin. Kendiliğinden döner, sürükleyerek çevrilir; görünmezken çizmez.
+// baş, gövde, kollar, bacaklar, ikinci katman ve pelerin. Kendiliğinden döner, sürükleyerek her yöne (360°) çevrilir; görünmezken çizmez.
 import * as THREE from 'three';
 
 const SLIM = 3, WIDE = 4;
@@ -120,9 +120,18 @@ export async function mountSkin(canvas, { skinUrl, capeUrl, slim }) {
     }
 
     // Etkileşim: sürükleyince döner, bırakınca 2 sn sonra kendiliğinden döner
-    let yaw = -0.5, dragging = false, lastX = 0, lastDrag = 0;
-    const down = e => { dragging = true; lastX = e.clientX; canvas.setPointerCapture?.(e.pointerId); };
-    const move = e => { if (!dragging) return; yaw += (e.clientX - lastX) * 0.012; lastX = e.clientX; lastDrag = performance.now(); };
+    // Yatay sürükleme y ekseninde, dikey sürükleme x ekseninde çevirir; ikisi de sınırsız (360°). Çift tık: dik duruş
+    const PITCH = 0;   // kamera zaten hafif yukarıdan bakar
+    let yaw = -0.5, pitch = PITCH, dragging = false, lastX = 0, lastY = 0, lastDrag = 0;
+    const down = e => { dragging = true; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture?.(e.pointerId); };
+    const move = e => {
+        if (!dragging) return;
+        yaw += (e.clientX - lastX) * 0.012;
+        pitch += (e.clientY - lastY) * 0.012;
+        lastX = e.clientX; lastY = e.clientY; lastDrag = performance.now();
+    };
+    const reset = () => { pitch = PITCH; };
+    canvas.addEventListener('dblclick', reset);
     const up = () => { dragging = false; lastDrag = performance.now(); };
     canvas.addEventListener('pointerdown', down);
     canvas.addEventListener('pointermove', move);
@@ -152,7 +161,7 @@ export async function mountSkin(canvas, { skinUrl, capeUrl, slim }) {
         if (!visible || document.hidden) return;
         t += dt;
         if (!dragging && now - lastDrag > 2000 && !reduced) yaw += dt * 0.55;
-        model.rotation.y = yaw;
+        model.rotation.set(pitch, yaw, 0, 'XYZ');
         const swing = reduced ? 0 : Math.sin(t * 2.2) * 0.18;
         rightArm.rotation.x = swing; leftArm.rotation.x = -swing;
         rightLeg.rotation.x = -swing; leftLeg.rotation.x = swing;
@@ -169,6 +178,7 @@ export async function mountSkin(canvas, { skinUrl, capeUrl, slim }) {
         canvas.removeEventListener('pointermove', move);
         canvas.removeEventListener('pointerup', up);
         canvas.removeEventListener('pointercancel', up);
+        canvas.removeEventListener('dblclick', reset);
         geometries.forEach(g => g.dispose());
         [base, layer].forEach(m => m.dispose());
         [skinTex, capeTex].forEach(tx => tx && tx.dispose());

@@ -22,15 +22,14 @@ export function Skin3D({ skinHash, model, capeHash, height = 300 }) {
         return () => { cancelled = true; cleanup?.(); };
     }, [skinHash, model, capeHash]);
     if (failed) return <span className="muted small">3B görünüm bu tarayıcıda açılamadı.</span>;
-    return <canvas ref={canvas} className="skin3d" style={{ height }} aria-label="3B skin görünümü, çevirmek için sürükle" />;
+    return <canvas ref={canvas} className="skin3d" style={{ height }} aria-label="3B skin görünümü, her yöne çevirmek için sürükle; çift tık dik duruşa döndürür" title="Sürükleyerek çevir · çift tık: dik duruş" />;
 }
 
 const pct = (value, from, to) => `${Math.round(Math.max(0, Math.min(1, to > from ? (value - from) / (to - from) : 0)) * 100)}%`;
 
 function questText(q) {
+    if (q.text) return q.text;   // API birimiyle hazır verir (ör. "1,5 / 2 saat")
     if (q.done) return 'Tamamlandı ✓';
-    if (q.key === 'yola-cikis') return `${Math.floor(q.value / 72000)} / ${q.target / 72000} saat`;
-    if (q.key === 'gezgin') return `${(q.value / 100000).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} / ${q.target / 100000} km`;
     return `${q.value} / ${q.target}`;
 }
 

@@ -1011,7 +1011,7 @@ main, .footer { position: relative; z-index: 1; }
 }
 
 /* ── 3B skin, seviye, sezon, pelerinler, rozetler, dolap (Progress.jsx) ───────────── */
-.skin3d { display: block; width: 100%; max-width: 240px; cursor: grab; touch-action: pan-y; }
+.skin3d { display: block; width: 100%; max-width: 240px; cursor: grab; touch-action: none; }
 .skin3d:active { cursor: grabbing; }
 .pf-skin-stage { position: relative; }
 .pf-skin-default { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; }
