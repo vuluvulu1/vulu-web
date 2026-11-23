@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="d2-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a9fb4"></stop><stop offset=".18" stop-color="#16607a"></stop><stop offset=".55" stop-color="#0a3448"></stop><stop offset="1" stop-color="#03121c"></stop></linearGradient>
+        <linearGradient id="d2-sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5a5a"></stop><stop offset="1" stop-color="#0a1c22"></stop></linearGradient>
+        <linearGradient id="d2-col" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b2430"></stop><stop offset=".7" stop-color="#2a5560"></stop><stop offset="1" stop-color="#173a45"></stop></linearGradient>
+        <filter id="d2-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"></feGaussianBlur></filter>
+        <filter id="d2-grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+      </defs>
+      <rect width="1600" height="1200" fill="url(#d2-sea)"></rect>
+      <!-- Yüzey ve oradan inen ışık -->
+      <path d="M0 40 Q100 26 200 40 T400 40 T600 40 T800 40 T1000 40 T1200 40 T1400 40 T1600 40 L1600 0 L0 0 Z" fill="#8fe0ec" opacity=".35"></path>
+      <g filter="url(#d2-blur)" fill="#bff6ff">
+        <polygon points="560,0 640,0 760,1000 520,1000" opacity=".14"></polygon>
+        <polygon points="760,0 820,0 980,1100 780,1100" opacity=".18"></polygon>
+        <polygon points="980,0 1040,0 1180,900 1000,900" opacity=".12"></polygon>
+        <polygon points="300,0 340,0 420,800 280,800" opacity=".08"></polygon>
+      </g>
+      <!-- Uzak balık sürüsü -->
+      <g fill="#0b3448" opacity=".7"><path d="M1180 300 l26 -8 l-6 8 l6 8 z"></path><path d="M1230 320 l22 -7 l-5 7 l5 7 z"></path><path d="M1200 340 l24 -7 l-5 7 l5 7 z"></path><path d="M1260 290 l20 -6 l-4 6 l4 6 z"></path></g>
+      <!-- Batık tapınak: kırık sütunlar -->
+      <g fill="url(#d2-col)">
+        <rect x="150" y="560" width="90" height="560"></rect><rect x="140" y="540" width="110" height="24"></rect>
+        <polygon points="330,700 410,690 410,1120 330,1120"></polygon><polygon points="330,700 352,672 380,692 410,690"></polygon>
+        <rect x="1360" y="600" width="90" height="520"></rect><rect x="1350" y="580" width="110" height="24"></rect>
+        <polygon points="1190,760 1270,770 1270,1120 1190,1120"></polygon><polygon points="1190,760 1222,736 1248,762 1270,770"></polygon>
+      </g>
+      <g stroke="#000" stroke-opacity=".25" stroke-width="3"><line x1="172" y1="580" x2="172" y2="1110"></line><line x1="196" y1="580" x2="196" y2="1110"></line><line x1="220" y1="580" x2="220" y2="1110"></line><line x1="1382" y1="620" x2="1382" y2="1110"></line><line x1="1406" y1="620" x2="1406" y2="1110"></line><line x1="1430" y1="620" x2="1430" y2="1110"></line></g>
+      <!-- Deniz yosunu -->
+      <g fill="none" stroke="#0e3a30" stroke-width="10" stroke-linecap="round" opacity=".9"><path d="M460 1130 Q440 1040 470 960 T460 820"></path><path d="M500 1130 Q520 1060 495 990"></path><path d="M1120 1130 Q1140 1030 1110 950 T1125 830"></path><path d="M1080 1130 Q1060 1060 1090 1000"></path></g>
+      <path d="M0 1100 Q400 1060 800 1090 T1600 1080 L1600 1200 L0 1200 Z" fill="url(#d2-sand)"></path>
+      <rect width="1600" height="1200" filter="url(#d2-grain)" opacity=".06"></rect>
+    </svg>

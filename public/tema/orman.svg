@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="o-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#020a06"></stop><stop offset=".55" stop-color="#0a2116"></stop><stop offset="1" stop-color="#05110b"></stop></linearGradient>
+        <radialGradient id="o-moon" cx="78%" cy="16%" r="40%"><stop offset="0" stop-color="#e9f5c6" stop-opacity=".45"></stop><stop offset=".3" stop-color="#9fd48a" stop-opacity=".12"></stop><stop offset="1" stop-color="#9fd48a" stop-opacity="0"></stop></radialGradient>
+        <linearGradient id="o-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#11301e"></stop><stop offset="1" stop-color="#030a06"></stop></linearGradient>
+        <filter id="o-mist" x="-20%" y="-80%" width="140%" height="260%"><feGaussianBlur stdDeviation="30"></feGaussianBlur></filter>
+        <filter id="o-grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+      </defs>
+      <rect width="1600" height="1200" fill="url(#o-sky)"></rect>
+      <rect width="1600" height="1200" fill="url(#o-moon)"></rect>
+      <circle cx="1250" cy="190" r="46" fill="#eef7d2" opacity=".85"></circle>
+      <path d="M-40 820 L22 526 L84 820 Z M69 820 L154 413 L240 820 Z M146 820 L221 461 L296 820 Z M233 820 L314 433 L395 820 Z M338 820 L399 533 L459 820 Z M403 820 L491 400 L580 820 Z M489 820 L575 413 L660 820 Z M552 820 L626 470 L699 820 Z M654 820 L720 509 L785 820 Z M768 820 L859 388 L950 820 Z M833 820 L891 545 L948 820 Z M925 820 L1018 381 L1110 820 Z M1009 820 L1074 511 L1139 820 Z M1095 820 L1152 545 L1210 820 Z M1170 820 L1243 471 L1316 820 Z M1259 820 L1325 508 L1390 820 Z M1335 820 L1400 511 L1465 820 Z M1423 820 L1490 498 L1558 820 Z M1487 820 L1575 399 L1664 820 Z M1580 820 L1661 434 L1742 820 Z" fill="#1b3b28" opacity="0.55"></path>
+      <ellipse cx="800" cy="800" rx="900" ry="60" fill="#cfe8d0" opacity=".10" filter="url(#o-mist)"></ellipse>
+      <path d="M-40 930 L79 365 L197 930 Z M112 930 L187 572 L263 930 Z M202 930 L315 393 L428 930 Z M339 930 L444 431 L549 930 Z M446 930 L547 446 L649 930 Z M573 930 L674 451 L774 930 Z M669 930 L762 486 L855 930 Z M781 930 L888 419 L996 930 Z M937 930 L1055 367 L1173 930 Z M1060 930 L1154 483 L1248 930 Z M1163 930 L1237 577 L1311 930 Z M1249 930 L1344 478 L1439 930 Z M1356 930 L1447 498 L1538 930 Z M1504 930 L1602 464 L1700 930 Z M1629 930 L1712 531 L1796 930 Z" fill="#10291b" opacity="0.8"></path>
+      <ellipse cx="600" cy="930" rx="700" ry="50" fill="#cfe8d0" opacity=".08" filter="url(#o-mist)"></ellipse>
+      <path d="M-40 1060 L69 539 L179 1060 Z M135 1060 L252 499 L370 1060 Z M315 1060 L449 422 L583 1060 Z M441 1060 L536 606 L631 1060 Z M645 1060 L756 532 L867 1060 Z M788 1060 L945 311 L1103 1060 Z M955 1060 L1102 359 L1249 1060 Z M1123 1060 L1257 418 L1392 1060 Z M1257 1060 L1392 420 L1526 1060 Z M1465 1060 L1592 453 L1719 1060 Z" fill="#07170e" opacity="1"></path>
+      <path d="M0 1080 Q400 1040 800 1070 T1600 1060 L1600 1200 L0 1200 Z" fill="url(#o-ground)"></path>
+      <!-- Parlayan mantarlar -->
+      <g fill="#7fe8d8" opacity=".75"><circle cx="300" cy="1090" r="5"></circle><circle cx="318" cy="1096" r="3.5"></circle><circle cx="1280" cy="1084" r="5"></circle><circle cx="1262" cy="1092" r="3"></circle><circle cx="760" cy="1100" r="4"></circle></g>
+      <g fill="#7fe8d8" opacity=".18" filter="url(#o-mist)"><circle cx="305" cy="1092" r="40"></circle><circle cx="1275" cy="1088" r="40"></circle></g>
+      <!-- Kenarlarda yakın ağaç gövdeleri -->
+      <path d="M0 0 L120 0 L150 1200 L0 1200 Z" fill="#030a06"></path>
+      <path d="M1600 0 L1490 0 L1460 1200 L1600 1200 Z" fill="#030a06"></path>
+      <rect width="1600" height="1200" filter="url(#o-grain)" opacity=".06"></rect>
+    </svg>

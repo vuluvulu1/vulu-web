@@ -7,7 +7,9 @@ export default {
     renk: {"zemin": "#070605", "kart": "linear-gradient(180deg, #3a2f25, #211a14)", "kenar": "inset 0 0 0 1px rgba(255,226,180,.16), inset 0 0 0 7px #241c15, inset 0 0 0 8px rgba(214,170,100,.35), 0 20px 44px rgba(0,0,0,.5)", "vurgu": "#d9a050", "soluk": "#b8aa9a", "etiket": "#e6c48f", "cerceve": "linear-gradient(135deg, #6e4718, #f5d18a 18%, #a8732c 34%, #ffe8b0 50%, #9a6526 66%, #f0c46e 82%, #6e4718)"},
     css: `@keyframes t-suzul{from{transform:translateY(0)}to{transform:translateY(-46px)}}
 .toz-a{animation:t-suzul 24s ease-in-out infinite alternate}
-.toz-b{animation:t-suzul 33s ease-in-out infinite alternate-reverse}`,
+.toz-b{animation:t-suzul 33s ease-in-out infinite alternate-reverse}
+.ortam-isik{left:18%;width:64%;height:72%;bottom:auto;background:radial-gradient(ellipse 50% 85% at 50% 0%,rgba(255,214,150,.20),transparent 70%);will-change:opacity;animation:t-nefes 8s ease-in-out infinite alternate}
+@keyframes t-nefes{from{opacity:.35}to{opacity:1}}`,
     sahne: `  <!-- ══ Tapınak sahnesi ══ -->
   <section style="position: relative; isolation: isolate; overflow: hidden">
 
@@ -26,11 +28,12 @@ export default {
         <circle cx="1040" cy="800" r="1.6" opacity=".35"></circle>
       </g></svg>
 
+    <div class="tema-katman ortam-isik hareket" aria-hidden="true"></div>
     <div class="tema-ust" aria-hidden="true"></div>
 
     <!-- Ad -->
     <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: clamp(36px, 7vw, 88px) 16px 0">
-      <h1 style="margin: 0; width: min(900px, 86%); line-height: 0">
+      <h1 class="giris-ad" style="margin: 0; width: min(900px, 86%); line-height: 0">
         <img src="${B}img/wordmark-full.svg" alt="vulu Launcher" width="4401" height="1182" style="display: block; width: 100%; height: auto; filter: drop-shadow(0 0 30px rgba(255,190,100,.5)) drop-shadow(0 3px 0 rgba(80,44,12,.65))">
       </h1>
     </div>
@@ -42,7 +45,7 @@ export default {
         <div style="position: absolute; left: 50%; top: 65.5%; width: 68.6%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: repeating-conic-gradient(from 0deg, rgba(255,230,180,.6) 0deg .45deg, transparent .45deg 3deg); -webkit-mask-image: radial-gradient(circle, transparent 66%, #000 66.5%, #000 69.5%, transparent 70%); mask-image: radial-gradient(circle, transparent 66%, #000 66.5%, #000 69.5%, transparent 70%)"></div>
         <div style="position: absolute; left: 50%; top: 65.5%; width: 64%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; box-shadow: 0 0 0 1.5px rgba(255,226,170,.38), inset 0 0 90px rgba(255,200,120,.18)"></div>
       </div>
-      <div style="position: relative; padding: clamp(6px, .9vw, 11px); background: linear-gradient(135deg, #6e4718 0%, #f5d18a 18%, #a8732c 34%, #ffe8b0 50%, #9a6526 66%, #f0c46e 82%, #6e4718 100%); box-shadow: 0 0 0 1px rgba(40,22,6,.8), 0 0 70px rgba(255,190,100,.45), 0 50px 90px rgba(0,0,0,.7)">
+      <div class="giris-gorsel" style="position: relative; padding: clamp(6px, .9vw, 11px); background: linear-gradient(135deg, #6e4718 0%, #f5d18a 18%, #a8732c 34%, #ffe8b0 50%, #9a6526 66%, #f0c46e 82%, #6e4718 100%); box-shadow: 0 0 0 1px rgba(40,22,6,.8), 0 0 70px rgba(255,190,100,.45), 0 50px 90px rgba(0,0,0,.7)">
         <img src="${B}img/launcher-shot.webp" alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" style="display: block; width: 100%; height: auto; box-shadow: 0 0 0 1px rgba(40,22,6,.9)">
       </div>
 
@@ -50,7 +53,7 @@ export default {
       <div aria-hidden="true" style="position: relative; width: 112%; left: -6%; height: clamp(14px, 2.2vw, 30px); margin-top: clamp(18px, 3vw, 34px); background: linear-gradient(180deg, #a3845f 0%, #6a5139 45%, #3c2d20 100%); box-shadow: inset 0 1px 0 rgba(255,240,210,.5), 0 -18px 50px rgba(255,196,110,.28)"></div>
       <div aria-hidden="true" style="position: relative; width: 102%; left: -1%; height: clamp(8px, 1.2vw, 16px); background: linear-gradient(180deg, #54412f, #2a2018)"></div>
       <div style="position: relative; width: 90%; left: 5%; padding: clamp(18px, 3vw, 34px) 12px; box-sizing: border-box; display: flex; justify-content: center; background: linear-gradient(180deg, rgba(255,214,150,.16), rgba(7,6,5,.35)), repeating-linear-gradient(90deg, #2c2219 0 22px, #45362a 22px 32px, #211a14 32px 36px)">
-        <a href="${B}launcher" data-to="/launcher" style="display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 clamp(22px, 3vw, 38px); background: linear-gradient(180deg, #fcd07c 0%, #f2a33a 55%, #d9832a 100%); color: #1a0e02; font-weight: 600; font-size: clamp(15px, 1.4vw, 18px); box-shadow: inset 0 1px 0 rgba(255,250,230,.7), 0 0 0 1px rgba(90,50,10,.6), 0 0 44px rgba(255,186,90,.5)">
+        <a class="giris-cta" href="${B}launcher" data-to="/launcher" style="display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 clamp(22px, 3vw, 38px); background: linear-gradient(180deg, #fcd07c 0%, #f2a33a 55%, #d9832a 100%); color: #1a0e02; font-weight: 600; font-size: clamp(15px, 1.4vw, 18px); box-shadow: inset 0 1px 0 rgba(255,250,230,.7), 0 0 0 1px rgba(90,50,10,.6), 0 0 44px rgba(255,186,90,.5)">
           vulu Launcher
           <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </a>

@@ -15,10 +15,10 @@ const SIMGELER = [
     [/ölüm|öl/i, <><path d="M12 3a7 7 0 0 0-7 7v4l2 2v3h10v-3l2-2v-4a7 7 0 0 0-7-7z" /><circle cx="9" cy="11" r="1.5" /><circle cx="15" cy="11" r="1.5" /></>],
     [/gez|yol|mesafe/i, <><circle cx="12" cy="12" r="9" /><path d="M15.5 8.5l-2 5-5 2 2-5z" /></>],
 ];
-function Simge({ name }) {
+export function Simge({ name, size = 22 }) {
     const hit = SIMGELER.find(([re]) => re.test(name));
     if (!hit) return null;
-    return <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">{hit[1]}</svg>;
+    return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">{hit[1]}</svg>;
 }
 
 export default function Leaderboard() {

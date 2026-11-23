@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, asset, githubRelease } from '../api.js';
+import { Avatar } from '../components.jsx';
 import { PRODUCTS } from '../products.js';
 import { SabitHtml, temaDegiskenleri, useTema } from '../tema.jsx';
+import { Simge } from './Leaderboard.jsx';
 
 /** Ana sayfa: temanın sahnesi (odakta launcher), ardından diğer araçlar, haftanın birincileri ve çevrimiçi sayısı. */
 export default function Hub() {
@@ -61,17 +63,18 @@ function HaftaninBirincileri() {
 
     return (
         <section className="t-birinciler" aria-label="Bu haftanın birincileri">
-            {leaders.length > 0 && <>
-                <p className="t-etiket">bu haftanın birincileri</p>
-                <div className="t-birinciler-liste">
-                    {leaders.map(l => (
-                        <div key={l.key}>
-                            <b>{l.row.username}</b>
-                            <span>{l.name.toLocaleLowerCase('tr')} · {l.row.display}</span>
-                        </div>
-                    ))}
-                </div>
-            </>}
+            <p className="t-etiket">bu haftanın birincileri</p>
+            <div className="t-birinciler-liste" aria-busy={!board}>
+                {!board && [0, 1, 2, 3].map(i => <div key={i} className="t-birinci t-birinci-bos" aria-hidden="true" />)}
+                {leaders.map(l => (
+                    <Link key={l.key} to="/liderlik" className="t-birinci">
+                        <Avatar username={l.row.username} version={l.row.avatarVersion} size={56} />
+                        <b>{l.row.username}</b>
+                        <span className="t-birinci-alt"><Simge name={l.name} size={15} />{l.name.toLocaleLowerCase('tr')} · {l.row.display}</span>
+                    </Link>
+                ))}
+                {board && leaders.length === 0 && <p className="t-not">Bu hafta henüz kimse oynamadı.</p>}
+            </div>
             <p className="t-durum">
                 {stats && <><span className={'fire' + (stats.online ? '' : ' out')} />{stats.online ? `${stats.online} kişi çevrimiçi` : 'Şu an çevrimiçi kimse yok'} · </>}
                 <Link to="/liderlik">Liderlik tablosu →</Link>

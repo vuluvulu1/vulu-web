@@ -85,11 +85,27 @@ function Brand() {
     );
 }
 
+/** Sayfa biraz kaydırıldı mı? Kaydırma dinleyicisi pasif, kare başına en çok bir kez bakar; durum yalnızca değişince güncellenir. */
+function useKaydirildi(etkin) {
+    const [kaydi, setKaydi] = useState(false);
+    useEffect(() => {
+        if (!etkin) return;
+        let kare = 0;
+        const bak = () => { kare = 0; setKaydi(window.scrollY > 24); };
+        const dinle = () => { if (!kare) kare = requestAnimationFrame(bak); };
+        bak();
+        window.addEventListener('scroll', dinle, { passive: true });
+        return () => { window.removeEventListener('scroll', dinle); cancelAnimationFrame(kare); };
+    }, [etkin]);
+    return kaydi;
+}
+
 /** Giriş yapmamış ziyaretçinin üst çubuğu: ürünler ve hesap düğmeleri. */
 function GuestHeader({ temali }) {
+    const kaydi = useKaydirildi(temali);
     const { status } = useAuth();
     return (
-        <header className={'topbar' + (temali ? ' saydam' : '')}>
+        <header className={'topbar' + (temali ? ' saydam' : '') + (temali && kaydi ? ' kaydirildi' : '')}>
             <div className="wrap topbar-inner">
                 <Brand />
                 <nav className="topnav" aria-label="Ürünler">
@@ -110,10 +126,11 @@ function GuestHeader({ temali }) {
 
 /** Üyenin üst çubuğu: akış, arkadaşlar, paketler ve kullanıcı menüsü. Telefonda sekmeler alttaki çubuğa iner. */
 function MemberHeader({ temali }) {
+    const kaydi = useKaydirildi(temali);
     const friends = useFriends();
     const incoming = friends?.incoming.length || 0;
     return (
-        <header className={'topbar' + (temali ? ' saydam' : '')}>
+        <header className={'topbar' + (temali ? ' saydam' : '') + (temali && kaydi ? ' kaydirildi' : '')}>
             <div className="wrap topbar-inner">
                 <Brand />
                 <nav className="topnav topnav-member" aria-label="Ana menü">
