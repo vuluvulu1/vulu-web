@@ -37,13 +37,3 @@ export default function Wordmark({ full = false, className = '' }) {
         </svg>
     );
 }
-
-/** Sayfa başlığı olarak el yazısı "vulu Launcher" (full) ya da "vulu". */
-export function HeroTitle({ full = true, label = 'vulu Launcher', className = '' }) {
-    return (
-        <h1 className={'hero-title' + (className ? ' ' + className : '')}>
-            <span className="hero-title-box"><Wordmark full={full} /></span>
-            <span className="sr-only">{label}</span>
-        </h1>
-    );
-}

@@ -8,7 +8,8 @@ export const PRODUCTS = [
         short: 'Launcher',
         logo: 'img/logo.svg',
         summary: 'Minecraft launcher\'ı.',
-        platforms: 'Windows · Android',
+        shot: ['img/launcher-shot.webp', 'vulu Launcher\'ın Oyna ekranı'],
+        platforms: 'Beta · Windows',
     },
     {
         slug: 'server-panel',

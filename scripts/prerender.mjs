@@ -27,8 +27,8 @@ function page({ meta, body = '', jsonLd = null }) {
         meta.canonical ? `<link rel="canonical" href="${meta.canonical}" />` : '',
         meta.index ? '' : '<meta name="robots" content="noindex" />',
         jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : '',
-        // JavaScript kapalıysa ekrana girince belirecek bölümler hiç görünmez kalmasın
-        body ? '<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>' : '',
+        // JavaScript kapalıysa sahne gizli kalmasın (normalde tema yüklenene kadar gizlidir)
+        body ? '<noscript><style>.tema-sahne{visibility:visible}</style></noscript>' : '',
     ].filter(Boolean).join('\n    ');
     html = html.replace('</head>', `    ${head}\n</head>`);
     return html.replace('<div id="root"></div>', `<div id="root">${body}</div>`);

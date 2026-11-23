@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="f-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#070c15"></stop><stop offset=".55" stop-color="#13233a"></stop><stop offset=".72" stop-color="#1e3350"></stop><stop offset="1" stop-color="#060a10"></stop></linearGradient>
+        <linearGradient id="f-beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff2cc" stop-opacity=".85"></stop><stop offset=".45" stop-color="#ffd58a" stop-opacity=".32"></stop><stop offset="1" stop-color="#ffd58a" stop-opacity="0"></stop></linearGradient>
+        <linearGradient id="f-tower" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a3f47"></stop><stop offset=".55" stop-color="#cfc6b6"></stop><stop offset="1" stop-color="#6a6660"></stop></linearGradient>
+        <radialGradient id="f-moon" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#f4eedc"></stop><stop offset=".7" stop-color="#d9d2bc"></stop><stop offset="1" stop-color="#d9d2bc" stop-opacity="0"></stop></radialGradient>
+        <radialGradient id="f-lamp" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffbe8"></stop><stop offset=".4" stop-color="#ffd27a"></stop><stop offset="1" stop-color="#ffb347" stop-opacity="0"></stop></radialGradient>
+        <pattern id="f-rain" width="36" height="90" patternUnits="userSpaceOnUse" patternTransform="rotate(14)"><line x1="10" y1="0" x2="10" y2="34" stroke="#bcd3ea" stroke-opacity=".10" stroke-width="1.2"></line><line x1="28" y1="46" x2="28" y2="70" stroke="#bcd3ea" stroke-opacity=".07" stroke-width="1"></line></pattern>
+        <filter id="f-blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="14"></feGaussianBlur></filter>
+        <filter id="f-cloud" x="-30%" y="-80%" width="160%" height="260%"><feGaussianBlur stdDeviation="26"></feGaussianBlur></filter>
+        <filter id="f-grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+      </defs>
+      <rect width="1600" height="1200" fill="url(#f-sky)"></rect>
+      <!-- Ay ve fırtına bulutları -->
+      <circle cx="1290" cy="180" r="120" fill="url(#f-moon)" opacity=".35"></circle>
+      <circle cx="1290" cy="180" r="46" fill="#efe8d4"></circle>
+      <g filter="url(#f-cloud)">
+        <ellipse cx="300" cy="90" rx="420" ry="90" fill="#0a111c"></ellipse>
+        <ellipse cx="1000" cy="60" rx="520" ry="100" fill="#0b131f"></ellipse>
+        <ellipse cx="1350" cy="230" rx="300" ry="60" fill="#14223a" opacity=".9"></ellipse>
+        <ellipse cx="700" cy="230" rx="380" ry="70" fill="#101b2c"></ellipse>
+        <ellipse cx="1240" cy="140" rx="200" ry="34" fill="#2a3e5a" opacity=".7"></ellipse>
+      </g>
+      <circle cx="1290" cy="180" r="140" fill="url(#f-moon)" opacity=".28"></circle>
+      <circle cx="1290" cy="180" r="44" fill="#f2ecd8" opacity=".92"></circle>
+      <ellipse cx="1300" cy="196" rx="120" ry="16" fill="#1a2a42" opacity=".8" filter="url(#f-blur)"></ellipse>
+      <!-- Deniz -->
+      <path d="M0 790 Q100 776 200 790 T400 790 T600 790 T800 790 T1000 790 T1200 790 T1400 790 T1600 790 L1600 1200 L0 1200 Z" fill="#132238"></path><path d="M0 790 Q100 776 200 790 T400 790 T600 790 T800 790 T1000 790 T1200 790 T1400 790 T1600 790" fill="none" stroke="#a9c7e0" stroke-opacity=".18" stroke-width="2"></path>
+      <path d="M0 850 Q100 836 200 850 T400 850 T600 850 T800 850 T1000 850 T1200 850 T1400 850 T1600 850 L1600 1200 L0 1200 Z" fill="#0e1a2c"></path><path d="M0 850 Q100 836 200 850 T400 850 T600 850 T800 850 T1000 850 T1200 850 T1400 850 T1600 850" fill="none" stroke="#a9c7e0" stroke-opacity=".14" stroke-width="2"></path>
+      <path d="M0 930 Q100 916 200 930 T400 930 T600 930 T800 930 T1000 930 T1200 930 T1400 930 T1600 930 L1600 1200 L0 1200 Z" fill="#0a1422"></path><path d="M0 930 Q100 916 200 930 T400 930 T600 930 T800 930 T1000 930 T1200 930 T1400 930 T1600 930" fill="none" stroke="#a9c7e0" stroke-opacity=".12" stroke-width="2"></path>
+      <path d="M0 1040 Q100 1026 200 1040 T400 1040 T600 1040 T800 1040 T1000 1040 T1200 1040 T1400 1040 T1600 1040 L1600 1200 L0 1200 Z" fill="#070f1a"></path><path d="M0 1040 Q100 1026 200 1040 T400 1040 T600 1040 T800 1040 T1000 1040 T1200 1040 T1400 1040 T1600 1040" fill="none" stroke="#a9c7e0" stroke-opacity=".10" stroke-width="2"></path>
+      <!-- Huzmenin denizdeki yansıması -->
+      <ellipse cx="900" cy="830" rx="520" ry="26" fill="#ffd58a" opacity=".18" filter="url(#f-blur)"></ellipse>
+      <!-- Kayalık ve fener -->
+      <path d="M0 860 L60 800 L130 780 L190 740 L260 760 L330 800 L380 860 L420 1200 L0 1200 Z" fill="#0a0f16"></path>
+      <path d="M60 800 L130 780 L190 740 L260 760 L330 800" fill="none" stroke="#6b85a3" stroke-opacity=".3" stroke-width="2"></path>
+      <polygon points="186,760 238,760 228,452 196,452" fill="url(#f-tower)"></polygon>
+      <polygon points="190,690 234,690 233,662 191,662" fill="#a8422a" opacity=".8"></polygon>
+      <polygon points="193,590 231,590 230,562 194,562" fill="#a8422a" opacity=".8"></polygon>
+      <rect x="186" y="440" width="52" height="14" fill="#2a2e34"></rect>
+      <rect x="194" y="404" width="36" height="36" fill="#1a1d22"></rect>
+      <polygon points="188,404 236,404 212,378" fill="#2a2e34"></polygon>
+      <circle cx="212" cy="420" r="60" fill="url(#f-lamp)"></circle>
+      <!-- Fenerin huzmesi: yavaşça salınır -->
+      <g>
+        <polygon points="212,412 1700,170 1700,760 212,428" fill="url(#f-beam)" filter="url(#f-blur)"></polygon>
+        <polygon points="212,416 1700,330 1700,560 212,424" fill="url(#f-beam)" opacity=".7"></polygon>
+      </g>
+      
+      <rect width="1600" height="1200" filter="url(#f-grain)" opacity=".07"></rect>
+    </svg>

@@ -21,15 +21,15 @@ export const PUBLIC_PAGES = {
     },
     '/launcher': {
         title: 'vulu Launcher',
-        description: 'vulu\'nun Minecraft launcher\'ı. Windows ve Android.',
+        description: 'vulu\'nun Minecraft launcher\'ı. Windows için.',
         jsonLd: app({
             name: 'vulu Launcher',
             url: `${SITE_URL}/launcher`,
             category: 'GameApplication',
-            os: 'Windows 10, Windows 11, Android 8+',
+            os: 'Windows 10, Windows 11',
             download: `${SITE_URL}/releases/vulu-launcher-setup.exe`,
             image: `${SITE_URL}/img/logo-512.png`,
-            screenshot: `${SITE_URL}/img/home.png`,
+            screenshot: `${SITE_URL}/img/launcher-shot.webp`,
             description: 'vulu\'nun Minecraft launcher\'ı.',
         }),
     },

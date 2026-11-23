@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="d-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050607"></stop><stop offset=".6" stop-color="#0d0f12"></stop><stop offset="1" stop-color="#2a0f05"></stop></linearGradient>
+        <linearGradient id="d-rock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b0d10"></stop><stop offset=".7" stop-color="#181a1d"></stop><stop offset="1" stop-color="#3a1d10"></stop></linearGradient>
+        <linearGradient id="d-rock2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#090b0d"></stop><stop offset="1" stop-color="#1c1e21"></stop></linearGradient>
+        <radialGradient id="d-glow" cx="50%" cy="100%" r="70%"><stop offset="0" stop-color="#ff7a24" stop-opacity=".7"></stop><stop offset=".35" stop-color="#ff5a14" stop-opacity=".25"></stop><stop offset="1" stop-color="#ff5a14" stop-opacity="0"></stop></radialGradient>
+        <linearGradient id="d-lava" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"></stop><stop offset=".35" stop-color="#ff9a2e"></stop><stop offset="1" stop-color="#b3250a"></stop></linearGradient>
+        <linearGradient id="d-rim" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff8a3a" stop-opacity=".55"></stop><stop offset=".5" stop-color="#ff8a3a" stop-opacity="0"></stop></linearGradient>
+        <filter id="d-blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="22"></feGaussianBlur></filter>
+        <filter id="d-grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+      </defs>
+      <rect width="1600" height="1200" fill="url(#d-bg)"></rect>
+      <!-- Uzak duvar katmanları -->
+      <path d="M0 520 L120 470 L260 500 L380 430 L520 470 L640 420 L800 450 L960 410 L1080 460 L1220 420 L1360 480 L1480 440 L1600 490 L1600 1200 L0 1200 Z" fill="#101215"></path>
+      <path d="M0 640 L140 600 L300 640 L420 590 L560 630 L700 600 L800 620 L900 600 L1040 640 L1180 590 L1320 630 L1460 600 L1600 650 L1600 1200 L0 1200 Z" fill="#14161a"></path>
+      <!-- Tavan ve sarkıtlar -->
+      <path d="M0 0 L1600 0 L1600 150 L1540 170 L1515 290 L1490 175 L1430 190 L1400 330 L1372 200 L1300 180 L1270 260 L1240 170 L1150 150 L1120 230 L1095 140 L1000 120 L975 190 L950 110 L860 90 L840 150 L820 85 L760 90 L740 160 L720 95 L640 115 L610 200 L585 125 L500 140 L470 240 L445 150 L360 170 L330 300 L300 180 L230 200 L200 320 L170 190 L90 170 L60 260 L35 160 L0 150 Z" fill="url(#d-rock2)"></path>
+      <!-- Yan duvarlar, alttan lav ışığıyla -->
+      <path d="M0 150 L90 260 L160 380 L120 520 L220 640 L190 780 L300 900 L260 1040 L360 1200 L0 1200 Z" fill="url(#d-rock)"></path>
+      <path d="M1600 150 L1510 260 L1440 380 L1480 520 L1380 640 L1410 780 L1300 900 L1340 1040 L1240 1200 L1600 1200 Z" fill="url(#d-rock)"></path>
+      <path d="M0 150 L90 260 L160 380 L120 520 L220 640 L190 780 L300 900 L260 1040 L360 1200" fill="none" stroke="url(#d-rim)" stroke-width="5"></path>
+      <path d="M1600 150 L1510 260 L1440 380 L1480 520 L1380 640 L1410 780 L1300 900 L1340 1040 L1240 1200" fill="none" stroke="url(#d-rim)" stroke-width="5"></path>
+      <!-- Maden damarları -->
+      <rect x="70" y="330" width="9" height="9" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="110" y="350" width="6" height="6" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="88" y="372" width="7" height="7" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="210" y="700" width="8" height="8" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="232" y="688" width="6" height="6" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="150" y="880" width="9" height="9" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="1460" y="400" width="8" height="8" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="1490" y="420" width="6" height="6" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="1430" y="710" width="9" height="9" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="1395" y="732" width="6" height="6" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="1500" y="900" width="7" height="7" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="300" y="240" width="6" height="6" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect><rect x="1280" y="250" width="7" height="7" fill="#8fe3ef" style="filter: drop-shadow(0 0 6px rgba(143,227,239,.9))"></rect>
+      <rect x="60" y="560" width="7" height="7" fill="#ffcf5a" style="filter: drop-shadow(0 0 6px rgba(255,190,80,.9))"></rect><rect x="84" y="548" width="5" height="5" fill="#ffcf5a" style="filter: drop-shadow(0 0 6px rgba(255,190,80,.9))"></rect><rect x="260" y="960" width="8" height="8" fill="#ffcf5a" style="filter: drop-shadow(0 0 6px rgba(255,190,80,.9))"></rect><rect x="1520" y="600" width="7" height="7" fill="#ffcf5a" style="filter: drop-shadow(0 0 6px rgba(255,190,80,.9))"></rect><rect x="1350" y="980" width="8" height="8" fill="#ffcf5a" style="filter: drop-shadow(0 0 6px rgba(255,190,80,.9))"></rect><rect x="1372" y="1000" width="5" height="5" fill="#ffcf5a" style="filter: drop-shadow(0 0 6px rgba(255,190,80,.9))"></rect>
+      <!-- Lav nehri ve parıltısı -->
+      <rect width="1600" height="1200" fill="url(#d-glow)"></rect>
+      <!-- Yükselen korlar -->
+      <rect width="1600" height="1200" filter="url(#d-grain)" opacity=".08"></rect>
+    </svg>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
+import { TemaKutu } from '../tema.jsx';
 
 // Kurallar vulu-api'deki /auth/register ile aynı; asıl denetim sunucuda yapılır
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,7 +59,7 @@ export default function Register() {
     if (done) return <Sent {...done} />;
 
     return (
-        <section className="wrap auth">
+        <TemaKutu>
             <form className="auth-card" onSubmit={submit} noValidate>
                 <h1>Katılma isteği</h1>
                 <p className="muted">Formu doldur ve e-postana gelen bağlantıyı aç. Hesabını bir admin açar.</p>
@@ -83,7 +84,7 @@ export default function Register() {
                 <button className="btn btn-primary" disabled={busy}>İsteği gönder</button>
                 <p className="auth-alt">Zaten hesabın var mı? <Link to="/giris">Giriş yap</Link></p>
             </form>
-        </section>
+        </TemaKutu>
     );
 }
 
@@ -130,17 +131,17 @@ function Sent({ username, email: firstEmail, password, verifyEmail }) {
 
     if (!verifyEmail) {
         return (
-            <section className="wrap auth">
+            <TemaKutu>
                 <div className="auth-card">
                     <h1>İsteğin gönderildi</h1>
                     <p><b>{username}</b> için katılma isteğin alındı. Onaylandığında launcher'a bu adla giriş yapabilirsin.</p>
                     <Link className="btn btn-primary" to="/giris">Giriş sayfasına git</Link>
                 </div>
-            </section>
+            </TemaKutu>
         );
     }
     return (
-        <section className="wrap auth">
+        <TemaKutu>
             <div className="auth-card">
                 <h1>E-postanı kontrol et</h1>
                 <p>
@@ -167,6 +168,6 @@ function Sent({ username, email: firstEmail, password, verifyEmail }) {
                     </>
                 )}
             </div>
-        </section>
+        </TemaKutu>
     );
 }

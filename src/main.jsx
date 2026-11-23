@@ -3,14 +3,18 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './auth.jsx';
 import App from './App.jsx';
+import { temaSec, temaYukle } from './tema.jsx';
 import './styles.css';
 
-createRoot(document.getElementById('root')).render(
-    <StrictMode>
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
-            <AuthProvider>
-                <App />
-            </AuthProvider>
-        </BrowserRouter>
-    </StrictMode>,
-);
+// Önce bu yüklenişin teması seçilip yüklenir, sonra sayfa çizilir; böylece sahne bir kez, doğru temayla görünür
+temaYukle(temaSec()).finally(() => {
+    createRoot(document.getElementById('root')).render(
+        <StrictMode>
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
+            </BrowserRouter>
+        </StrictMode>,
+    );
+});
