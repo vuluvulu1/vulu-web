@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
-import { RisingEmbers } from '../effects.jsx';
 import { Status } from './Register.jsx';
+import { TemaKutu } from '../tema.jsx';
 
 export default function Login() {
     const { status, login } = useAuth();
@@ -31,11 +31,10 @@ export default function Login() {
     }
 
     return (
-        <section className="wrap auth">
+        <TemaKutu>
             <form className="auth-card" onSubmit={submit} noValidate>
-                <RisingEmbers rate={10} />
                 <h1>Giriş yap</h1>
-                <p className="muted">Launcher'da kullandığın kullanıcı adı ve şifreyle giriş yap.</p>
+                <p className="muted">Launcher'daki kullanıcı adın ve şifrenle.</p>
                 <label>
                     Kullanıcı adı
                     <input value={username} onChange={e => setUsername(e.target.value)} autoComplete="username" maxLength={32} autoFocus />
@@ -48,6 +47,6 @@ export default function Login() {
                 <button className="btn btn-primary" disabled={busy}>Giriş yap</button>
                 <p className="auth-alt">Hesabın yok mu? <Link to="/kayit">Katıl</Link></p>
             </form>
-        </section>
+        </TemaKutu>
     );
 }

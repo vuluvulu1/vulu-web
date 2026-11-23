@@ -5,8 +5,6 @@ import { useAuth } from './auth.jsx';
 import { PRODUCTS, productBySlug } from './products.js';
 import { Avatar } from './components.jsx';
 import Icon from './icons.jsx';
-import PixelField from './PixelField.jsx';
-import { usePointerLight } from './effects.jsx';
 import Wordmark from './Wordmark.jsx';
 import { useFriends } from './social.js';
 import Hub from './pages/Hub.jsx';
@@ -25,15 +23,15 @@ import UserProfile from './pages/UserProfile.jsx';
 import Leaderboard from './pages/Leaderboard.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Verify from './pages/Verify.jsx';
-import VulusalLauncher from './pages/VulusalLauncher.jsx';
-import VulusalUfuk from './pages/VulusalUfuk.jsx';
 import { pageMeta } from './seo.js';
-import { useKuantumKapi } from './kuantumKapi.js';
+import { useTemaHazir } from './tema.jsx';
 
 export default function App() {
     const { pathname } = useLocation();
     const { status } = useAuth();
-    usePointerLight();
+    useTemaHazir();
+    // Hesap sayfaları ve profiller dışındaki her sayfa temalıdır: üst çubuk sahnenin üstünde şeffaf durur
+    const temali = !pathname.startsWith('/hesap') && !pathname.startsWith('/u/');
 
     // API'yi önceden ısıt: kullanıcı formu doldururken bağlantı hazır olsun
     useEffect(() => { api.ping().catch(() => {}); }, []);
@@ -42,18 +40,14 @@ export default function App() {
 
     return (
         <>
-            <PixelField />
-            <div className="torch" aria-hidden="true" />
             <a className="skip" href="#main">İçeriğe geç</a>
-            {status === 'in' ? <MemberHeader /> : <GuestHeader />}
+            {status === 'in' ? <MemberHeader temali={temali} /> : <GuestHeader temali={temali} />}
             <main id="main">
                 {/* Her sayfa değişiminde içerik aşağıdan yumuşakça belirir */}
                 <div className="page-enter" key={pageKey(pathname)}>
                 <Routes>
                     <Route path="/" element={<Hub />} />
                     <Route path="/launcher" element={<Launcher />} />
-                    <Route path="/vulusalvululauncher" element={<VulusalLauncher />} />
-                    <Route path="/vulusalufuk" element={<VulusalUfuk />} />
                     <Route path="/server-panel" element={<Product product={productBySlug('server-panel')} />} />
                     <Route path="/ftbquests-editor" element={<Product product={productBySlug('ftbquests-editor')} />} />
                     <Route path="/giris" element={<Login />} />
@@ -81,12 +75,10 @@ export default function App() {
     );
 }
 
-/** Logo. Launcher sayfasında basılı tutulursa Vulu Kuantum açılır (gizli kapı, src/kuantumKapi.js). */
+/** Logo. */
 function Brand() {
-    const { pathname } = useLocation();
-    const kuantum = useKuantumKapi(pathname === '/launcher');
     return (
-        <Link to="/" className="brand" aria-label="vulu ana sayfa" {...kuantum}>
+        <Link to="/" className="brand" aria-label="vulu ana sayfa">
             <img src={asset('img/logo.svg')} alt="" width="26" height="26" />
             <Wordmark />
         </Link>
@@ -94,10 +86,10 @@ function Brand() {
 }
 
 /** Giriş yapmamış ziyaretçinin üst çubuğu: ürünler ve hesap düğmeleri. */
-function GuestHeader() {
+function GuestHeader({ temali }) {
     const { status } = useAuth();
     return (
-        <header className="topbar">
+        <header className={'topbar' + (temali ? ' saydam' : '')}>
             <div className="wrap topbar-inner">
                 <Brand />
                 <nav className="topnav" aria-label="Ürünler">
@@ -106,8 +98,9 @@ function GuestHeader() {
                 </nav>
                 <div className="topbar-end">
                     {status === 'loading' ? <span className="topbar-wait" aria-hidden="true" /> : <>
-                        <NavLink to="/giris" className="btn btn-quiet btn-sm">Giriş yap</NavLink>
-                        <NavLink to="/kayit" className="btn btn-primary btn-sm">Katıl</NavLink>
+                        <NavLink to="/giris" className="btn btn-quiet btn-sm topbar-giris">Giriş yap</NavLink>
+                        <NavLink to="/kayit" className="btn btn-sm btn-katil">Katıl</NavLink>
+                        <MobilMenu />
                     </>}
                 </div>
             </div>
@@ -116,11 +109,11 @@ function GuestHeader() {
 }
 
 /** Üyenin üst çubuğu: akış, arkadaşlar, paketler ve kullanıcı menüsü. Telefonda sekmeler alttaki çubuğa iner. */
-function MemberHeader() {
+function MemberHeader({ temali }) {
     const friends = useFriends();
     const incoming = friends?.incoming.length || 0;
     return (
-        <header className="topbar">
+        <header className={'topbar' + (temali ? ' saydam' : '')}>
             <div className="wrap topbar-inner">
                 <Brand />
                 <nav className="topnav topnav-member" aria-label="Ana menü">
@@ -203,18 +196,41 @@ function Footer() {
         <footer className="footer">
             <div className="wrap footer-inner">
                 <div className="footer-brand">
-                    <img src={asset('img/logo.svg')} alt="" width="20" height="20" />
                     <Wordmark />
                     <span>© {new Date().getFullYear()}</span>
                 </div>
                 <nav className="footer-links" aria-label="Alt menü">
-                    {PRODUCTS.map(p => <Link key={p.slug} to={'/' + p.slug}>{p.name}</Link>)}
                     <a href="https://github.com/vuluvulu1" target="_blank" rel="noreferrer">GitHub</a>
                     <DiscordContact />
                 </nav>
                 <p className="footer-note">Mojang ya da Microsoft ile bağlantılı değildir.</p>
             </div>
         </footer>
+    );
+}
+
+/** Telefonda ziyaretçinin menüsü: üst çubuktaki bağlantılar dar ekrana sığmadığında. Sayfa değişince kapanır. */
+function MobilMenu() {
+    const ref = useRef(null);
+    const { pathname } = useLocation();
+    useEffect(() => { ref.current?.removeAttribute('open'); }, [pathname]);
+    useEffect(() => {
+        const close = e => { if (ref.current?.open && !ref.current.contains(e.target)) ref.current.removeAttribute('open'); };
+        document.addEventListener('click', close);
+        return () => document.removeEventListener('click', close);
+    }, []);
+    return (
+        <details className="menu mobil-menu" ref={ref}>
+            <summary aria-label="Menüyü aç">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+            </summary>
+            <nav className="menu-panel" aria-label="Menü">
+                {PRODUCTS.map(p => <Link key={p.slug} to={'/' + p.slug}>{p.name}</Link>)}
+                <Link to="/liderlik">Liderlik</Link>
+                <hr />
+                <Link to="/giris">Giriş yap</Link>
+            </nav>
+        </details>
     );
 }
 

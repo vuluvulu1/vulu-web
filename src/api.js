@@ -8,11 +8,10 @@ export const API_URL = (import.meta.env.VITE_API_URL || import.meta.env.BASE_URL
 export const asset = path => import.meta.env.BASE_URL + path;
 
 // İndirme düğmeleri API'nin sayacından geçer: sayaç artar, sonra /releases/ altındaki dosyaya yönlendirilir.
-// (Launcher ve Android uygulaması kendi güncellemelerini doğrudan /releases/'ten alır; onlar sayılmaz.)
+// (Launcher kendi güncellemelerini doğrudan /releases/'ten alır; onlar sayılmaz.)
 export const DOWNLOAD_URL = `${API_URL}/download/windows`;
 // Yedek: her sürüm GitHub'a da yüklenir; vulu sunucusundan indirme takılırsa oradan indirilir
 export const GITHUB_DOWNLOAD_URL = 'https://github.com/vuluvulu1/vulu-launcher/releases/latest/download/vulu-launcher-setup.exe';
-export const ANDROID_URL = `${API_URL}/download/android`;
 
 
 const TOKEN_KEY = 'vulu.token';
@@ -185,18 +184,6 @@ export function githubRelease(repo, assetPattern) {
             download: file ? { url: file.browser_download_url, name: file.name, size: file.size } : null,
         };
     });
-}
-
-/** Android APK'sının sürümü ve notları; henüz yayınlanmadıysa null. */
-export async function androidRelease() {
-    try {
-        const res = await fetch(asset('releases/android/android.json'));
-        if (!res.ok) return null;
-        const data = await res.json();
-        return { tag: `v${data.version}`, publishedAt: data.publishedAt, notes: data.notes || '', sizeMb: data.size ? Math.round(data.size / 1048576) : null };
-    } catch {
-        return null;
-    }
 }
 
 /** Sunucudaki son sürümün etiketi (ör. "v0.13.0"); alınamazsa null. */

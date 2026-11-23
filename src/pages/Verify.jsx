@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
+import { TemaKutu } from '../tema.jsx';
 
 /** E-postadaki doğrulama bağlantısının açtığı sayfa: /dogrula?token=… */
 export default function Verify() {
@@ -19,7 +20,7 @@ export default function Verify() {
     }, [token]);
 
     return (
-        <section className="wrap auth">
+        <TemaKutu>
             <div className="auth-card">
                 {state.status === 'working' && <><h1>Doğrulanıyor…</h1><p className="muted">Bir saniye.</p></>}
                 {state.status === 'ok' && state.kind === 'email-change' && (
@@ -51,6 +52,6 @@ export default function Verify() {
                     </>
                 )}
             </div>
-        </section>
+        </TemaKutu>
     );
 }

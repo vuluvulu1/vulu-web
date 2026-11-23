@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../auth.jsx';
 import { Avatar, Empty, timeAgo, useUsers } from '../../components.jsx';
 import Icon from '../../icons.jsx';
-import { sparkBurst } from '../../effects.jsx';
 import { describePresence, friendAction, relationTo, useFriends, usePresence } from '../../social.js';
 
 /** Arkadaşlar: gelen istekler, arkadaşlar (oyunda, launcher açık, çevrimdışı) ve yanda üye arayıp ekleme. */
@@ -17,7 +16,6 @@ export default function Friends() {
     async function act(kind, username, e) {
         setBusy(username);
         setError(null);
-        if (kind === 'accept') sparkBurst(e?.currentTarget, 20);
         try { await friendAction(kind, username); } catch (err) { setError(err.message); } finally { setBusy(null); }
     }
 
@@ -117,7 +115,6 @@ function FindMembers({ friends, users, presenceOf }) {
         : all.filter(u => relationTo(friends, u.username) === 'none').slice(0, 8);
 
     async function add(username, e) {
-        sparkBurst(e?.currentTarget);
         setBusy(username);
         setMsg(null);
         try {

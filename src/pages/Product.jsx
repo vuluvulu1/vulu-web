@@ -2,70 +2,63 @@ import { useEffect, useState } from 'react';
 import { asset, githubRelease } from '../api.js';
 import { ReleaseNotes, formatDate } from '../components.jsx';
 import Icon from '../icons.jsx';
-import { Reveal } from '../motion.jsx';
+import { PRODUCTS } from '../products.js';
+import { TemaGorsel, TemaKahraman } from '../tema.jsx';
+import { AracKarti } from './Hub.jsx';
 
 const formatMb = bytes => `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MB`;
 
-/** vulu Server Panel ve FTB Quests Editor sayfaları: tanım, indirme, özellikler ve kurulum. */
+/** vulu Server Panel ve FTB Quests Editor sayfaları: indirme, kurulum ve son sürüm. Arka plan temadan gelir. */
 export default function Product({ product: p }) {
     const [release, setRelease] = useState(undefined);   // undefined: yükleniyor, null: alınamadı
     useEffect(() => { githubRelease(p.repo, p.asset).then(setRelease); }, [p]);
 
     const repoUrl = `https://github.com/vuluvulu1/${p.repo}`;
     const download = release?.download;
+    const others = PRODUCTS.filter(x => x.slug !== p.slug);
 
     return (
         <>
-            <section className="hero product-hero">
-                <div className="wrap hero-grid">
-                <div className="hero-text">
-                    <img className="product-logo" src={asset(p.logo)} alt="" width="88" height="88" />
-                    <h1>{p.name}</h1>
-                    <p className="lead">{p.lead}</p>
-                    <div className="hero-actions">
-                        <a className="btn btn-primary btn-lg" href={download?.url || release?.pageUrl || repoUrl + '/releases/latest'}>
-                            <Icon name="download" size={18} /> İndir
-                        </a>
-                        <a className="btn btn-lg btn-quiet" href={repoUrl} target="_blank" rel="noreferrer">GitHub</a>
+            <TemaKahraman
+                sol={<>
+                    <img className="t-simge" src={asset(p.logo)} alt="" width="60" height="60" />
+                    <p className="t-etiket">{p.slug === 'ftbquests-editor' ? 'FTB' : 'vulu'}</p>
+                    <h1 className="t-baslik">{p.short}</h1>
+                    <p className="t-giris">{p.lead}</p>
+                    <div className="t-dugmeler">
+                        <a className="btn-altin" href={download?.url || release?.pageUrl || repoUrl + '/releases/latest'}><Icon name="download" size={20} /> İndir</a>
+                        <a className="btn-cizgi" href={repoUrl} target="_blank" rel="noreferrer">GitHub</a>
                     </div>
-                    <p className="hero-meta">
+                    <p className="t-meta">
                         {release
-                            ? <><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}{download && <> · {formatMb(download.size)}</>} · {p.platforms}</>
+                            ? <><span>{release.tag}</span> · {formatDate(release.publishedAt)}{download && <> · {formatMb(download.size)}</>} · {p.platforms}</>
                             : p.platforms}
                     </p>
-                </div>
-                {p.shot && <div className="hero-shot" data-tilt="5"><img src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" /></div>}
-                </div>
-            </section>
-
-            <Reveal as="section" className="wrap section">
-                <h2 className="section-title">Özellikler</h2>
-                <dl className="extras">
-                    {p.features.map(([title, text]) => (
-                        <div key={title}>
-                            <dt>{title}</dt>
-                            <dd>{text}</dd>
+                </>}
+                sag={<TemaGorsel src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" />}
+            />
+            <div className="t-govde">
+                <section className="t-blok">
+                    <h2>Kurulum</h2>
+                    <div>
+                        <ol className="t-adimlar">{p.steps.map(step => <li key={step}>{step}</li>)}</ol>
+                        <p className="t-not">{p.note}</p>
+                    </div>
+                </section>
+                {release?.notes && (
+                    <section className="t-blok">
+                        <h2>Son sürüm</h2>
+                        <div>
+                            <p className="t-meta"><span>{release.tag}</span> · {formatDate(release.publishedAt)}</p>
+                            <ReleaseNotes text={release.notes} />
+                            <a href={release.pageUrl} target="_blank" rel="noreferrer">Tüm sürümler →</a>
                         </div>
-                    ))}
-                </dl>
-            </Reveal>
-
-            <Reveal as="section" className="wrap section start">
-                <h2 className="section-title">Kurulum</h2>
-                <ol className="steps">
-                    {p.steps.map(step => <li key={step}><span>{step}</span></li>)}
-                </ol>
-                <p className="note">{p.note}</p>
-            </Reveal>
-
-            {release?.notes && (
-                <Reveal as="section" className="wrap section">
-                    <h2 className="section-title">Son sürümde neler var</h2>
-                    <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
-                    <ReleaseNotes text={release.notes} />
-                    <a className="btn btn-sm" href={release.pageUrl} target="_blank" rel="noreferrer">Tüm sürümler</a>
-                </Reveal>
-            )}
+                    </section>
+                )}
+                <section className="t-araclar t-araclar-govde" aria-label="Diğer uygulamalar">
+                    {others.map(x => <AracKarti key={x.slug} product={x} />)}
+                </section>
+            </div>
         </>
     );
 }

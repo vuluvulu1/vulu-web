@@ -1,91 +1,55 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api, asset, githubRelease, latestRelease } from '../api.js';
-import { useAuth } from '../auth.jsx';
-import { formatDate, timeAgo } from '../components.jsx';
-import Icon from '../icons.jsx';
-import { HeroTitle } from '../TitleEmbers.jsx';
-import { CountUp, Reveal } from '../motion.jsx';
-import { RisingEmbers } from '../effects.jsx';
+import { api, asset, githubRelease } from '../api.js';
 import { PRODUCTS } from '../products.js';
+import { SabitHtml, temaDegiskenleri, useTema } from '../tema.jsx';
 
-/** Ana sayfa: "Ne için buradasın?" — vulu'nun üç ürünü arasından seçim, canlı sayılar ve son sürümler. */
+/** Ana sayfa: temanın sahnesi (odakta launcher), ardından diğer araçlar, haftanın birincileri ve çevrimiçi sayısı. */
 export default function Hub() {
-    const { status, user } = useAuth();
-    const [releases, setReleases] = useState({});
-
-    useEffect(() => {
-        latestRelease().then(r => r && setReleases(v => ({ ...v, launcher: r })));
-        for (const p of PRODUCTS.filter(p => p.repo)) {
-            githubRelease(p.repo, p.asset).then(r => r && setReleases(v => ({ ...v, [p.slug]: r })));
-        }
-    }, []);
-
+    const tema = useTema();
     return (
-        <>
-            <section className="hero hub">
-                <div className="wrap hub-head">
-                    <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" mode="forge" />
-                    <h2 className="hub-question">Ne için buradasın?</h2>
-                    <p className="hub-lead">Minecraft oynamak, sunucu kurmak ve görev kitabı hazırlamak için ücretsiz araçlar.</p>
-                </div>
-                <div className="wrap products">
-                    {PRODUCTS.map((p, i) => (
-                        <Link key={p.slug} to={'/' + p.slug} className="product-card" data-tilt="5" style={{ '--n': i }}>
-                            <span className="product-logo-wrap"><img src={asset(p.logo)} alt="" width="64" height="64" /></span>
-                            <h3>{p.name}</h3>
-                            <p>{p.summary}</p>
-                            <span className="product-meta">
-                                {p.platforms}{releases[p.slug] && <> · <span className="mono">{releases[p.slug].tag}</span></>}
-                            </span>
-                            <span className="product-go">{p.slug === 'launcher' ? 'İndir ve oyna' : 'Göz at'} <Icon name="right" size={16} /></span>
-                        </Link>
-                    ))}
-                </div>
-                {status === 'in' && (
-                    <p className="wrap hub-account">
-                        Tekrar hoş geldin, <b>{user.username}</b>. Arkadaşlarının son paylaşımları <Link to="/hesap">akışında</Link>.
-                    </p>
-                )}
-            </section>
+        <div className="tema-sayfa" style={temaDegiskenleri(tema)}>
+            <SabitHtml html={tema.sahne} className="tema-sahne" />
+            <Araclar />
+            <HaftaninBirincileri />
+        </div>
+    );
+}
 
-            <LiveNumbers />
+const TOOLS = PRODUCTS.filter(p => p.repo);
 
-            <div className="wrap home-grid">
-                <Reveal as="section" className="home-block span-7">
-                    <h2>Son güncellemeler</h2>
-                    <RecentReleases releases={releases} />
-                </Reveal>
+function Araclar() {
+    const [versions, setVersions] = useState({});
+    useEffect(() => {
+        for (const p of TOOLS) githubRelease(p.repo, p.asset).then(r => r && setVersions(v => ({ ...v, [p.slug]: r.tag })));
+    }, []);
+    return (
+        <section className="t-araclar" aria-label="Diğer araçlar">
+            {TOOLS.map(p => <AracKarti key={p.slug} product={p} version={versions[p.slug]} />)}
+        </section>
+    );
+}
 
-                <Reveal as="section" className="home-block span-5 join" delay={80}>
-                    <RisingEmbers rate={14} />
-                    {status === 'in' ? <>
-                        <h2>Akışın</h2>
-                        <p>Arkadaşlarının ekran görüntüleri, kimin ne oynadığı ve paket güncellemeleri.</p>
-                        <Link className="btn btn-primary" to="/hesap">Akışa git</Link>
-                    </> : <>
-                        <h2>Ücretsiz hesap</h2>
-                        <p>
-                            Hesapla arkadaş ekleyebilir, mesajlaşabilir, ekran görüntüsü paylaşabilir ve hazır paketleri
-                            kurabilirsin. Hesaplar şimdilik admin onayıyla açılıyor.
-                        </p>
-                        <div className="row">
-                            <Link className="btn btn-primary" to="/kayit">Katılma isteği gönder</Link>
-                            <Link className="btn btn-quiet" to="/giris">Giriş yap</Link>
-                        </div>
-                    </>}
-                </Reveal>
-            </div>
-        </>
+export function AracKarti({ product: p, version }) {
+    return (
+        <Link to={'/' + p.slug} className="t-kart t-arac">
+            <img src={asset(p.shot[0])} alt="" width="160" height="100" loading="lazy" style={{ objectPosition: p.slug === 'server-panel' ? 'left top' : 'center top' }} />
+            <span className="t-arac-ad">
+                <b>{p.short || p.name}</b>
+                <span className="mono">{version || p.platforms}</span>
+            </span>
+            <span className="t-ok" aria-hidden="true">→</span>
+        </Link>
     );
 }
 
 const NUMBERS_REFRESH = 30 * 1000;
 
-/** Herkese açık canlı sayılar: şu an kaç kişi çevrimiçi, kaç üye, paket ve ekran görüntüsü. */
-function LiveNumbers() {
+function HaftaninBirincileri() {
+    const [board, setBoard] = useState(null);
     const [stats, setStats] = useState(null);
     useEffect(() => {
+        api.leaderboard('week').then(setBoard).catch(() => {});
         let cancelled = false;
         const load = () => api.stats().then(s => { if (!cancelled) setStats(s); }).catch(() => {});
         load();
@@ -93,51 +57,25 @@ function LiveNumbers() {
         return () => { cancelled = true; clearInterval(id); };
     }, []);
 
+    const leaders = (board?.categories || []).map(c => ({ key: c.key, name: c.name, row: c.rows[0] })).filter(x => x.row);
+
     return (
-        <section className="wrap numbers" aria-label="Şu an vulu'da">
-            {stats ? <>
-                <p className="numbers-live">
-                    <span className={'fire' + (stats.online ? '' : ' out')} />
-                    {stats.online ? <>Şu an <b>{stats.online}</b> kişi çevrimiçi{stats.playing > 0 && <>, <b>{stats.playing}</b> kişi oyunda</>}.</> : 'Şu an çevrimiçi kimse yok.'}
-                </p>
-                <dl>
-                    <div><dt>Üye</dt><dd><CountUp value={stats.members} /></dd></div>
-                    <div><dt>Paket</dt><dd><CountUp value={stats.packs} /></dd></div>
-                    <div><dt>Ekran görüntüsü</dt><dd><CountUp value={stats.shots} /></dd></div>
-                    {stats.downloads?.total > 0 && <div><dt>İndirme</dt><dd><CountUp value={stats.downloads.total} /></dd></div>}
-                </dl>
-            </> : <p className="numbers-live placeholder" aria-hidden="true" />}
+        <section className="t-birinciler" aria-label="Bu haftanın birincileri">
+            {leaders.length > 0 && <>
+                <p className="t-etiket">bu haftanın birincileri</p>
+                <div className="t-birinciler-liste">
+                    {leaders.map(l => (
+                        <div key={l.key}>
+                            <b>{l.row.username}</b>
+                            <span>{l.name.toLocaleLowerCase('tr')} · {l.row.display}</span>
+                        </div>
+                    ))}
+                </div>
+            </>}
+            <p className="t-durum">
+                {stats && <><span className={'fire' + (stats.online ? '' : ' out')} />{stats.online ? `${stats.online} kişi çevrimiçi` : 'Şu an çevrimiçi kimse yok'} · </>}
+                <Link to="/liderlik">Liderlik tablosu →</Link>
+            </p>
         </section>
     );
-}
-
-/** Üç ürünün son sürümleri, en yeniden eskiye; notların ilk maddesiyle. */
-function RecentReleases({ releases }) {
-    const items = PRODUCTS
-        .map(p => ({ product: p, release: releases[p.slug] }))
-        .filter(x => x.release?.publishedAt)
-        .sort((a, b) => new Date(b.release.publishedAt) - new Date(a.release.publishedAt));
-    if (!items.length) return <p className="muted small">Sürümler yükleniyor…</p>;
-
-    return (
-        <ol className="rows releases">
-            {items.map(({ product: p, release: r }) => (
-                <li key={p.slug}>
-                    <div className="row-tight">
-                        <Link to={'/' + p.slug} className="grow"><b>{p.name}</b> <span className="mono">{r.tag}</span></Link>
-                        <small className="muted" title={formatDate(r.publishedAt)}>{timeAgo(r.publishedAt)}</small>
-                    </div>
-                    {firstNote(r.notes) && <p className="muted">{firstNote(r.notes)}</p>}
-                </li>
-            ))}
-        </ol>
-    );
-}
-
-/** Sürüm notlarının ilk maddesi, biçim işaretleri temizlenmiş ve kısaltılmış hâlde. */
-function firstNote(notes) {
-    const line = (notes || '').split('\n').map(l => l.trim()).find(l => /^[-*•]\s+/.test(l));
-    if (!line) return '';
-    const text = line.replace(/^[-*•]\s+/, '').replace(/\*\*|`/g, '').replace(/\*([^*]+)\*/g, '$1');
-    return text.length > 160 ? text.slice(0, 157).trimEnd() + '…' : text;
 }

@@ -1,6 +1,6 @@
 // Sayfa başlıkları, açıklamalar ve arama motorları için yapılandırılmış veri (JSON-LD).
 // Hem derleme sırasındaki ön çizim (scripts/prerender.mjs) hem de site içi gezinme (App.jsx) buradan okur.
-// Başlıklar insanların gerçekten aradığı ifadeleri içerir ama doğal bir cümle gibi kalır.
+// vulu kapalı bir topluluk: başlıklar ve açıklamalar kısa, tanıtım dili yok.
 
 export const SITE_URL = 'https://vuluvulu.com.tr';
 const OG_IMAGE = `${SITE_URL}/img/og.png`;
@@ -9,8 +9,8 @@ const LICENSE = 'https://www.gnu.org/licenses/agpl-3.0.html';
 /** Arama motorlarına açık sayfalar; sitemap.xml ve ön çizim bu listeden üretilir. */
 export const PUBLIC_PAGES = {
     '/': {
-        title: 'vulu – Minecraft launcher\'ı, sunucu paneli ve görev editörü',
-        description: 'vulu Launcher, vulu Server Panel ve FTB Quests Editor: Minecraft\'ı modlu oynamak, kendi sunucunu kurmak ve görev kitabını düzenlemek için ücretsiz ve açık kaynak araçlar.',
+        title: 'vulu',
+        description: 'vulu Launcher, vulu Server Panel ve FTB Quests Editor.',
         jsonLd: {
             '@context': 'https://schema.org',
             '@type': 'WebSite',
@@ -20,30 +20,22 @@ export const PUBLIC_PAGES = {
         },
     },
     '/launcher': {
-        title: 'vulu Launcher – Ücretsiz Türkçe Minecraft launcher\'ı',
-        description: 'Fabric, Quilt, Forge ve NeoForge instance\'ları, CurseForge ve Modrinth\'ten mod kurulumu, hazır mod paketleri, sunucular ve arkadaşlarınla sohbet tek uygulamada. Windows ve Android için ücretsiz Minecraft launcher\'ı.',
+        title: 'vulu Launcher',
+        description: 'vulu\'nun Minecraft launcher\'ı. Windows için.',
         jsonLd: app({
             name: 'vulu Launcher',
             url: `${SITE_URL}/launcher`,
             category: 'GameApplication',
-            os: 'Windows 10, Windows 11, Android 8+',
+            os: 'Windows 10, Windows 11',
             download: `${SITE_URL}/releases/vulu-launcher-setup.exe`,
             image: `${SITE_URL}/img/logo-512.png`,
-            screenshot: `${SITE_URL}/img/home.png`,
-            description: 'Minecraft\'ı modlu ya da modsuz oynamak için bir launcher: instance\'lar, CurseForge ve Modrinth modları, mod paketleri, sunucular ve sohbet.',
+            screenshot: `${SITE_URL}/img/launcher-shot.webp`,
+            description: 'vulu\'nun Minecraft launcher\'ı.',
         }),
     },
-    '/vulusalvululauncher': {
-        title: 'Vulusal vulu Launcher – aşırı vulu bir Minecraft launcher\'ı',
-        description: 'vulu Launcher\'ın vulusal sürümü: aynı ücretsiz Minecraft launcher\'ı, neon ışıklar, konfeti ve trap beat\'iyle. Instance\'lar, mod paketleri, sunucular ve arkadaşlar tek uygulamada.',
-    },
-    '/vulusalufuk': {
-        title: 'vulu Launcher – olay ufkunun öbür yanı',
-        description: 'vulu Launcher, neon bir synthwave evreninde: instance\'lar, CurseForge ve Modrinth modları, hazır paketler, sunucular ve arkadaşlar tek uygulamada. Windows ve Android için ücretsiz Minecraft launcher\'ı.',
-    },
     '/server-panel': {
-        title: 'vulu Server Panel – Minecraft sunucu kurma ve yönetim paneli',
-        description: 'Minecraft sunucunu kendi bilgisayarında kur ve tarayıcıdan yönet: Paper, Fabric, Forge ve NeoForge, Modrinth modları, canlı konsol, yedekleme ve zamanlama. Ücretsiz ve açık kaynak.',
+        title: 'vulu Server Panel',
+        description: 'Minecraft sunucusunu bilgisayarında ya da VDS/VPS\'te kurup yönetmek için panel.',
         jsonLd: app({
             name: 'vulu Server Panel',
             url: `${SITE_URL}/server-panel`,
@@ -52,12 +44,12 @@ export const PUBLIC_PAGES = {
             download: 'https://github.com/vuluvulu1/vulu-server-panel/releases/latest',
             image: `${SITE_URL}/img/server-panel.svg`,
             screenshot: `${SITE_URL}/img/server-panel-shot.webp`,
-            description: 'Minecraft sunucunu kendi bilgisayarında çalıştıran ve tarayıcıdan yönetmeni sağlayan bir panel.',
+            description: 'Minecraft sunucusunu bilgisayarında ya da VDS/VPS\'te kurup yönetmek için panel.',
         }),
     },
     '/ftbquests-editor': {
-        title: 'FTB Quests Editor – Görev kitabını oyunu açmadan düzenle',
-        description: 'FTB Quests görev kitabını masaüstünde düzenle: gerçek eşya simgeleri, eşya arama, çeviri desteği, bölüm görselleri ve her kayıttan önce yedek. Windows için ücretsiz.',
+        title: 'FTB Quests Editor',
+        description: 'FTB Quests görev kitabını oyun dışında düzenler.',
         jsonLd: app({
             name: 'FTB Quests Editor',
             url: `${SITE_URL}/ftbquests-editor`,
@@ -66,7 +58,7 @@ export const PUBLIC_PAGES = {
             download: 'https://github.com/vuluvulu1/vulu-ftbquests-editor/releases/latest',
             image: `${SITE_URL}/img/ftbquests-editor.svg`,
             screenshot: `${SITE_URL}/img/ftbquests-editor-shot.webp`,
-            description: 'Bir modpack\'in FTB Quests görev kitabını oyunu açmadan düzenlemek için masaüstü uygulaması.',
+            description: 'FTB Quests görev kitabını oyun dışında düzenler.',
         }),
     },
 };
