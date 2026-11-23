@@ -19,7 +19,7 @@ export default function Leaderboard() {
             <header className="lb-head">
                 <div>
                     <h1>Liderlik</h1>
-                    <p className="muted">vulu sunucusunda en çok oynayanlar, elmas bulanlar, ölenler ve gezenler. Her pazartesi sıfırlanır; her dalın birincisi rozet ve <b>Haftanın Şampiyonu</b> pelerinini alır.</p>
+                    <p className="muted">Her haftanın birincileri <b>Haftanın Şampiyonu</b> pelerinini alır.</p>
                 </div>
                 <div className="segmented" role="tablist">
                     {PERIODS.map(([key, label]) => (

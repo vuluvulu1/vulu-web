@@ -35,7 +35,7 @@ export default function Login() {
             <form className="auth-card" onSubmit={submit} noValidate>
                 <RisingEmbers rate={10} />
                 <h1>Giriş yap</h1>
-                <p className="muted">Launcher'da kullandığın kullanıcı adı ve şifreyle giriş yap.</p>
+                <p className="muted">Launcher'daki kullanıcı adın ve şifrenle.</p>
                 <label>
                     Kullanıcı adı
                     <input value={username} onChange={e => setUsername(e.target.value)} autoComplete="username" maxLength={32} autoFocus />

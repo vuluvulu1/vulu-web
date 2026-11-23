@@ -5,11 +5,10 @@ import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
 import Icon from '../icons.jsx';
 import { HeroTitle } from '../TitleEmbers.jsx';
-import { CountUp, Reveal } from '../motion.jsx';
-import { RisingEmbers } from '../effects.jsx';
+import { Reveal } from '../motion.jsx';
 import { PRODUCTS } from '../products.js';
 
-/** Ana sayfa: "Ne için buradasın?" — vulu'nun üç ürünü arasından seçim, canlı sayılar ve son sürümler. */
+/** Ana sayfa: üç uygulama, kimin çevrimiçi olduğu ve son sürümler. */
 export default function Hub() {
     const { status, user } = useAuth();
     const [releases, setReleases] = useState({});
@@ -26,8 +25,6 @@ export default function Hub() {
             <section className="hero hub">
                 <div className="wrap hub-head">
                     <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" mode="forge" />
-                    <h2 className="hub-question">Ne için buradasın?</h2>
-                    <p className="hub-lead">Minecraft oynamak, sunucu kurmak ve görev kitabı hazırlamak için ücretsiz araçlar.</p>
                 </div>
                 <div className="wrap products">
                     {PRODUCTS.map((p, i) => (
@@ -38,51 +35,30 @@ export default function Hub() {
                             <span className="product-meta">
                                 {p.platforms}{releases[p.slug] && <> · <span className="mono">{releases[p.slug].tag}</span></>}
                             </span>
-                            <span className="product-go">{p.slug === 'launcher' ? 'İndir ve oyna' : 'Göz at'} <Icon name="right" size={16} /></span>
+                            <span className="product-go">İndir <Icon name="right" size={16} /></span>
                         </Link>
                     ))}
                 </div>
                 {status === 'in' && (
                     <p className="wrap hub-account">
-                        Tekrar hoş geldin, <b>{user.username}</b>. Arkadaşlarının son paylaşımları <Link to="/hesap">akışında</Link>.
+                        Hoş geldin, <b>{user.username}</b>. <Link to="/hesap">Akışa git</Link>
                     </p>
                 )}
             </section>
 
             <LiveNumbers />
 
-            <div className="wrap home-grid">
-                <Reveal as="section" className="home-block span-7">
-                    <h2>Son güncellemeler</h2>
-                    <RecentReleases releases={releases} />
-                </Reveal>
-
-                <Reveal as="section" className="home-block span-5 join" delay={80}>
-                    <RisingEmbers rate={14} />
-                    {status === 'in' ? <>
-                        <h2>Akışın</h2>
-                        <p>Arkadaşlarının ekran görüntüleri, kimin ne oynadığı ve paket güncellemeleri.</p>
-                        <Link className="btn btn-primary" to="/hesap">Akışa git</Link>
-                    </> : <>
-                        <h2>Ücretsiz hesap</h2>
-                        <p>
-                            Hesapla arkadaş ekleyebilir, mesajlaşabilir, ekran görüntüsü paylaşabilir ve hazır paketleri
-                            kurabilirsin. Hesaplar şimdilik admin onayıyla açılıyor.
-                        </p>
-                        <div className="row">
-                            <Link className="btn btn-primary" to="/kayit">Katılma isteği gönder</Link>
-                            <Link className="btn btn-quiet" to="/giris">Giriş yap</Link>
-                        </div>
-                    </>}
-                </Reveal>
-            </div>
+            <Reveal as="section" className="wrap section">
+                <h2 className="section-title">Son güncellemeler</h2>
+                <RecentReleases releases={releases} />
+            </Reveal>
         </>
     );
 }
 
 const NUMBERS_REFRESH = 30 * 1000;
 
-/** Herkese açık canlı sayılar: şu an kaç kişi çevrimiçi, kaç üye, paket ve ekran görüntüsü. */
+/** Şu an kaç kişinin çevrimiçi olduğu; 30 sn'de bir yenilenir. */
 function LiveNumbers() {
     const [stats, setStats] = useState(null);
     useEffect(() => {
@@ -95,18 +71,12 @@ function LiveNumbers() {
 
     return (
         <section className="wrap numbers" aria-label="Şu an vulu'da">
-            {stats ? <>
+            {stats ? (
                 <p className="numbers-live">
                     <span className={'fire' + (stats.online ? '' : ' out')} />
                     {stats.online ? <>Şu an <b>{stats.online}</b> kişi çevrimiçi{stats.playing > 0 && <>, <b>{stats.playing}</b> kişi oyunda</>}.</> : 'Şu an çevrimiçi kimse yok.'}
                 </p>
-                <dl>
-                    <div><dt>Üye</dt><dd><CountUp value={stats.members} /></dd></div>
-                    <div><dt>Paket</dt><dd><CountUp value={stats.packs} /></dd></div>
-                    <div><dt>Ekran görüntüsü</dt><dd><CountUp value={stats.shots} /></dd></div>
-                    {stats.downloads?.total > 0 && <div><dt>İndirme</dt><dd><CountUp value={stats.downloads.total} /></dd></div>}
-                </dl>
-            </> : <p className="numbers-live placeholder" aria-hidden="true" />}
+            ) : <p className="numbers-live placeholder" aria-hidden="true" />}
         </section>
     );
 }

@@ -6,7 +6,7 @@ import { Reveal } from '../motion.jsx';
 
 const formatMb = bytes => `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MB`;
 
-/** vulu Server Panel ve FTB Quests Editor sayfaları: tanım, indirme, özellikler ve kurulum. */
+/** vulu Server Panel ve FTB Quests Editor sayfaları: indirme, kurulum ve son sürüm notları. */
 export default function Product({ product: p }) {
     const [release, setRelease] = useState(undefined);   // undefined: yükleniyor, null: alınamadı
     useEffect(() => { githubRelease(p.repo, p.asset).then(setRelease); }, [p]);
@@ -38,18 +38,6 @@ export default function Product({ product: p }) {
                 </div>
             </section>
 
-            <Reveal as="section" className="wrap section">
-                <h2 className="section-title">Özellikler</h2>
-                <dl className="extras">
-                    {p.features.map(([title, text]) => (
-                        <div key={title}>
-                            <dt>{title}</dt>
-                            <dd>{text}</dd>
-                        </div>
-                    ))}
-                </dl>
-            </Reveal>
-
             <Reveal as="section" className="wrap section start">
                 <h2 className="section-title">Kurulum</h2>
                 <ol className="steps">
@@ -60,7 +48,7 @@ export default function Product({ product: p }) {
 
             {release?.notes && (
                 <Reveal as="section" className="wrap section">
-                    <h2 className="section-title">Son sürümde neler var</h2>
+                    <h2 className="section-title">Son sürüm</h2>
                     <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
                     <ReleaseNotes text={release.notes} />
                     <a className="btn btn-sm" href={release.pageUrl} target="_blank" rel="noreferrer">Tüm sürümler</a>
