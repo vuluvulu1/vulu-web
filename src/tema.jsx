@@ -17,6 +17,9 @@ const YUKLE = {
     atolye: () => import('./temalar/atolye.js'),
     sinema: () => import('./temalar/sinema.js'),
     kitap: () => import('./temalar/kitap.js'),
+    kutup: () => import('./temalar/kutup.js'),
+    orman: () => import('./temalar/orman.js'),
+    deniz: () => import('./temalar/deniz.js'),
 };
 export const TEMALAR = ['lutuf', ...Object.keys(YUKLE)];
 const SON = 'vulu.tema.son';

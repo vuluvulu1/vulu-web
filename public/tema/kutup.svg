@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="k-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#030b14"></stop><stop offset=".45" stop-color="#08202f"></stop><stop offset=".75" stop-color="#0f3346"></stop><stop offset="1" stop-color="#0a1a26"></stop></linearGradient>
+        <linearGradient id="k-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a4d66"></stop><stop offset="1" stop-color="#14304a"></stop></linearGradient>
+        <linearGradient id="k-mid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a3a52"></stop><stop offset="1" stop-color="#0d2233"></stop></linearGradient>
+        <linearGradient id="k-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#132a3b"></stop><stop offset="1" stop-color="#081521"></stop></linearGradient>
+        <linearGradient id="k-snow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef6fb"></stop><stop offset="1" stop-color="#9cc0d6"></stop></linearGradient>
+        <linearGradient id="k-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e3c52"></stop><stop offset=".5" stop-color="#0e2131"></stop><stop offset="1" stop-color="#040b12"></stop></linearGradient>
+        <radialGradient id="k-glow" cx="50%" cy="100%" r="60%"><stop offset="0" stop-color="#7fe8d0" stop-opacity=".18"></stop><stop offset="1" stop-color="#7fe8d0" stop-opacity="0"></stop></radialGradient>
+        <filter id="k-grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter>
+      </defs>
+      <rect width="1600" height="1200" fill="url(#k-sky)"></rect>
+      <g><circle cx="120" cy="80" r="1.2" fill="#eaf6ff"></circle><circle cx="260" cy="140" r="0.9" fill="#eaf6ff"></circle><circle cx="420" cy="60" r="1.4" fill="#eaf6ff"></circle><circle cx="560" cy="170" r="1" fill="#eaf6ff"></circle><circle cx="700" cy="90" r="1.1" fill="#eaf6ff"></circle><circle cx="880" cy="50" r="1.3" fill="#eaf6ff"></circle><circle cx="1010" cy="150" r="0.9" fill="#eaf6ff"></circle><circle cx="1150" cy="70" r="1.2" fill="#eaf6ff"></circle><circle cx="1300" cy="130" r="1" fill="#eaf6ff"></circle><circle cx="1450" cy="60" r="1.3" fill="#eaf6ff"></circle><circle cx="1520" cy="180" r="0.8" fill="#eaf6ff"></circle><circle cx="340" cy="230" r="0.8" fill="#eaf6ff"></circle><circle cx="980" cy="240" r="0.9" fill="#eaf6ff"></circle><circle cx="1220" cy="220" r="0.8" fill="#eaf6ff"></circle><circle cx="60" cy="200" r="1" fill="#eaf6ff"></circle></g>
+      <rect width="1600" height="1200" fill="url(#k-glow)"></rect>
+      <!-- Uzak, orta ve yakın sıradağlar; tepelerde kar -->
+      <path d="M0 760 L120 640 L230 700 L360 560 L470 650 L600 590 L720 660 L860 540 L990 640 L1120 580 L1240 660 L1380 560 L1500 640 L1600 600 L1600 1200 L0 1200 Z" fill="url(#k-far)" opacity=".85"></path>
+      <path d="M360 560 L392 590 L380 600 L405 612 L340 590 Z M860 540 L895 575 L880 584 L910 600 L835 580 Z M1380 560 L1410 588 L1398 598 L1425 610 L1355 590 Z" fill="#cfe3f0" opacity=".55"></path>
+      <path d="M0 860 L150 720 L270 790 L420 660 L560 780 L700 700 L800 760 L930 650 L1070 770 L1200 690 L1340 780 L1480 680 L1600 760 L1600 1200 L0 1200 Z" fill="url(#k-mid)"></path>
+      <path d="M420 660 L470 712 L452 722 L488 742 L440 735 L395 700 Z M930 650 L985 705 L965 716 L1004 738 L948 730 L900 690 Z M1480 680 L1525 722 L1510 732 L1545 750 L1455 712 Z M150 720 L192 758 L178 768 L210 784 L130 746 Z" fill="url(#k-snow)" opacity=".85"></path>
+      <path d="M0 960 L200 840 L330 900 L470 820 L620 920 L800 860 L980 930 L1130 830 L1290 910 L1450 840 L1600 900 L1600 1200 L0 1200 Z" fill="url(#k-near)"></path>
+      <path d="M200 840 L250 872 L232 880 L268 896 L170 860 Z M1130 830 L1185 864 L1165 874 L1205 892 L1100 852 Z M470 820 L510 846 L496 854 L526 868 L445 840 Z" fill="url(#k-snow)" opacity=".9"></path>
+      <path d="M0 1060 Q400 1010 800 1040 T1600 1030 L1600 1200 L0 1200 Z" fill="url(#k-ground)"></path>
+      <path d="M0 1060 Q400 1010 800 1040 T1600 1030" fill="none" stroke="#dff1fb" stroke-opacity=".35" stroke-width="2"></path>
+      <rect width="1600" height="1200" filter="url(#k-grain)" opacity=".06"></rect>
+    </svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 660" preserveAspectRatio="xMidYMin slice">
+      <defs>
+        <linearGradient id="k-au1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b58cff" stop-opacity="0"></stop><stop offset=".35" stop-color="#7affc6" stop-opacity=".55"></stop><stop offset="1" stop-color="#3fd6b0" stop-opacity="0"></stop></linearGradient>
+        <filter id="k-au-blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="22"></feGaussianBlur></filter>
+      </defs>
+      <path d="M-100 160 C200 60 380 300 640 220 C900 140 1040 340 1300 250 C1480 190 1600 260 1700 220 L1700 520 C1500 460 1300 560 1080 470 C860 380 700 560 460 470 C260 400 100 520 -100 450 Z" fill="url(#k-au1)" filter="url(#k-au-blur)"></path>
+    
+      <defs>
+        <linearGradient id="k-au2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7affc6" stop-opacity="0"></stop><stop offset=".45" stop-color="#4fc3ff" stop-opacity=".35"></stop><stop offset="1" stop-color="#b58cff" stop-opacity="0"></stop></linearGradient>
+        <filter id="k-au-blur2" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="28"></feGaussianBlur></filter>
+      </defs>
+      <path d="M-100 260 C260 180 460 380 760 300 C1040 230 1220 400 1700 300 L1700 560 C1300 620 1100 470 800 540 C520 610 260 500 -100 560 Z" fill="url(#k-au2)" filter="url(#k-au-blur2)"></path>
+    </svg>
