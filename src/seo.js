@@ -35,7 +35,7 @@ export const PUBLIC_PAGES = {
     },
     '/server-panel': {
         title: 'vulu Server Panel',
-        description: 'Kendi bilgisayarında Minecraft sunucusu açmak için panel.',
+        description: 'Minecraft sunucusunu bilgisayarında ya da VDS/VPS\'te kurup yönetmek için panel.',
         jsonLd: app({
             name: 'vulu Server Panel',
             url: `${SITE_URL}/server-panel`,
@@ -44,7 +44,7 @@ export const PUBLIC_PAGES = {
             download: 'https://github.com/vuluvulu1/vulu-server-panel/releases/latest',
             image: `${SITE_URL}/img/server-panel.svg`,
             screenshot: `${SITE_URL}/img/server-panel-shot.webp`,
-            description: 'Kendi bilgisayarında Minecraft sunucusu açmak için panel.',
+            description: 'Minecraft sunucusunu bilgisayarında ya da VDS/VPS\'te kurup yönetmek için panel.',
         }),
     },
     '/ftbquests-editor': {

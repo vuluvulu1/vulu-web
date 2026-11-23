@@ -18,14 +18,14 @@ export const PRODUCTS = [
         shot: ['img/server-panel-shot.webp', 'vulu Server Panel\'de çalışan bir sunucunun sayfası'],
         repo: 'vulu-server-panel',
         asset: /^vulu-panel-.*\.zip$/,
-        summary: 'Kendi bilgisayarında Minecraft sunucusu açmak için panel.',
+        summary: 'Minecraft sunucusunu bilgisayarında ya da VDS/VPS\'te kurup yönetmek için panel.',
         platforms: 'Windows, Linux ve macOS',
-        lead: 'Minecraft sunucusunu kendi bilgisayarında çalıştırır, tarayıcıdan yönetilir.',
+        lead: 'Minecraft sunucusunu bilgisayarında ya da bir VDS/VPS\'te çalıştırır, tarayıcıdan yönetilir.',
         steps: [
             'Zip\'i indir ve bir klasöre çıkar.',
             'Windows\'ta baslat.bat, Linux ve macOS\'ta bash baslat.sh.',
         ],
-        note: 'Python 3.11+ gerekir. Panel ilk başta yalnızca kurulduğu bilgisayardan açılır.',
+        note: 'Python 3.11+ gerekir. Panel ilk başta yalnızca kurulduğu makineden açılır.',
     },
     {
         slug: 'ftbquests-editor',
