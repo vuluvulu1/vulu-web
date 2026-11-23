@@ -33,14 +33,6 @@ export const PUBLIC_PAGES = {
             description: 'vulu\'nun Minecraft launcher\'ı.',
         }),
     },
-    '/vulusalvululauncher': {
-        title: 'Vulusal vulu Launcher – aşırı vulu bir Minecraft launcher\'ı',
-        description: 'vulu Launcher\'ın vulusal sürümü: aynı ücretsiz Minecraft launcher\'ı, neon ışıklar, konfeti ve trap beat\'iyle. Instance\'lar, mod paketleri, sunucular ve arkadaşlar tek uygulamada.',
-    },
-    '/vulusalufuk': {
-        title: 'vulu Launcher – olay ufkunun öbür yanı',
-        description: 'vulu Launcher, neon bir synthwave evreninde: instance\'lar, CurseForge ve Modrinth modları, hazır paketler, sunucular ve arkadaşlar tek uygulamada. Windows ve Android için ücretsiz Minecraft launcher\'ı.',
-    },
     '/server-panel': {
         title: 'vulu Server Panel',
         description: 'Kendi bilgisayarında Minecraft sunucusu açmak için panel.',

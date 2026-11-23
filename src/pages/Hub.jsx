@@ -4,8 +4,7 @@ import { api, asset, githubRelease, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { formatDate, timeAgo } from '../components.jsx';
 import Icon from '../icons.jsx';
-import { HeroTitle } from '../TitleEmbers.jsx';
-import { Reveal } from '../motion.jsx';
+import { HeroTitle } from '../Wordmark.jsx';
 import { PRODUCTS } from '../products.js';
 
 /** Ana sayfa: üç uygulama, kimin çevrimiçi olduğu ve son sürümler. */
@@ -24,11 +23,11 @@ export default function Hub() {
         <>
             <section className="hero hub">
                 <div className="wrap hub-head">
-                    <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" mode="forge" />
+                    <HeroTitle full={false} label="vulu: Minecraft launcher'ı, sunucu paneli ve görev editörü" className="hub-title" />
                 </div>
                 <div className="wrap products">
-                    {PRODUCTS.map((p, i) => (
-                        <Link key={p.slug} to={'/' + p.slug} className="product-card" data-tilt="5" style={{ '--n': i }}>
+                    {PRODUCTS.map(p => (
+                        <Link key={p.slug} to={'/' + p.slug} className="product-card">
                             <span className="product-logo-wrap"><img src={asset(p.logo)} alt="" width="64" height="64" /></span>
                             <h3>{p.name}</h3>
                             <p>{p.summary}</p>
@@ -48,10 +47,10 @@ export default function Hub() {
 
             <LiveNumbers />
 
-            <Reveal as="section" className="wrap section">
+            <section className="wrap section">
                 <h2 className="section-title">Son güncellemeler</h2>
                 <RecentReleases releases={releases} />
-            </Reveal>
+            </section>
         </>
     );
 }

@@ -7,7 +7,6 @@ import Icon from '../../icons.jsx';
 import { describePresence, friendAction, useFriends, usePresence } from '../../social.js';
 import { ChangeCounts } from './Packs.jsx';
 import ShareShot from './ShareShot.jsx';
-import { sparkBurst } from '../../effects.jsx';
 import { ShotDialog, useLike, useShotPages, useShotViewer } from './ShotDialog.jsx';
 
 /** Akış: üstte sana gelenler, ortada paylaşılan ekran görüntüleri; yanda kim oynuyor, sunucular ve paket güncellemeleri. */
@@ -66,7 +65,6 @@ function Inbox({ users, onOpenShot }) {
 
     async function act(kind, username, e) {
         setBusy(username);
-        if (kind === 'accept') sparkBurst(e?.currentTarget, 20);
         try { await friendAction(kind, username); } catch { /* liste yine de tazelenir */ } finally { setBusy(null); }
     }
 

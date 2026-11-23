@@ -1,26 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ANDROID_URL, DOWNLOAD_URL, GITHUB_DOWNLOAD_URL, androidRelease, api, asset, latestRelease } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../icons.jsx';
-import { HeroTitle } from '../TitleEmbers.jsx';
+import { HeroTitle } from '../Wordmark.jsx';
 import { ReleaseNotes, formatDate } from '../components.jsx';
-import { Reveal } from '../motion.jsx';
-import { useVulusalKapi } from '../vulusalGecis.js';
-
-// Launcher'ın küçük özellikleri; artık yalnızca gizli vulusal sayfalarda listeleniyor.
-export const EXTRAS = [
-    ['Çökme yardımcısı', 'Oyun çökerse launcher kayıtları okur ve sorunun kaynağını sade bir dille anlatır.'],
-    ['Dünya yedekleri', 'Dünyanın yedeğini tek tıkla al, gerektiğinde aynı kolaylıkla geri yükle.'],
-    ['Oynama süresi', 'Hangi instance\'ta ne kadar oynadığın kaydedilir; istersen profilinde görünür.'],
-    ['Skinler', 'Skinini launcher\'dan değiştir; oyunda arkadaşların da görür.'],
-    ['Discord durumu', 'Ne oynadığın Discord profilinde görünür; arkadaşların launcher\'ı oradan indirebilir.'],
-    ['Bildirimler', 'Yeni mesaj, beğeni, yorum ya da paket güncellemesi geldiğinde launcher arka plandayken de bildirim gösterir.'],
-    ['Masaüstü kısayolları', 'Bir paketi ya da sunucuyu masaüstüne kısayol olarak ekle; tek tıkla oyun açılır ya da sunucuya bağlanırsın.'],
-    ['Temalar', 'Dört tema: Meşale, Klasik, Neon ve Atlas.'],
-    ['Radyo', 'Launcher açıkken internet radyosu dinleyebilir, istasyonu değiştirebilir ya da kapatabilirsin.'],
-    ['Güvenli güncellemeler', 'Launcher kendini günceller ve imzası doğrulanmayan sürümleri kurmaz.'],
-];
 
 // Girilen cihaz Android telefonsa APK öne çıkar; diğerlerinde Windows kurulumu
 const ON_ANDROID = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
@@ -32,15 +16,13 @@ export default function Launcher() {
     const [android, setAndroid] = useState(null);
     useEffect(() => { latestRelease().then(setRelease); androidRelease().then(setAndroid); }, []);
     const androidFirst = ON_ANDROID && !!android;
-    // Gizli kapı: başlığa hızlı hızlı 5 tıklama ya da klavyeden "vulu" → vulusal sayfa
-    const vulusalKapi = useVulusalKapi(useNavigate());
 
     return (
         <>
             <section className="hero">
                 <div className="wrap hero-grid">
                 <div className="hero-text">
-                    <div className="vulu-kapi" onClick={vulusalKapi}><HeroTitle /></div>
+                    <HeroTitle />
                     <div className="hero-actions">
                         {androidFirst && (
                             <a className="btn btn-primary btn-lg" href={ANDROID_URL}>
@@ -68,22 +50,22 @@ export default function Launcher() {
                     </p>
                     <LiveStats />
                 </div>
-                <div className="hero-shot" data-tilt="5">
+                <div className="hero-shot">
                     <img src={asset('img/home.png')} alt="vulu Launcher'ın Oyna ekranı" width="1860" height="1140" />
                 </div>
                 </div>
             </section>
 
             {release?.notes && (
-                <Reveal as="section" className="wrap section">
+                <section className="wrap section">
                     <h2 className="section-title">Son sürüm</h2>
                     <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
                     <ReleaseNotes text={release.notes} />
-                </Reveal>
+                </section>
             )}
 
             {android && (
-                <Reveal as="section" className="wrap section start" id="android">
+                <section className="wrap section start" id="android">
                     <h2 className="section-title">Android</h2>
                     <p className="muted small">
                         <span className="mono">{android.tag}</span> · {formatDate(android.publishedAt)}
@@ -97,7 +79,7 @@ export default function Launcher() {
                     <a className="btn btn-primary btn-lg" href={ANDROID_URL}>
                         <Icon name="android" size={18} /> APK'yı indir
                     </a>
-                </Reveal>
+                </section>
             )}
         </>
     );
@@ -118,9 +100,9 @@ function LiveStats() {
     if (online === null) return <p className="live-now placeholder" aria-hidden="true" />;
 
     return (
-        <Reveal as="p" className="live-now">
+        <p className="live-now">
             <span className={'live-dot' + (online > 0 ? ' on' : '')} />
             <span>{online > 0 ? <>Şu an <b>{online}</b> oyuncu launcher'da.</> : 'Şu an launcher\'da kimse yok.'}</span>
-        </Reveal>
+        </p>
     );
 }

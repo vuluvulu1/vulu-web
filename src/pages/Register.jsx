@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
-import { RisingEmbers } from '../effects.jsx';
 
 // Kurallar vulu-api'deki /auth/register ile aynı; asıl denetim sunucuda yapılır
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,7 +60,6 @@ export default function Register() {
     return (
         <section className="wrap auth">
             <form className="auth-card" onSubmit={submit} noValidate>
-                <RisingEmbers rate={10} />
                 <h1>Katılma isteği</h1>
                 <p className="muted">Formu doldur ve e-postana gelen bağlantıyı aç. Hesabını bir admin açar.</p>
                 <label>

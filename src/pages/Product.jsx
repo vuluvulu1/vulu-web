@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { asset, githubRelease } from '../api.js';
 import { ReleaseNotes, formatDate } from '../components.jsx';
 import Icon from '../icons.jsx';
-import { Reveal } from '../motion.jsx';
 
 const formatMb = bytes => `${(bytes / 1024 / 1024).toFixed(1).replace('.', ',')} MB`;
 
@@ -34,25 +33,25 @@ export default function Product({ product: p }) {
                             : p.platforms}
                     </p>
                 </div>
-                {p.shot && <div className="hero-shot" data-tilt="5"><img src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" /></div>}
+                {p.shot && <div className="hero-shot"><img src={asset(p.shot[0])} alt={p.shot[1]} width="2400" height="1500" /></div>}
                 </div>
             </section>
 
-            <Reveal as="section" className="wrap section start">
+            <section className="wrap section start">
                 <h2 className="section-title">Kurulum</h2>
                 <ol className="steps">
                     {p.steps.map(step => <li key={step}><span>{step}</span></li>)}
                 </ol>
                 <p className="note">{p.note}</p>
-            </Reveal>
+            </section>
 
             {release?.notes && (
-                <Reveal as="section" className="wrap section">
+                <section className="wrap section">
                     <h2 className="section-title">Son sürüm</h2>
                     <p className="muted small"><span className="mono">{release.tag}</span> · {formatDate(release.publishedAt)}</p>
                     <ReleaseNotes text={release.notes} />
                     <a className="btn btn-sm" href={release.pageUrl} target="_blank" rel="noreferrer">Tüm sürümler</a>
-                </Reveal>
+                </section>
             )}
         </>
     );

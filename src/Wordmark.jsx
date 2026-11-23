@@ -17,18 +17,13 @@ export const GLYPHS = [
     'M4088 -196Q4096 -213 4109.0 -250.5Q4122 -288 4136.0 -334.0Q4150 -380 4157 -421Q4160 -437 4168.0 -444.5Q4176 -452 4185 -452Q4198 -452 4209.0 -439.5Q4220 -427 4220 -404Q4220 -376 4203.5 -356.0Q4187 -336 4163 -318Q4173 -317 4184.0 -316.5Q4195 -316 4208 -316Q4255 -316 4301 -322Q4303 -316 4303 -313Q4303 -300 4295.5 -280.0Q4288 -260 4280 -244Q4276 -235 4264.0 -211.5Q4252 -188 4238.0 -158.5Q4224 -129 4214.5 -100.5Q4205 -72 4205 -52Q4205 -26 4225 -26Q4244 -26 4278.0 -70.5Q4312 -115 4346 -193Q4358 -193 4358 -184Q4347 -157 4330.5 -125.0Q4314 -93 4294.0 -64.5Q4274 -36 4251.0 -17.5Q4228 1 4203 1Q4184 1 4165.0 -14.5Q4146 -30 4146 -65Q4146 -96 4158.0 -125.5Q4170 -155 4185.0 -181.0Q4200 -207 4212.0 -227.0Q4224 -247 4224 -259Q4224 -277 4201.5 -285.0Q4179 -293 4143 -294Q4125 -248 4116.0 -226.0Q4107 -204 4099 -184Q4083 -184 4088 -196Z',
 ];
 
-/**
- * full: "vulu Launcher"; değilse yalnızca "vulu".
- * animate: açılış ekranındaki gibi harfler sırayla kalemle çizilip amberle dolar.
- */
-// Süs olarak çizilir (aria-hidden); başlıklarda yanına .sr-only bir metin eşi konur.
-export default function Wordmark({ full = false, animate = false, shine = false, molten = false, className = '' }) {
+/** El yazısı "vulu" (full ise "vulu Launcher"). Süs olarak çizilir (aria-hidden); başlıklarda yanına .sr-only bir metin eşi konur. */
+export default function Wordmark({ full = false, className = '' }) {
     const id = useId().replace(/:/g, '');
     const glyphs = full ? GLYPHS : GLYPHS.slice(0, 4);
     const viewBox = full ? '-3 -831 4401 1182' : '-3 -650 1320 670';
     return (
-        <svg className={'wordmark' + (animate ? ' draw' : '') + (molten ? ' molten' : '') + (className ? ' ' + className : '')} viewBox={viewBox}
-            aria-hidden="true" onAnimationEnd={molten ? e => { if (e.animationName === 'pour') e.currentTarget.classList.add('poured'); } : undefined}>
+        <svg className={'wordmark' + (className ? ' ' + className : '')} viewBox={viewBox} aria-hidden="true">
             <defs>
                 <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="-3" y1="-831" x2="4398" y2="351">
                     <stop offset="0" stopColor="#a8601e" />
@@ -37,31 +32,18 @@ export default function Wordmark({ full = false, animate = false, shine = false,
                     <stop offset=".7" stopColor="#e8902e" />
                     <stop offset="1" stopColor="#9a5418" />
                 </linearGradient>
-                {/* Parlama: harflerin üstünden ara ara geçen beyaz-sıcak bir ışık şeridi */}
-                {shine && (
-                    <linearGradient id={id + 's'} gradientUnits="userSpaceOnUse" x1="-900" y1="0" x2="0" y2="-260">
-                        <stop offset="0" stopColor="#fff4d6" stopOpacity="0" />
-                        <stop offset=".5" stopColor="#fff4d6" stopOpacity=".95" />
-                        <stop offset="1" stopColor="#fff4d6" stopOpacity="0" />
-                        <animateTransform attributeName="gradientTransform" type="translate" values="-1200 0; 5600 0; 5600 0"
-                            keyTimes="0; .42; 1" dur="6.5s" begin="2.1s" repeatCount="indefinite" />
-                    </linearGradient>
-                )}
-                {/* Eriyik: harflerin içinde yavaşça akan beyaz-sıcak ve kızıl damarlar */}
-                {molten && (
-                    <linearGradient id={id + 'm'} gradientUnits="userSpaceOnUse" x1="0" y1="-650" x2="700" y2="20" spreadMethod="reflect">
-                        <stop offset="0" stopColor="#ff5a1f" stopOpacity=".0" />
-                        <stop offset=".35" stopColor="#ff7a2a" stopOpacity=".55" />
-                        <stop offset=".5" stopColor="#fff2c8" stopOpacity=".9" />
-                        <stop offset=".65" stopColor="#ff7a2a" stopOpacity=".55" />
-                        <stop offset="1" stopColor="#ff5a1f" stopOpacity="0" />
-                        <animateTransform attributeName="gradientTransform" type="translate" values="-700 0; 700 0" dur="5s" repeatCount="indefinite" />
-                    </linearGradient>
-                )}
             </defs>
-            {glyphs.map((d, i) => <path key={i} d={d} pathLength="1" fill={`url(#${id})`} style={{ '--i': i }} />)}
-            {molten && <g className="wordmark-molten">{glyphs.map((d, i) => <path key={i} d={d} fill={`url(#${id}m)`} />)}</g>}
-            {shine && <g className="wordmark-shine">{glyphs.map((d, i) => <path key={i} d={d} fill={`url(#${id}s)`} />)}</g>}
+            {glyphs.map((d, i) => <path key={i} d={d} fill={`url(#${id})`} />)}
         </svg>
+    );
+}
+
+/** Sayfa başlığı olarak el yazısı "vulu Launcher" (full) ya da "vulu". */
+export function HeroTitle({ full = true, label = 'vulu Launcher', className = '' }) {
+    return (
+        <h1 className={'hero-title' + (className ? ' ' + className : '')}>
+            <span className="hero-title-box"><Wordmark full={full} /></span>
+            <span className="sr-only">{label}</span>
+        </h1>
     );
 }

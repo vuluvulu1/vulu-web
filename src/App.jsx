@@ -5,8 +5,6 @@ import { useAuth } from './auth.jsx';
 import { PRODUCTS, productBySlug } from './products.js';
 import { Avatar } from './components.jsx';
 import Icon from './icons.jsx';
-import PixelField from './PixelField.jsx';
-import { usePointerLight } from './effects.jsx';
 import Wordmark from './Wordmark.jsx';
 import { useFriends } from './social.js';
 import Hub from './pages/Hub.jsx';
@@ -25,15 +23,11 @@ import UserProfile from './pages/UserProfile.jsx';
 import Leaderboard from './pages/Leaderboard.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Verify from './pages/Verify.jsx';
-import VulusalLauncher from './pages/VulusalLauncher.jsx';
-import VulusalUfuk from './pages/VulusalUfuk.jsx';
 import { pageMeta } from './seo.js';
-import { useKuantumKapi } from './kuantumKapi.js';
 
 export default function App() {
     const { pathname } = useLocation();
     const { status } = useAuth();
-    usePointerLight();
 
     // API'yi önceden ısıt: kullanıcı formu doldururken bağlantı hazır olsun
     useEffect(() => { api.ping().catch(() => {}); }, []);
@@ -42,8 +36,6 @@ export default function App() {
 
     return (
         <>
-            <PixelField />
-            <div className="torch" aria-hidden="true" />
             <a className="skip" href="#main">İçeriğe geç</a>
             {status === 'in' ? <MemberHeader /> : <GuestHeader />}
             <main id="main">
@@ -52,8 +44,6 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Hub />} />
                     <Route path="/launcher" element={<Launcher />} />
-                    <Route path="/vulusalvululauncher" element={<VulusalLauncher />} />
-                    <Route path="/vulusalufuk" element={<VulusalUfuk />} />
                     <Route path="/server-panel" element={<Product product={productBySlug('server-panel')} />} />
                     <Route path="/ftbquests-editor" element={<Product product={productBySlug('ftbquests-editor')} />} />
                     <Route path="/giris" element={<Login />} />
@@ -81,12 +71,10 @@ export default function App() {
     );
 }
 
-/** Logo. Launcher sayfasında basılı tutulursa Vulu Kuantum açılır (gizli kapı, src/kuantumKapi.js). */
+/** Logo. */
 function Brand() {
-    const { pathname } = useLocation();
-    const kuantum = useKuantumKapi(pathname === '/launcher');
     return (
-        <Link to="/" className="brand" aria-label="vulu ana sayfa" {...kuantum}>
+        <Link to="/" className="brand" aria-label="vulu ana sayfa">
             <img src={asset('img/logo.svg')} alt="" width="26" height="26" />
             <Wordmark />
         </Link>
